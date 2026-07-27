@@ -41,7 +41,9 @@ trivial audit fixes; tracks build.
 ## Phase 3 — Audit & merge (in SPRINT.md's merge order)
 
 1. Fetch the branch; review the FULL diff against `DESIGN.md`: contract conformance, no
-   secrets, no scope creep.
+   secrets, no scope creep. Grep the diff for sprint-narration comments
+   (`grep -nE '\bs[0-9]+\b|Track [A-Z]|sprint-[0-9]'` over added lines) — rewrite to
+   present-tense constraints or delete before merge (SPRINT_GUIDELINES comment rule).
 2. **Re-run the track's verification gates yourself** against real state. Reports are
    claims; your audit produces facts.
 3. {{MIGRATION_APPLY_STEP}}

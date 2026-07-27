@@ -33,7 +33,20 @@ Rules of work for every sprint, track, and director. Director runbook:
    merge time; tracks code against the post-migration schema." If no DB: drop this rule. -->
 7. **No fabricated data, ever,** outside clearly-marked test fixtures under test dirs.
    A job that can't fetch real data records the failure — it never fabricates rows.
-8. **Report format:** what shipped; branch + commits; verification outputs (verbatim);
+8. **Comments describe the code, not the change.** A code comment exists only to state a
+   constraint the code can't show — written in present tense about the code as it is.
+   Never reference sprints, tracks, or PRs; never narrate the diff ("removed in…",
+   "now X", "used to be Y"). Provenance already has homes: commit messages
+   (`[sNN/<slug>]`), the track report, `STATE.md` — never code. Test names and
+   `describe`/`it` strings follow the same rule: name the behavior pinned, not the sprint
+   that pinned it. No ALL-CAPS emphasis or `──` banner headers inside comments.
+   - BAD: `// The legacy narrowing arg was removed in s43 (Track C).`
+   - GOOD: `// Single-org scoping comes from the request context; a client-supplied org
+     arg here would bypass tenant gating.`
+   A deliberate decision that *looks* like a bug IS a constraint — keep it, stated
+   behaviorally: `// Intentionally serves the stale value; upstream TTL is 45s and
+   blocking would stall every submit.`
+9. **Report format:** what shipped; branch + commits; verification outputs (verbatim);
    files changed; decisions & open questions; what the director must verify by hand.
 <!-- init: if the project has long-running jobs, add the AFK-grade standard as a rule:
 checkpoint manifest, detached execution, incremental sync, inline validation, idempotent

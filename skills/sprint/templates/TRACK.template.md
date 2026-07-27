@@ -17,6 +17,9 @@ asking anything. -->
 <!-- init/director: include the project's conventions inline where they bite (units,
 timezones, batch sizes, naming) rather than assuming the agent internalized DESIGN.md. -->
 
+Comments and test names: present-tense constraints only — no sprint/track refs, no diff
+narration (`SPRINT_GUIDELINES.md` comment rule).
+
 ## Acceptance gates (quote actual outputs in your report)
 
 1. {{GATE — command/query + EXPECTED result. The director re-runs these at audit;
