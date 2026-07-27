@@ -165,6 +165,17 @@ Become the sprint director for the current project's active sprint.
 
 - With worktrees, ALWAYS `git -C <absolute-path>` — a bare git command in a stale cwd has
   reset a branch mid-merge.
+- Parallel worktree tracks must NEVER `git stash` — `refs/stash` lives in the COMMON git
+  dir and is shared across every worktree; two agents stashing concurrently swapped
+  stacks and each popped the OTHER's work (recovered only via dangling stash commits).
+  Baseline-testing in a worktree = scratch commit or file copy, never the stash. Put this
+  prohibition in every parallel track brief.
+- A context/auth/middleware change verified on one transport is UNVERIFIED on the deployed
+  one: a second transport adapter (e.g. a serverless handler) with its own inline
+  context-builder passed every unit test while the feature was dead in-cloud. Keep such
+  logic in ONE transport-agnostic helper consumed by every adapter, pin the deployed
+  transport with a test, and have the director probe the DEPLOYED path before closing the
+  merge.
 - Stage with EXPLICIT paths; never `git add -A`/`git add .` — bulk adds have swept local
   config into pushed commits.
 - Never chain push/merge after a PIPED build/test in one compound command — the pipe masks
