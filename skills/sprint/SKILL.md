@@ -15,7 +15,7 @@ skill provides the boot rituals, the scaffolding templates, and the cross-projec
 ## The methodology in one paragraph
 
 Work is divided into **sprints**: bounded milestones, each run end-to-end by ONE fresh
-Claude Code session (the **director**) for context hygiene. The director never builds; it
+agent session (the **director**) for context hygiene. The director never builds; it
 analyzes, gates, spawns **track** subagents (each with a self-contained `TRACK-*.md`
 prompt, each on its own git branch, parallel tracks in git worktrees), then audits their
 diffs, verifies their claims against real state, resolves conflicts, merges in a defined
@@ -45,9 +45,9 @@ existing files.
    report gaps (no STATE.md? no guidelines? missing sections?), offer to fill ONLY the
    gaps using the templates, then register (step 5) and stop. Never modify existing docs
    beyond explicitly approved gap-fills.
-2. **Interview** (AskUserQuestion — adapt wording to what you can already see in the repo;
-   skip questions the codebase answers). Interview discipline, here and in every later
-   question round:
+2. **Interview** the user (use your runtime's structured question tool if it has one — adapt
+   wording to what you can already see in the repo; skip questions the codebase answers).
+   Interview discipline, here and in every later question round:
    - **Every question carries your recommended answer** as the first option, labeled
      `(Recommended)` — never present a bare option list you have no opinion on.
    - **Batch only independent questions.** If one question's answer determines whether or
@@ -80,7 +80,7 @@ existing files.
    user did NOT put on the table: failure modes ("what happens when the deploy/migration/
    external API fails mid-sprint?"), boundary cases, and contradictions between answers
    ("you chose X earlier, but this goal implies Z — which wins?"). 2–3 adversarial
-   questions (AskUserQuestion, each with a recommended answer) aimed at whatever would
+   questions (each with a recommended answer) aimed at whatever would
    most likely sink or reshape sprint-01.
 
    Then a **clarify pass**: if the roadmap seed or sprint-01 scope is still ambiguous,
@@ -94,6 +94,10 @@ existing files.
    `ROADMAP.md`, and `sprints/sprint-01/SPRINT.md` (+ one `TRACK-*.md` per sprint-01 track).
    Sprint-01 track files must be genuinely self-contained: a fresh subagent with no other
    context executes one end-to-end.
+   Read `SCARS.md` (this skill's folder) while generating: fold in every scar the project's
+   shape makes reachable — it has a DB, a deployed surface, parallel tracks, out-of-band
+   pushers — and leave out the rest. The generated guidelines carry the rules; `SCARS.md`
+   stays the engine's copy.
 4. **Quality bar:** generated docs must contain zero TODOs and zero template placeholders.
    If an interview answer is "not sure yet", write the current best decision into the doc
    and log it as provisional in STATE.md's decisions table — docs ship decided, not hollow.
@@ -127,7 +131,8 @@ Become the sprint director for the current project's active sprint.
    an ops folder, else tell the user to run `/sprint init`.
 2. **Boot in this order:** `STATE.md` (current-sprint pointer, decisions, running jobs) →
    `DIRECTOR_GUIDELINES.md` → `SPRINT_GUIDELINES.md` + `DESIGN.md` → the current
-   `sprints/sprint-NN/SPRINT.md` and its `TRACK-*.md` files.
+   `sprints/sprint-NN/SPRINT.md` and its `TRACK-*.md` files → `SCARS.md` (this skill's
+   folder) for the failure modes the local docs have not yet absorbed.
 3. **Analyze requirements vs reality** before anything else (the project's director
    guidelines define specifics; universal minimum): `git pull --ff-only` and compare repo
    state against the sprint doc's assumptions; verify claimed prior state against actual
@@ -135,8 +140,8 @@ Become the sprint director for the current project's active sprint.
    STATE.md references — progressed, stalled, failed?; confirm credentials/tooling the
    sprint needs are alive. **If reality contradicts the sprint doc: amend SPRINT.md and
    log the deviation in STATE.md BEFORE spawning tracks.** Docs never drift from what runs.
-4. **Clarify, reconcile, then plan:** raise ALL blocking/open/clarifying questions via
-   AskUserQuestion (genuine operator decisions only — look up facts yourself). Follow the
+4. **Clarify, reconcile, then plan:** raise ALL blocking/open/clarifying questions in one
+   round (genuine operator decisions only — look up facts yourself). Follow the
    init interview discipline: every question leads with your `(Recommended)` answer, and
    dependent questions are sequenced, not batched with the questions they depend on. If answers
    shift scope, reconcile — amend SPRINT.md and log in STATE.md — then re-surface any new
@@ -161,46 +166,28 @@ Become the sprint director for the current project's active sprint.
    **Promotion path:** if a learning is project-agnostic (a git scar, an audit technique),
    propose promoting it into this skill's templates — keep the engine improving.
 
-### Universal scars (hard-won; bake into every project's guidelines)
+### Universal scars
 
-- With worktrees, ALWAYS `git -C <absolute-path>` — a bare git command in a stale cwd has
-  reset a branch mid-merge.
-- Parallel worktree tracks must NEVER `git stash` — `refs/stash` lives in the COMMON git
-  dir and is shared across every worktree; two agents stashing concurrently swapped
-  stacks and each popped the OTHER's work (recovered only via dangling stash commits).
-  Baseline-testing in a worktree = scratch commit or file copy, never the stash. Put this
-  prohibition in every parallel track brief.
-- A context/auth/middleware change verified on one transport is UNVERIFIED on the deployed
-  one: a second transport adapter (e.g. a serverless handler) with its own inline
-  context-builder passed every unit test while the feature was dead in-cloud. Keep such
-  logic in ONE transport-agnostic helper consumed by every adapter, pin the deployed
-  transport with a test, and have the director probe the DEPLOYED path before closing the
-  merge.
-- Stage with EXPLICIT paths; never `git add -A`/`git add .` — bulk adds have swept local
-  config into pushed commits.
-- Never chain push/merge after a PIPED build/test in one compound command — the pipe masks
-  the exit code. Verify, check exit code, THEN push. Judge builds by exit code, not stderr.
-- A green suite can mask a silently-skipping subtree: compare skip COUNTS against the
-  track's reported numbers, not just exit codes.
-- Before trusting an e2e run, check what's actually listening on the port — zombie dev
-  servers from dead agents produce phantom results.
-- Check a misbehaving process's ACTUAL environment (`/proc/<pid>/environ`), not its `.env`
-  file — dotenv never overrides an already-exported shell var.
-- A clean `synth`/`build`/`plan` does NOT prove a deployed artifact runs — infrastructure-as-code
-  only validates the spec, not the runtime. After deploying a scheduled or containerized job, run
-  it ONCE in its real environment and check the actual effect (correct exit code AND the row/file
-  it should produce), never just the synth. (Container gotcha: a `command` override on an image
-  with a hardcoded `ENTRYPOINT` is often APPENDED as args rather than substituted — the spec looks
-  right but the program never changes. To change what actually runs, override the entrypoint, not
-  the command.)
-- The real-environment run-once must check the **EXIT CODE**, not just that the row/file landed —
-  a job can do its work correctly and STILL exit non-zero. (A native extension segfaulting during
-  interpreter teardown — after the real work has already committed — is a classic case: the
-  orchestrator sees exit≠0, marks a fully-successful job FAILED, and retry-loops forever. Neither
-  `synth` nor a local run catches it; only the real-environment run does. **Fix for a one-shot
-  CLI/array-job unit:** flush stdout/stderr and hard-exit with the intended code after the
-  idempotent write has committed (e.g. `os._exit(code)` in `__main__`) to bypass the buggy
-  teardown — never let a native-library finalization crash flip a committed job to FAILED.)
+`SCARS.md` (this skill's folder) is the engine's catalog of failure modes that have already
+cost real sprints — git and branch footguns, agent/worktree hazards, the epistemics of a
+verification gate, deployment and environment parity, data and schema traps, browser
+surfaces, comment hygiene. Read it at boot and apply it at audit. The four that bite most
+often, inline so they are never missed:
+
+- **Verify, never trust.** "Pushed" / "loaded" / "done" / "green" are claims. Check git,
+  the store, the process, the deployed path yourself before acting on any of them.
+- **With worktrees, ALWAYS `git -C <absolute-path>`, stage EXPLICIT paths, and never chain a
+  push after a PIPED build** — a stale cwd has reset a branch mid-merge, a bulk add has
+  pushed local config, and a pipe masks the exit code you are gating on.
+- **Never run mutating git operations in a tree while an agent is live in it**, and judge
+  agent liveness by git state, not by a notification — kill/complete notifications are
+  unreliable and an agent can resume after one.
+- **A track's own gates cannot see the seam between tracks.** Drive the actual deliverable
+  end-to-end — on the deployed origin for anything customer-facing — before closing.
+
+**Promotion path.** When a sprint pays for a new failure mode, write the class (not the
+incident) into `SCARS.md`: one sentence naming the class, the mechanism, then the rule. If
+it only reproduces in one company's stack, it belongs in that project's `DESIGN.md`, not here.
 
 ---
 

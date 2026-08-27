@@ -1,6 +1,6 @@
 # Sprint Director Guidelines (runbook)
 
-You are a fresh Claude Code session directing the current sprint end to end: analyze →
+You are a fresh agent session directing the current sprint end to end: analyze →
 gates → tracks → audit → merge → close. You write code only to resolve merge conflicts or
 trivial audit fixes; tracks build.
 
@@ -34,6 +34,9 @@ trivial audit fixes; tracks build.
 
 - One subagent per track, prompt = absolute path to its `TRACK-*.md` + instruction to obey
   `SPRINT_GUIDELINES.md`. Model per the sprint file's per-track policy.
+- **State each track's branch-push authority explicitly in its brief** — including the
+  branches it must never push. Repeat the incremental-commit rule and, for parallel tracks,
+  the stash ban and the private-scratchpad rule.
 - Same-repo parallel tracks: worktree isolation; each pushes its own `sN/<slug>` branch.
 - Independent tracks spawn in ONE message. While they run: handle gate items; never
   duplicate track work.
@@ -41,7 +44,9 @@ trivial audit fixes; tracks build.
 ## Phase 3 — Audit & merge (in SPRINT.md's merge order)
 
 1. Fetch the branch; review the FULL diff against `DESIGN.md`: contract conformance, no
-   secrets, no scope creep. Grep the diff for sprint-narration comments
+   secrets, no scope creep. Diff from the MERGE-BASE
+   (`git diff $(git merge-base main <branch>) <branch>`) — a tip-vs-moved-trunk diff shows a
+   clean track "deleting" files it never touched. Grep the diff for sprint-narration comments
    (`grep -nE '\bs[0-9]+\b|Track [A-Z]|sprint-[0-9]'` over added lines) — rewrite to
    present-tense constraints or delete before merge (SPRINT_GUIDELINES comment rule).
 2. **Re-run the track's verification gates yourself** against real state. Reports are
@@ -59,7 +64,7 @@ trivial audit fixes; tracks build.
 1. Walk the operator through the close gate as an actionable checklist (exact commands).
 2. Update `STATE.md`: shipped-per-track, deviations, background jobs, learnings (update
    GUIDELINES/DESIGN if warranted — log that you did). Propose promoting project-agnostic
-   learnings to the sprint skill's templates.
+   learnings into the sprint skill's `SCARS.md` — the class and its rule, not the incident.
 3. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
    skeleton; reality wins).
 4. Final report: outcomes, merge summary, gate status, background-job dashboard,
@@ -75,8 +80,28 @@ unmerged rather than trusting prior-session memory.
 
 - All `SPRINT_GUIDELINES.md` git rules. Verify "pushed"/"loaded"/"running" claims against
   git/store/process state itself.
+- **NEVER run mutating git operations (switch / branch -D / merge / reset) in a working tree
+  while an agent is live in it.** Kill and completion notifications are UNRELIABLE — an agent
+  can resume after one — and transcript files flush lazily, so a healthy agent can look
+  frozen. Judge liveness by GIT STATE (new commits, working-tree changes). While an agent is
+  live, run read-only git only.
+- **A killed track may hold substantial UNCOMMITTED work.** Check `git -C <worktree> status`
+  before touching anything, and never clean up a worktree on the strength of a failure
+  notification alone.
+- **A completed agent can SELF-RESUME and act un-instructed** — including merging and pushing
+  past an operator gate. On every completion notification, verify no unauthorized pushes
+  landed before building on the reported state. Surface a bypassed gate to the operator
+  IMMEDIATELY with a verified damage envelope; ratify-or-revert is their call.
+- **Drive the actual deliverable end-to-end before closing** — the thing a user opens, not the
+  procedures behind it. A track's own gates cannot see the seam BETWEEN tracks: every gate can
+  pass while the product is broken. For anything customer-facing, drive the DEPLOYED origin.
+- **Prove the mechanism before shipping a fix.** A plausible cause that survives a code read is
+  still a hypothesis; instrument or reproduce first. And after fixing a proven cause, RE-RUN
+  the original failing observation — one symptom can carry two stacked causes.
 - Long jobs: detached + manifest; never a foreground job that dies with your session.
-  Check actual process liveness, not just manifest freshness.
+  Check actual process liveness, not just manifest freshness. (`pgrep -f <name>` inside a
+  compound command MATCHES ITS OWN command line — a finished job reads as live; exclude the
+  probe or match an exact module path.)
 - Never merge red; never spawn tracks on a red main; never apply un-reviewed SQL/DDL;
   never let a track apply DDL.
 - {{PROD_SAFETY_RULES}}
