@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "sprint-director",
   "metadata": {
-    "description": "Sprint-directed multi-agent development methodology for Claude Code."
+    "description": "Sprint-directed multi-agent development methodology for agentic coding CLIs."
   },
   "owner": {
     "name": "tipb47",
@@ -12,7 +12,7 @@
     {
       "name": "sprint-director",
       "description": "Sprint-directed multi-agent development methodology. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a living state ledger. Humans appear only at explicit operator gates.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"

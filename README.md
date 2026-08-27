@@ -1,10 +1,11 @@
 # Sprint Director
 
-**A sprint-directed, multi-agent development methodology for [Claude Code](https://claude.com/claude-code).**
+**A sprint-directed, multi-agent development methodology for agentic coding CLIs.**
+Runs on [Claude Code](https://claude.com/claude-code) and [Codex CLI](https://developers.openai.com/codex/cli).
 
-Sprint Director is a single Claude Code **skill** (`/sprint`) that turns a messy "spawn a bunch
+Sprint Director is a single **skill** (`/sprint`) that turns a messy "spawn a bunch
 of agents and hope" workflow into a disciplined assembly line. Work is divided into **sprints** —
-bounded milestones. Each sprint is run end-to-end by ONE fresh Claude Code session, the
+bounded milestones. Each sprint is run end-to-end by ONE fresh agent session, the
 **director**. The director never writes feature code. It analyzes, gates, spawns **track**
 subagents (each isolated on its own git branch / worktree), audits their diffs against a design
 contract, verifies their claims against real state, merges in a defined order, and closes by
@@ -30,16 +31,18 @@ approvals — never as mid-flight interruptions of a running agent.
   re-runs every track's verification gates against real state before merging.
 - **No hollow docs.** `/sprint init` interviews you and refuses to generate placeholder-laden
   scaffolding — every sprint ships decided, not "TODO".
-- **Hard-won scars baked in.** Git footguns, zombie dev servers, IaC-synth-isn't-runtime, and
-  other real failure modes are encoded as standing rules.
+- **Hard-won scars baked in.** Git footguns, zombie dev servers, self-resuming agents,
+  IaC-synth-isn't-runtime, gates that pass while the product is broken — real failure modes,
+  each encoded as a standing rule in [`SCARS.md`](skills/sprint/SCARS.md).
 
 ---
 
 ## Install
 
-Sprint Director ships as a Claude Code plugin **and** as a plain skill folder. Pick one.
+Sprint Director ships as a Claude Code plugin **and** as a plain skill folder that any
+skill-loading CLI can read. Pick one.
 
-### Option A — Plugin (recommended)
+### Option A — Plugin (Claude Code, recommended there)
 
 From inside Claude Code:
 
@@ -56,20 +59,36 @@ Restart the session (or `/exit` and relaunch) so the `/sprint` skill loads. Veri
 
 …should print the usage summary (`init | direct | status`).
 
-### Option B — Manual copy
+### Option B — Manual copy (any runtime)
 
 No marketplace, just drop the skill into your user skills directory:
 
 ```bash
 git clone https://github.com/tipb47/sprint-director.git
+
+# Claude Code
 cp -r sprint-director/skills/sprint ~/.claude/skills/sprint
+
+# Codex CLI
+cp -r sprint-director/skills/sprint ~/.codex/skills/sprint
 ```
 
-Restart Claude Code. The `/sprint` skill is now available globally.
+Restart your session. The `/sprint` skill is now available globally. Both runtimes read the same
+`SKILL.md`; Codex additionally reads `agents/openai.yaml` for the skill's display name.
 
-> **Requirements:** Claude Code, a `git` repo per project you direct, and (recommended) the ability
-> to run subagents in git worktrees. The methodology is git-centric; non-git projects work but lose
-> branch isolation.
+To track the repo instead of copying, symlink it — `git pull` then updates the installed skill:
+
+```bash
+git clone https://github.com/tipb47/sprint-director.git ~/sprint-director
+ln -s ~/sprint-director/skills/sprint ~/.claude/skills/sprint
+```
+
+The cross-project registry lives at `~/.claude/sprint/projects.json` regardless of runtime, so a
+project registered from one CLI is visible to `/sprint status` in the other.
+
+> **Requirements:** an agentic CLI that loads user-level skills, a `git` repo per project you
+> direct, and (recommended) the ability to run subagents in git worktrees. The methodology is
+> git-centric; non-git projects work but lose branch isolation.
 
 ---
 
@@ -117,7 +136,8 @@ Generated per project by `/sprint init`:
     └── TRACK-*.md          ← self-contained prompt per track subagent
 ```
 
-The engine's templates for these live in [`skills/sprint/templates/`](skills/sprint/templates).
+The engine's templates for these live in [`skills/sprint/templates/`](skills/sprint/templates), and
+the failure-mode catalog they draw from is [`skills/sprint/SCARS.md`](skills/sprint/SCARS.md).
 
 ---
 
@@ -126,7 +146,7 @@ The engine's templates for these live in [`skills/sprint/templates/`](skills/spr
 | Role | Who | Responsibility |
 |---|---|---|
 | **Engine** | This skill (`/sprint`) | Boot rituals, scaffolding templates, cross-project registry |
-| **Director** | One fresh Claude Code session per sprint | Analyze, gate, spawn, audit, merge, close — never builds |
+| **Director** | One fresh agent session per sprint | Analyze, gate, spawn, audit, merge, close — never builds |
 | **Track** | A subagent per unit of work | Builds on its own branch; reports verifiable output; never merges |
 | **Operator** | You, the human | Appears only at gates: approvals, deploys, signups |
 
@@ -146,7 +166,9 @@ State lives in files, not chat:
   gate runs after merges. Gates live in `SPRINT.md`, never inside track prompts.
 - **Verification contract** — what makes work *provably* done (test commands, data-quality queries
   with expected output, build artifacts). Tracks quote actual output; the director re-runs it at audit.
-- **Scars** — hard-won failure modes encoded as standing rules, so the same footgun is never fired twice.
+- **Scar** — a hard-won failure mode encoded as a standing rule, so the same footgun is never fired
+  twice. The engine keeps them in [`SCARS.md`](skills/sprint/SCARS.md); `init` folds the reachable
+  ones into each project's guidelines.
 
 ---
 
@@ -171,6 +193,10 @@ and the per-user registry at `~/.claude/sprint/projects.json`.
 Issues and PRs welcome. The most valuable contributions are **new scars** — concrete, reproducible
 failure modes with the rule that prevents them — and template improvements that generalize across
 projects. Keep additions project-agnostic: no traces of any specific company's infrastructure.
+
+A scar belongs in [`SCARS.md`](skills/sprint/SCARS.md) if it states a **class**, not an incident:
+one sentence naming the class, then the mechanism, then the rule. If it only reproduces in one
+company's stack, it belongs in that project's own `DESIGN.md`.
 
 ## License
 

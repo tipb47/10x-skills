@@ -3,7 +3,7 @@
 Sprint-directed build of {{ONE_LINE_MISSION}}.
 <!-- init: state whether this folder is git-tracked, per interview. -->
 
-## How to start a sprint (kickoff for a fresh Claude Code session)
+## How to start a sprint (kickoff for a fresh agent session)
 
 Run `/sprint direct` in a fresh session, or paste:
 
