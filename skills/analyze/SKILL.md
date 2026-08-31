@@ -1,7 +1,7 @@
 ---
 name: analyze
-description: Depth-scaled, read-only investigation of a feature, bug, flow, or component. Fans out parallel explore subagents to keep the main context clean, with per-subagent model selection. Use for /analyze <target> <depth>, or when the user asks how something works, wants an issue investigated, or wants a flow traced without changing code.
-argument-hint: <target> <depth> [context]
+description: Depth-scaled, read-only investigation of a feature, bug, flow, or component. Fans out parallel explore subagents to keep the main context clean, with per-subagent model selection. Use for /analyze [target] [depth] — both optional: "/analyze this" resolves the target from context and the agent self-calibrates depth — or when the user asks how something works, wants an issue investigated, or wants a flow traced without changing code.
+argument-hint: [target] [depth] [context]
 ---
 
 # analyze — depth-scaled read-only investigation
@@ -10,12 +10,22 @@ This is an ANALYSIS session: investigate and report. Write no code, propose no
 implementation, enter no plan mode. The report it produces is shaped to feed `/plan`
 directly.
 
-## Parameters
+## Parameters — all optional, inferred when absent
 
-- **Target** ($1): what to analyze — feature, bug, flow, component, issue.
+- **Target** ($1): what to analyze — feature, bug, flow, component, issue. "This", or
+  no target at all, refers to whatever the session was just doing or discussing —
+  resolve it from context.
 - **Depth** ($2): quick | standard | deep | forensic, or any descriptive phrase
-  ("pretty thorough but not crazy") — interpret it sensibly.
-- **Context** ($3): anything extra the user supplied.
+  ("pretty thorough but not crazy") — interpret it sensibly. **No depth given → you
+  calibrate it** from the stakes and size of the question: a one-function "how does
+  this work" is quick; a cross-cutting flow is standard/deep; a production bug hunt
+  leans forensic.
+- **Context** ($3): anything extra the user supplied — including a follow-on action
+  ("/analyze then plan/fix X"): finish the analysis first, then carry its findings
+  into that next step.
+
+Open by stating your reading in one line — target, depth, why — and proceed; the user
+corrects course if you read it wrong. Don't stop to confirm.
 
 ## Depth calibration
 
@@ -48,9 +58,10 @@ supports them:
 
 1. **Scope.** Look up facts yourself; put only genuine decisions to the user (use the
    runtime's structured question tool if it has one). Every question leads with your
-   recommended answer; batch independent questions; sequence dependent ones. Confirm:
-   what exactly is under analysis, boundaries, what prompted this, what the user needs
-   to know at the end. Skip what the codebase or the arguments already answer.
+   recommended answer; batch independent questions; sequence dependent ones. A
+   contextual invocation usually needs ZERO questions — the conversation already says
+   what is under analysis and why. Ask only when the target is genuinely ambiguous
+   (two plausible readings that would send the investigation different places).
 2. **Discovery.** Fan out per the depth table. At quick depth: search and read directly,
    no subagents.
 3. **Deep read.** Read the files the scouts flagged in the MAIN context; trace the flow
