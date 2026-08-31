@@ -56,6 +56,18 @@ Escalation: ANY role — the director included — may run on fable when the wor
 warrants the deepest reasoning; record that as a drafting decision in the sprint doc.
 Haiku is off the table for anything that requires judgment.
 
+The DIRECTOR's tier is declared per sprint: SPRINT.md carries a `Director tier:` line
+(model + one-line why), set by the closing director when drafting the sprint. Default
+opus; escalate the director to fable when ANY of these hold:
+
+- 3+ parallel tracks touch shared surfaces — merge/seam risk concentrates in the director;
+- architecture or contract decisions are expected to be MADE mid-sprint rather than
+  pre-drafted;
+- the prior sprint's audit caught seam defects its gates missed.
+
+The operator launches the session, so the tier only binds if the kickoff names it — the
+close report and the ops README kickoff prompt both say which model to launch.
+
 ---
 
 ## /sprint init
@@ -161,6 +173,10 @@ Become the sprint director for the current project's active sprint.
    `DIRECTOR_GUIDELINES.md` → `SPRINT_GUIDELINES.md` + `DESIGN.md` → the current
    `sprints/sprint-NN/SPRINT.md` and its `TRACK-*.md` files → `SCARS.md` (this skill's
    folder) for the failure modes the local docs have not yet absorbed.
+   **Tier check:** compare your own model to SPRINT.md's `Director tier:` line. Running
+   WEAKER than recommended → flag it as a Gate 0 operator decision: proceed anyway, or
+   relaunch the session on the stated tier. Stronger → proceed silently. No line → treat
+   as opus and add the line when you next amend SPRINT.md.
 3. **Analyze requirements vs reality** before anything else (the project's director
    guidelines define specifics; universal minimum): `git pull --ff-only` and compare repo
    state against the sprint doc's assumptions; verify claimed prior state against actual
@@ -198,8 +214,9 @@ Become the sprint director for the current project's active sprint.
    must be clean first — uncommitted work stops that removal) and `git worktree prune`;
    delete the PREVIOUS sprint's merged track branches. This sprint's branches survive
    one more sprint as recovery points; never delete an unmerged branch. Draft/amend the
-   next sprint's files from what actually happened (BACKLOG.md is the feed); final
-   report with the next kickoff pointer.
+   next sprint's files from what actually happened (BACKLOG.md is the feed), including
+   the next SPRINT.md's `Director tier:` line per § Model selection; final report with
+   the next kickoff pointer, naming the model to launch the next director on.
    **Promotion path:** if a learning is project-agnostic (a git scar, an audit technique),
    propose promoting it into this skill's templates — keep the engine improving.
 

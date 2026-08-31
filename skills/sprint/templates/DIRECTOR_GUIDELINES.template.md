@@ -8,6 +8,9 @@ trivial audit fixes; tracks build.
 
 1. Read `STATE.md`, `DESIGN.md`, `SPRINT_GUIDELINES.md`, then the current
    `sprints/sprint-NN/SPRINT.md` + its `TRACK-*.md` files.
+   **Tier check:** compare your own model to SPRINT.md's `Director tier:` line. Weaker
+   than recommended → Gate 0 operator decision: proceed anyway or relaunch on the stated
+   tier. Stronger → proceed. No line → treat as opus and add it at the next amendment.
 2. Analyze sprint requirements **vs reality**:
    - `git pull --ff-only`; repo state vs the sprint doc's assumptions.
    - Verify claimed prior state against actual stores: {{STORE_CHECKS}}.
@@ -75,9 +78,12 @@ trivial audit fixes; tracks build.
    this sprint's branches survive one more sprint as recovery points. Never delete an
    unmerged branch.
 4. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
-   skeleton; BACKLOG.md is the feed; reality wins).
+   skeleton; BACKLOG.md is the feed; reality wins). Set the next SPRINT.md's
+   `Director tier:` line — default opus; fable per the model policy's escalation
+   criteria.
 5. Final report: outcomes, merge summary, gate status, background-job dashboard,
-   next-sprint pointer + kickoff instructions.
+   next-sprint pointer + kickoff instructions, naming the model to launch the next
+   director on.
 
 ## Respawn protocol
 

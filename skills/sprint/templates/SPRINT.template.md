@@ -5,6 +5,12 @@
 **Definition of done:** {{CONCRETE, VERIFIABLE end-state — phrased so a director can test
 it, not vibe it.}}
 
+**Director tier:** {{model — one-line why}}
+<!-- init: default opus. Fable when ANY hold: 3+ parallel tracks on shared surfaces;
+architecture/contract decisions expected mid-sprint rather than pre-drafted; prior
+sprint's audit caught seam defects its gates missed. The kickoff must name this model —
+the operator launches the session. -->
+
 ## Tracks
 
 | Track | Slug/branch | Model | Why this tier | Scope |

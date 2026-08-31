@@ -162,7 +162,10 @@ Model tiers are a drafting decision, stated per track in `SPRINT.md`: director o
 **opus**; contract-defining / architecture / gnarly-debug tracks on **fable**; standard
 implementation on **sonnet**; **haiku** only for mechanical fully-specified chores with
 a written justification. Any role — the director included — escalates to fable when the
-work genuinely warrants it.
+work genuinely warrants it: each `SPRINT.md` carries a `Director tier:` line (fable when
+merge/seam risk concentrates in the director), the close-out kickoff names the model to
+launch the next director on, and a booting director that finds itself on a weaker tier
+than the doc recommends raises it as a Gate 0 decision.
 
 State lives in files, not chat:
 
