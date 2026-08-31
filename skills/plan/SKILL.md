@@ -1,7 +1,7 @@
 ---
 name: plan
-description: Adaptive mini-sprint planning. Interview to zero ambiguity, then a track-shaped plan sized to the work — single-track (implement in-session) or multi-track (isolated subagents on worktrees with per-track model tiers, audited and merged in order). Accepts a described task or a requirements artifact (PRD, ticket, file, URL). Use for /plan <task|artifact> [complexity], or when the user asks to plan an implementation.
-argument-hint: <task or artifact> [complexity] [context]
+description: Adaptive mini-sprint planning. Interview to zero ambiguity, then a track-shaped plan sized to the work — single-track (implement in-session) or multi-track (isolated subagents on worktrees with per-track model tiers, audited and merged in order). Accepts a described task, a requirements artifact (PRD, ticket, file, URL), or nothing: "/plan this" resolves the task from session context and the agent self-calibrates complexity. Use when the user asks to plan an implementation.
+argument-hint: [task or artifact] [complexity] [context]
 ---
 
 # plan — adaptive mini-sprint
@@ -14,12 +14,22 @@ The output is a plan sized to the work — and, on approval, its execution. No d
 plan files: track briefs travel inline in subagent prompts. Durable multi-session state
 is `/sprint`'s job, not this skill's.
 
-## Parameters
+## Parameters — all optional, inferred when absent
 
 - **Task or artifact** ($1): a described task, or a requirements artifact — file path,
-  URL, ticket reference, pasted PRD text.
+  URL, ticket reference, pasted PRD text. "This", or no argument at all, refers to
+  whatever the session was just doing or discussing — a bug just diagnosed, an
+  `/analyze` report just delivered, a feature just debated. Resolve it from context;
+  a fresh `/analyze` report in the conversation is Phase 1 already done.
 - **Complexity** ($2, optional): calibrates analysis depth and track granularity.
-- **Context** ($3): anything extra.
+  **Not given → you calibrate it** from the task's blast radius: files touched,
+  surfaces crossed, parallelism to win.
+- **Context** ($3): anything extra — including a follow-on action ("/plan then
+  autonomous"): finish planning (and approval) first, then carry into that step.
+
+Open by stating your reading in one line — task, calibrated complexity, why — and
+proceed into the phases; the user corrects course if you read it wrong. Inference
+covers the TARGET, never the interview: Phase 2 runs regardless.
 
 ## Phase 0 — Intake (only when $1 is an artifact)
 
