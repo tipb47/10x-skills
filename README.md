@@ -9,6 +9,7 @@
 | [Analyze](#analyze--analyze) | `/analyze` | Depth-scaled read-only investigation via parallel explore scouts |
 | [Plan](#plan--plan) | `/plan` | Adaptive mini-sprint: interview, then single- or multi-track plan + execution |
 | [Autonomous](#autonomous--autonomous) | `/autonomous` | Negotiated unattended execution of an approved plan — go to bed, wake to a report |
+| [Optimize](#optimize--optimize) | `/optimize` | Turn recurring manual workflows into hands-off tooling: CLIs, MCPs, generated skills |
 | [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
 | [Handoff](#handoff--handoff) | `/handoff` | One copyable message that transfers the session to a fresh agent |
 
@@ -37,6 +38,7 @@ Then install everything:
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
 /plugin install autonomous@10x-skills
+/plugin install optimize@10x-skills
 /plugin install whereami@10x-skills
 /plugin install handoff@10x-skills
 ```
@@ -51,7 +53,7 @@ Copy any skill folder into your user skills directory:
 git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
-for s in sprint analyze plan autonomous whereami handoff; do
+for s in sprint analyze plan autonomous optimize whereami handoff; do
   cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
@@ -67,7 +69,7 @@ each skill's `agents/openai.yaml` for its display name.
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan autonomous whereami handoff; do
+for s in sprint analyze plan autonomous optimize whereami handoff; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -226,6 +228,21 @@ run, and only when nothing is ambiguous declares **"You're clear to leave."** Th
 loops build → e2e → fix to full verification, quarantines anything concerning instead
 of gambling on it, attempt-boxes stuck defects, queues operator gates, and leaves a
 wake-up report: status, evidence verbatim, decisions with whys, and a morning checklist.
+
+## Optimize — `/optimize`
+
+The meta-layer: sprints and plans execute through whatever tooling exists; `/optimize`
+improves the tooling. Point it at a workflow (`/optimize <workflow>`), let it mine past
+work for friction (`/optimize scan` — sprint ledgers, scars, memory, repo signals), or
+re-verify what it built before (`/optimize audit`). It researches the fix — official
+CLIs and MCPs preferred, third-party flagged with provenance, least-privilege access by
+design (a read-only role beats copy-pasting query output forever) — presents a ranked
+proposal, and changes nothing without approval. Setup keeps logins and credentials as
+operator gates; every optimization is verified by driving the new path end-to-end. When
+a workflow deserves a reusable recipe it generates a custom skill (project- or
+user-scoped, with provenance and a reverify command) and registers everything in
+`~/.claude/optimize/registry.json` for later audit. `/plan` and `/sprint` surface
+optimize candidates at close when a run paid a repeated manual tax.
 
 ## Where Am I — `/whereami`
 

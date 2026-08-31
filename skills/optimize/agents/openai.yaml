@@ -1,0 +1,4 @@
+interface:
+  display_name: "Optimize"
+  short_description: "Turn recurring manual workflows into hands-off tooling"
+  default_prompt: "Use $optimize to optimize a workflow. Pass <workflow>, scan, or audit."

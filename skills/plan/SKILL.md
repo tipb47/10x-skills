@@ -107,3 +107,7 @@ only from the `/autonomous` skill's negotiated envelope. Then:
 Report what shipped vs the plan, verification output (verbatim), a manual testing
 guide, and a suggested commit message in the project's convention. Do not commit or
 push unless asked.
+
+If execution paid a repeated manual tax — operator copy-paste, hand-run verification,
+a service poked by hand every cycle — name it in the report and offer to run
+`/optimize` on it now (where installed).

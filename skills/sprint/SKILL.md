@@ -223,6 +223,10 @@ Become the sprint director for the current project's active sprint.
    the next kickoff pointer, naming the model to launch the next director on.
    **Promotion path:** if a learning is project-agnostic (a git scar, an audit technique),
    propose promoting it into this skill's templates — keep the engine improving.
+   If the sprint paid a repeated manual tax (operator copy-paste, hand-run
+   verification, the same service poked by hand every track), flag it in the close
+   report as an optimization candidate and offer to run `/optimize` on it (where
+   installed).
 
 ### Universal scars
 
