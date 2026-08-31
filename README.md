@@ -1,6 +1,6 @@
 # my-claude-skills
 
-**tipb47's skills for agentic coding CLIs.** Runs on
+**my custom skills for agentic coding CLIs.** Runs on
 [Claude Code](https://claude.com/claude-code) and [Codex CLI](https://developers.openai.com/codex/cli).
 
 Three skills, installable together or one at a time:
