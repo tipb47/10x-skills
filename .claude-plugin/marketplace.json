@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "10x-skills",
   "metadata": {
-    "description": "tipb47's Claude Code skills \u2014 sprint-directed multi-agent methodology, depth-scaled analysis, adaptive planning, session status, and session handoffs."
+    "description": "tipb47's Claude Code skills \u2014 sprint-directed multi-agent methodology, depth-scaled analysis, adaptive planning, negotiated unattended runs, session status, and session handoffs."
   },
   "owner": {
     "name": "tipb47",
@@ -11,8 +11,8 @@
   "plugins": [
     {
       "name": "10x-skills",
-      "description": "Everything in this repo as one plugin: /sprint (sprint-directed multi-agent methodology), /analyze (depth-scaled read-only investigation), /plan (adaptive mini-sprint planning), /whereami (session situation report), /handoff (one-message session transfer).",
-      "version": "2.1.0",
+      "description": "Everything in this repo as one plugin: /sprint (sprint-directed multi-agent methodology), /analyze (depth-scaled read-only investigation), /plan (adaptive mini-sprint planning), /autonomous (negotiated unattended execution), /whereami (session situation report), /handoff (one-message session transfer).",
+      "version": "2.2.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -28,6 +28,7 @@
         "orchestration",
         "analysis",
         "planning",
+        "autonomy",
         "handoff",
         "status"
       ]
@@ -103,6 +104,29 @@
         "multi-agent",
         "worktrees",
         "tracks"
+      ]
+    },
+    {
+      "name": "autonomous",
+      "description": "Negotiated grant of unattended autonomy over an approved plan or sprint: interview until the agent declares clearance, execute to full verification with a hard floor, quarantine concerns, and deliver a wake-up report.",
+      "version": "1.0.0",
+      "author": {
+        "name": "tipb47",
+        "url": "https://github.com/tipb47"
+      },
+      "source": "./skills/autonomous",
+      "strict": false,
+      "skills": [
+        "."
+      ],
+      "category": "workflow",
+      "homepage": "https://github.com/tipb47/10x-skills",
+      "license": "MIT",
+      "tags": [
+        "autonomy",
+        "unattended",
+        "overnight",
+        "execution"
       ]
     },
     {

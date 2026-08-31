@@ -195,6 +195,10 @@ Become the sprint director for the current project's active sprint.
    audit. On approval, execute.
 5. **Run the sprint** per the local DIRECTOR_GUIDELINES. Universal rules that always apply:
    - Directors direct: write code only for merge conflicts and trivial audit fixes.
+   - **Assume the operator is watching** and available at gates. An unattended sprint
+     run happens only under an explicitly negotiated grant (the `/autonomous` skill,
+     where installed) — under it, operator gates queue as a morning checklist instead
+     of blocking, and everything else about this section still applies.
    - One subagent per track; parallel same-repo tracks get `isolation: "worktree"`;
      independent tracks spawn in one message.
    - Spawn each track on the model tier its SPRINT.md row states (§ Model selection).

@@ -7,10 +7,10 @@ their behalf. Humans: see [README.md](README.md).
 If the user said "install these skills" / "set up sprint director", follow **Part 1**.
 If they said "run a sprint" / "be the director", follow **Part 2**.
 
-The repo holds five plain skill folders under `skills/` — `sprint` (Sprint Director),
+The repo holds six plain skill folders under `skills/` — `sprint` (Sprint Director),
 `analyze` (depth-scaled read-only investigation), `plan` (adaptive mini-sprint
-planning), `whereami` (session situation report), `handoff` (one-message session
-transfer). Each is a `SKILL.md` with YAML frontmatter plus an `agents/openai.yaml`
+planning), `autonomous` (negotiated unattended execution of an approved plan),
+`whereami` (session situation report), `handoff` (one-message session transfer). Each is a `SKILL.md` with YAML frontmatter plus an `agents/openai.yaml`
 interface descriptor; `sprint` additionally carries `templates/` and `SCARS.md`. They
 work in any runtime that loads skills from a user-level skills directory, and each
 installs independently — none depends on `sprint`.
@@ -46,6 +46,7 @@ shell. Print them and ask the user to run them:
 /plugin install sprint-director@10x-skills
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
+/plugin install autonomous@10x-skills
 /plugin install whereami@10x-skills
 /plugin install handoff@10x-skills
 ```
@@ -61,7 +62,7 @@ git clone https://github.com/tipb47/10x-skills.git /tmp/10x-skills
 
 # Claude Code (Codex CLI: same commands into ~/.codex/skills):
 mkdir -p ~/.claude/skills
-for s in sprint analyze plan whereami handoff; do   # drop any the user does not want
+for s in sprint analyze plan autonomous whereami handoff; do   # drop any the user does not want
   cp -r /tmp/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -83,7 +84,7 @@ installed skill in place:
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan whereami handoff; do
+for s in sprint analyze plan autonomous whereami handoff; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -103,9 +104,12 @@ also intend to contribute scars back, this is the path to recommend.
 
 ## Part 2 — Operate
 
-This part covers Sprint Director (`/sprint`); `analyze`, `plan`, `whereami`, and
-`handoff` are self-contained single-session skills with no cross-session state to
-orient on. The sprint skill exposes four subcommands. As an agent you typically *invoke the skill* and let its
+This part covers Sprint Director (`/sprint`); `analyze`, `plan`, `autonomous`,
+`whereami`, and `handoff` are self-contained single-session skills with no
+cross-session state to orient on. One rule spans them all: assume the operator is
+watching — unattended execution exists only through `/autonomous`'s negotiated grant,
+and you must never approve an operator gate on the user's behalf even inside that
+grant. The sprint skill exposes four subcommands. As an agent you typically *invoke the skill* and let its
 own instructions drive; this section is orientation so you know what each does and what state
 it touches.
 

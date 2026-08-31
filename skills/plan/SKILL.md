@@ -83,7 +83,10 @@ a written justification. Judgment (audit, merge, synthesis) stays in the main se
 
 ## Phase 4 — Approve, then execute
 
-Present the plan for approval (exit plan mode where the runtime has one). Then:
+Present the plan for approval (exit plan mode where the runtime has one). **Assume the
+operator is watching:** surface material mid-execution decisions as they arise, and
+stop at anything gate-shaped. Unattended execution is never assumed — that grant comes
+only from the `/autonomous` skill's negotiated envelope. Then:
 
 **Single-track:** implement in-session, step by step, verifying as you go.
 

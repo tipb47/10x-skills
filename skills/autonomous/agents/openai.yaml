@@ -1,0 +1,4 @@
+interface:
+  display_name: "Autonomous"
+  short_description: "Negotiated unattended execution of an approved plan"
+  default_prompt: "Use $autonomous to negotiate an unattended run of the approved plan, then execute it to full verification."

@@ -8,6 +8,7 @@
 | [Sprint Director](#sprint-director--sprint) | `/sprint` | Sprint-directed multi-agent development methodology: `init`, `direct`, `status`, `clean` |
 | [Analyze](#analyze--analyze) | `/analyze` | Depth-scaled read-only investigation via parallel explore scouts |
 | [Plan](#plan--plan) | `/plan` | Adaptive mini-sprint: interview, then single- or multi-track plan + execution |
+| [Autonomous](#autonomous--autonomous) | `/autonomous` | Negotiated unattended execution of an approved plan — go to bed, wake to a report |
 | [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
 | [Handoff](#handoff--handoff) | `/handoff` | One copyable message that transfers the session to a fresh agent |
 
@@ -35,6 +36,7 @@ Then install everything:
 /plugin install sprint-director@10x-skills
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
+/plugin install autonomous@10x-skills
 /plugin install whereami@10x-skills
 /plugin install handoff@10x-skills
 ```
@@ -49,7 +51,7 @@ Copy any skill folder into your user skills directory:
 git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
-for s in sprint analyze plan whereami handoff; do
+for s in sprint analyze plan autonomous whereami handoff; do
   cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
@@ -65,7 +67,7 @@ each skill's `agents/openai.yaml` for its display name.
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan whereami handoff; do
+for s in sprint analyze plan autonomous whereami handoff; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -211,6 +213,19 @@ steps, implemented in-session after approval) or **multi-track** (a mini-sprint:
 with model tier + rationale, merge order, worktree isolation, director-style audit and
 `--no-ff` merges, worktrees and branches cleaned when done). Work bigger than one
 session gets pointed at `/sprint init` instead. No plan files — briefs travel inline.
+
+## Autonomous — `/autonomous`
+
+The overnight grant. Everywhere else these skills assume you're watching; `/autonomous`
+is the one negotiated exception. It requires an approved plan (given a raw task it runs
+`/plan` first), then interviews you to lock the verification contract and the authority
+envelope — pushes yes, prod actively discouraged behind a double-confirm, migrations
+tiered, plus a non-negotiable hard floor (no force-push, no secrets, no spending, no
+weakening tests to reach green). It checks that your permission mode won't stall the
+run, and only when nothing is ambiguous declares **"You're clear to leave."** Then it
+loops build → e2e → fix to full verification, quarantines anything concerning instead
+of gambling on it, attempt-boxes stuck defects, queues operator gates, and leaves a
+wake-up report: status, evidence verbatim, decisions with whys, and a morning checklist.
 
 ## Where Am I — `/whereami`
 
