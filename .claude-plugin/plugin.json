@@ -1,14 +1,14 @@
 {
-  "name": "sprint-director",
-  "description": "Sprint-directed multi-agent development methodology for agentic coding CLIs. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a living state ledger.",
-  "version": "1.1.0",
+  "name": "my-claude-skills",
+  "description": "tipb47's Claude Code skills bundle: the Sprint Director multi-agent methodology (/sprint), session situation reports (/whereami), and one-message session handoffs (/handoff).",
+  "version": "2.0.0",
   "author": {
     "name": "tipb47",
     "url": "https://github.com/tipb47"
   },
-  "homepage": "https://github.com/tipb47/sprint-director",
-  "repository": "https://github.com/tipb47/sprint-director",
+  "homepage": "https://github.com/tipb47/my-claude-skills",
+  "repository": "https://github.com/tipb47/my-claude-skills",
   "license": "MIT",
-  "keywords": ["sprint", "multi-agent", "orchestration", "subagents", "methodology", "director", "worktrees"],
+  "keywords": ["skills", "sprint", "multi-agent", "orchestration", "methodology", "handoff", "status", "worktrees"],
   "skills": "./skills"
 }

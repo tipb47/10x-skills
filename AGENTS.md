@@ -1,15 +1,18 @@
 # AGENTS.md — setup & operation for AI agents
 
 This file is a deterministic, machine-followable guide for an AI coding agent tasked with
-**installing** Sprint Director for a user, or **operating** it on their behalf. Humans: see
-[README.md](README.md).
+**installing** the skills in this repo for a user, or **operating** Sprint Director on
+their behalf. Humans: see [README.md](README.md).
 
-If the user said "set up sprint director" / "install the sprint skill", follow **Part 1**.
+If the user said "install these skills" / "set up sprint director", follow **Part 1**.
 If they said "run a sprint" / "be the director", follow **Part 2**.
 
-Sprint Director is a plain skill folder: a `SKILL.md` with YAML frontmatter, a `templates/`
-directory, a `SCARS.md` catalog, and an `agents/openai.yaml` interface descriptor. It works
-in any runtime that loads skills from a user-level skills directory.
+The repo holds three plain skill folders under `skills/` — `sprint` (Sprint Director),
+`whereami` (session situation report), `handoff` (one-message session transfer). Each is
+a `SKILL.md` with YAML frontmatter plus an `agents/openai.yaml` interface descriptor;
+`sprint` additionally carries `templates/` and `SCARS.md`. They work in any runtime that
+loads skills from a user-level skills directory, and each installs independently —
+`whereami` and `handoff` have no dependency on `sprint`.
 
 ---
 
@@ -34,33 +37,40 @@ These are slash commands the **user** runs in their own session; you cannot run 
 shell. Print them and ask the user to run them:
 
 ```
-/plugin marketplace add tipb47/sprint-director
-/plugin install sprint-director@sprint-director
+/plugin marketplace add tipb47/my-claude-skills
+
+# everything:
+/plugin install my-claude-skills@my-claude-skills
+# or individually:
+/plugin install sprint-director@my-claude-skills
+/plugin install whereami@my-claude-skills
+/plugin install handoff@my-claude-skills
 ```
 
-Then tell the user to restart the session and confirm with `/sprint`.
+Then tell the user to restart the session and confirm with `/sprint` (and/or
+`/whereami`, `/handoff`).
 
 ### Install path B — manual copy (you can do this yourself via shell)
 
 ```bash
-# Clone to a temp location, then copy the skill into the user's skills dir.
-git clone https://github.com/tipb47/sprint-director.git /tmp/sprint-director
+# Clone to a temp location, then copy the wanted skills into the user's skills dir.
+git clone https://github.com/tipb47/my-claude-skills.git /tmp/my-claude-skills
 
-# Claude Code:
-mkdir -p ~/.claude/skills && cp -r /tmp/sprint-director/skills/sprint ~/.claude/skills/sprint
-
-# Codex CLI:
-mkdir -p ~/.codex/skills  && cp -r /tmp/sprint-director/skills/sprint ~/.codex/skills/sprint
+# Claude Code (Codex CLI: same commands into ~/.codex/skills):
+mkdir -p ~/.claude/skills
+for s in sprint whereami handoff; do   # drop any the user does not want
+  cp -r /tmp/my-claude-skills/skills/$s ~/.claude/skills/$s
+done
 ```
 
-Verification — the skill is correctly installed if this prints a YAML frontmatter block with
-`name: sprint`:
+Verification — a skill is correctly installed if this prints a YAML frontmatter block
+with the matching `name:`:
 
 ```bash
-head -5 ~/.claude/skills/sprint/SKILL.md    # or ~/.codex/skills/sprint/SKILL.md
+head -5 ~/.claude/skills/sprint/SKILL.md    # or ~/.codex/skills/<name>/SKILL.md
 ```
 
-After copying, the user must restart their session for `/sprint` to register. The skill is
+After copying, the user must restart their session for the skills to register. They are
 then available in **every** project, globally.
 
 ### Install path C — symlink (for users who want to track the repo)
@@ -69,8 +79,10 @@ Clone the repo to a permanent location and symlink the skill, so `git pull` upda
 installed skill in place:
 
 ```bash
-git clone https://github.com/tipb47/sprint-director.git ~/sprint-director
-ln -s ~/sprint-director/skills/sprint ~/.claude/skills/sprint
+git clone https://github.com/tipb47/my-claude-skills.git ~/my-claude-skills
+for s in sprint whereami handoff; do
+  ln -s ~/my-claude-skills/skills/$s ~/.claude/skills/$s
+done
 ```
 
 A user on both runtimes can symlink the same clone into both skills directories. If they
@@ -88,7 +100,9 @@ also intend to contribute scars back, this is the path to recommend.
 
 ## Part 2 — Operate
 
-The skill exposes three subcommands. As an agent you typically *invoke the skill* and let its
+This part covers Sprint Director (`/sprint`); `whereami` and `handoff` are
+self-contained in-chat skills with no state to orient on. The sprint skill exposes four
+subcommands. As an agent you typically *invoke the skill* and let its
 own instructions drive; this section is orientation so you know what each does and what state
 it touches.
 
@@ -96,7 +110,8 @@ it touches.
 |---|---|---|---|
 | `/sprint init` | Once per project, to scaffold | repo, user interview | `<ops>/*`, registry |
 | `/sprint direct` | Start of each sprint, in a **fresh** session | `STATE.md`, guidelines, `SPRINT.md`, `SCARS.md` | branches, merges, `STATE.md` |
-| `/sprint status` | Anytime | registry + each `STATE.md` | nothing |
+| `/sprint status` | Anytime | in a project: `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, `sprints/`; else registry + each `STATE.md` | nothing |
+| `/sprint clean` | Between sprints, or when state drifted | ledger, backlog, `sprints/`, worktrees, branches, registry | only operator-approved moves/deletions/amendments |
 
 ### Invariants you must preserve when operating
 

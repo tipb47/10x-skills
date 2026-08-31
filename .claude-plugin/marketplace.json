@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "sprint-director",
+  "name": "my-claude-skills",
   "metadata": {
-    "description": "Sprint-directed multi-agent development methodology for agentic coding CLIs."
+    "description": "tipb47's Claude Code skills — sprint-directed multi-agent methodology, session status, and session handoffs."
   },
   "owner": {
     "name": "tipb47",
@@ -10,18 +10,66 @@
   },
   "plugins": [
     {
-      "name": "sprint-director",
-      "description": "Sprint-directed multi-agent development methodology. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a living state ledger. Humans appear only at explicit operator gates.",
-      "version": "1.1.0",
+      "name": "my-claude-skills",
+      "description": "Everything in this repo as one plugin: /sprint (sprint-directed multi-agent methodology), /whereami (session situation report), /handoff (one-message session transfer).",
+      "version": "2.0.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
       },
       "source": "./",
       "category": "workflow",
-      "homepage": "https://github.com/tipb47/sprint-director",
+      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "license": "MIT",
+      "tags": ["skills", "sprint", "multi-agent", "orchestration", "handoff", "status"]
+    },
+    {
+      "name": "sprint-director",
+      "description": "Sprint-directed multi-agent development methodology. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a living state ledger. Humans appear only at explicit operator gates.",
+      "version": "2.0.0",
+      "author": {
+        "name": "tipb47",
+        "url": "https://github.com/tipb47"
+      },
+      "source": "./skills/sprint",
+      "strict": false,
+      "skills": ["."],
+      "category": "workflow",
+      "homepage": "https://github.com/tipb47/my-claude-skills",
       "license": "MIT",
       "tags": ["sprint", "multi-agent", "orchestration", "subagents", "methodology", "director", "worktrees", "git"]
+    },
+    {
+      "name": "whereami",
+      "description": "In-chat situation report for the current session: what is done, what is in progress, what comes next.",
+      "version": "1.0.0",
+      "author": {
+        "name": "tipb47",
+        "url": "https://github.com/tipb47"
+      },
+      "source": "./skills/whereami",
+      "strict": false,
+      "skills": ["."],
+      "category": "workflow",
+      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "license": "MIT",
+      "tags": ["status", "session", "report"]
+    },
+    {
+      "name": "handoff",
+      "description": "One-message session handoff: a single copyable message that lets a fresh agent verify state, grill the operator, and continue the work.",
+      "version": "1.0.0",
+      "author": {
+        "name": "tipb47",
+        "url": "https://github.com/tipb47"
+      },
+      "source": "./skills/handoff",
+      "strict": false,
+      "skills": ["."],
+      "category": "workflow",
+      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "license": "MIT",
+      "tags": ["handoff", "session", "transfer"]
     }
   ]
 }
