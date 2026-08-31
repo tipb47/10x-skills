@@ -1,0 +1,4 @@
+interface:
+  display_name: "Where Am I"
+  short_description: "Situation report for the current session"
+  default_prompt: "Use $whereami to report what is done, in progress, and next in this session."

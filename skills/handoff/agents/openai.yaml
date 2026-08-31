@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handoff"
+  short_description: "One-message handoff for a fresh agent session"
+  default_prompt: "Use $handoff to produce a single copyable handoff message for a new session."
