@@ -1,6 +1,6 @@
 ---
 name: optimize
-description: Workflow-optimization meta skill — turn repeated manual or copy-paste workflows (e2e verification, service queries, pipeline pokes) into hands-off tooling via CLIs, MCPs, scripts, or generated custom skills. Use for /optimize <workflow>, /optimize scan (mine past work for friction candidates), /optimize audit (re-verify past optimizations), or when the user asks to optimize, automate, or streamline a recurring workflow.
+description: Workflow-optimization meta skill — turn repeated manual or copy-paste workflows (e2e verification, service queries, pipeline pokes) into hands-off tooling via CLIs, MCPs, scripts, or generated custom skills. Use for /optimize <workflow>, /optimize scan (mine past work for friction candidates), /optimize audit (re-verify past optimizations); whenever the user says to optimize, automate, or streamline something — including contextual asks like "let's optimize this" or "optimize our <service> interaction"; or proactively, when you notice the session paying a repeated manual tax worth tooling away.
 argument-hint: <workflow> | scan | audit
 ---
 
@@ -17,6 +17,14 @@ fewer tokens burned re-deriving the same path.
 - **`/optimize <workflow>`** — the user names the friction. Go straight to Research.
 - **`/optimize scan`** — mine past work for candidates, then propose.
 - **`/optimize audit`** — re-verify every registered optimization; flag stale ones.
+
+**Resolving the target.** "This", "our <service> interaction", or a bare `/optimize`
+mid-conversation refers to the friction at hand — resolve it from what the session was
+just doing or discussing, state your interpretation in one line, and proceed (correct
+course if the user objects). A bare invocation with no conversational friction to point
+at → offer `scan`. And this skill is not only user-summoned: when you notice the
+current session paying a repeated manual tax — the operator pasting output, the same
+service poked by hand again — offer to run it, whatever the task at hand.
 
 ## Discovery (scan mode)
 
