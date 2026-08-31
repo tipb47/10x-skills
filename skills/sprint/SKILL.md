@@ -1,7 +1,7 @@
 ---
 name: sprint
-description: Sprint-directed multi-agent development methodology. Use for `/sprint init` (scaffold the ops/ sprint system into a project, interview-driven), `/sprint direct` (boot as sprint director for the current project's active sprint), `/sprint status` (cross-project dashboard of all registered sprint projects). Invoke when the user mentions sprint directing, sprint methodology, starting/running a sprint, or sprint status.
-argument-hint: init | direct | status
+description: Sprint-directed multi-agent development methodology. Use for `/sprint init` (scaffold the ops/ sprint system into a project, interview-driven), `/sprint direct` (boot as sprint director for the current project's active sprint), `/sprint status` (per-project sprint/backlog status inside a project, cross-project dashboard otherwise), `/sprint clean` (reconcile ledger, backlog, sprint folders, worktrees, and branches — interview-driven). Invoke when the user mentions sprint directing, sprint methodology, starting/running a sprint, sprint status, or sprint cleanup.
+argument-hint: init | direct | status | clean
 ---
 
 # Sprint System — methodology engine
@@ -30,8 +30,31 @@ Parse the argument. No argument or unrecognized → print the usage summary belo
 ```
 /sprint init    — scaffold or adopt the sprint system in the current project
 /sprint direct  — become the sprint director for this project's current sprint
-/sprint status  — dashboard across all registered sprint projects
+/sprint status  — where things stand: this project in depth, or all projects
+/sprint clean   — reconcile ledger, backlog, sprint folders; sweep git debris
 ```
+
+## Model selection
+
+Choosing a model per role is part of sprint DRAFTING, not a mid-sprint whim: every
+SPRINT.md track row carries a model tier plus a one-line rationale, and the director
+honors it at spawn time. The point is token economy in both directions — a top tier
+burned on mechanical work is waste, and an underpowered model on contract-defining work
+costs more in rework than it saves.
+
+Default tiering. The init interview offers this as the recommendation; once set, the
+project's model policy in `SPRINT_GUIDELINES.md` is authoritative:
+
+| Role / work class | Tier |
+|---|---|
+| Director (analyze, audit, merge, close) | opus |
+| Contract-defining, architecture, cross-cutting, or gnarly-debug tracks | fable |
+| Standard implementation tracks | sonnet |
+| Genuinely mechanical chores (single-file, low-risk, fully specified) | haiku — only with a stated justification in the sprint doc |
+
+Escalation: ANY role — the director included — may run on fable when the work genuinely
+warrants the deepest reasoning; record that as a drafting decision in the sprint doc.
+Haiku is off the table for anything that requires judgment.
 
 ---
 
@@ -70,9 +93,10 @@ existing files.
      artifacts, or a mix? This shapes the guidelines' "gates" section.
    - Database/migrations: does the project have a DB? If so: migrations are FILES tracks
      write and ONLY the director applies — confirm the apply mechanism (CLI, MCP, etc.).
-   - Track model policy: which model tier for track subagents by default, and what class
-     of work escalates to the strongest tier (contract/interface-defining work is the
-     usual answer)?
+   - Model policy: present the engine's default tiering (§ Model selection) as the
+     recommendation and confirm or adapt it — director tier, per-work-class track tiers,
+     what escalates to fable, whether haiku is ever acceptable. The answer lands in
+     SPRINT_GUIDELINES.md and in every SPRINT.md track row (tier + one-line rationale).
    - Roadmap seed: the next 3–6 milestone-level goals, and which ONE becomes sprint-01.
 
    After the fixed questions, do a **grill pass** — proactive, not reactive: attack the
@@ -91,7 +115,8 @@ existing files.
    for `{{PLACEHOLDERS}}` and resolving every `<!-- init: ... -->` directive (these
    comments instruct YOU what to fill; they never survive into generated files):
    `README.md`, `STATE.md`, `DESIGN.md`, `SPRINT_GUIDELINES.md`, `DIRECTOR_GUIDELINES.md`,
-   `ROADMAP.md`, and `sprints/sprint-01/SPRINT.md` (+ one `TRACK-*.md` per sprint-01 track).
+   `ROADMAP.md`, `BACKLOG.md`, and `sprints/sprint-01/SPRINT.md` (+ one `TRACK-*.md` per
+   sprint-01 track).
    Sprint-01 track files must be genuinely self-contained: a fresh subagent with no other
    context executes one end-to-end.
    Read `SCARS.md` (this skill's folder) while generating: fold in every scar the project's
@@ -116,9 +141,12 @@ existing files.
 ├── SPRINT_GUIDELINES.md    ← rules for tracks + directors: gates, branch discipline, definition of done
 ├── DIRECTOR_GUIDELINES.md  ← director runbook: boot → analyze → gate → tracks → audit → merge → close
 ├── ROADMAP.md              ← sprint arc at milestone level (reality wins over this outline)
-└── sprints/sprint-NN/
-    ├── SPRINT.md           ← sprint brief: goal, gates, tracks, merge order, close checklist
-    └── TRACK-*.md          ← self-contained prompt per track subagent
+├── BACKLOG.md              ← prioritized queue of future work; feeds each next-sprint draft
+└── sprints/
+    ├── archive/            ← closed sprint folders, moved here by /sprint clean
+    └── sprint-NN/
+        ├── SPRINT.md       ← sprint brief: goal, gates, tracks, merge order, close checklist
+        └── TRACK-*.md      ← self-contained prompt per track subagent
 ```
 
 ---
@@ -153,6 +181,9 @@ Become the sprint director for the current project's active sprint.
    - Directors direct: write code only for merge conflicts and trivial audit fixes.
    - One subagent per track; parallel same-repo tracks get `isolation: "worktree"`;
      independent tracks spawn in one message.
+   - Spawn each track on the model tier its SPRINT.md row states (§ Model selection).
+     A row without a tier is a drafting gap: assign one per the model policy and amend
+     SPRINT.md before spawning.
    - **Verify, never trust:** "pushed"/"loaded"/"done" are claims — check git/remote/DB/
      artifact state yourself before acting on them. Re-run tracks' verification gates
      yourself at audit.
@@ -161,8 +192,14 @@ Become the sprint director for the current project's active sprint.
    - Track branches are durable; if resuming a dead session, re-audit anything unmerged
      rather than trusting prior-session memory.
 6. **Close:** operator close-gate as an actionable checklist; update STATE.md (shipped,
-   deviations, learnings, background jobs); draft/amend the next sprint's files from what
-   actually happened; final report with the next kickoff pointer.
+   deviations, learnings, background jobs) and BACKLOG.md (strike shipped items, add
+   deferred and discovered work). **Clean sprint git state:** once every merge is
+   verified landed, remove this sprint's track worktrees (`git -C <worktree> status`
+   must be clean first — uncommitted work stops that removal) and `git worktree prune`;
+   delete the PREVIOUS sprint's merged track branches. This sprint's branches survive
+   one more sprint as recovery points; never delete an unmerged branch. Draft/amend the
+   next sprint's files from what actually happened (BACKLOG.md is the feed); final
+   report with the next kickoff pointer.
    **Promotion path:** if a learning is project-agnostic (a git scar, an audit technique),
    propose promoting it into this skill's templates — keep the engine improving.
 
@@ -193,7 +230,31 @@ it only reproduces in one company's stack, it belongs in that project's `DESIGN.
 
 ## /sprint status
 
-Cross-project dashboard.
+Where things stand. Read-only — status never mutates files, git state, or the registry.
+
+**Context detection:** if the cwd is inside a registered project (or an ops folder is
+detectable), give the per-project view. Otherwise give the cross-project dashboard.
+
+### Per-project view
+
+1. Read `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, and the `sprints/` folder (including
+   `archive/`). Cheap git checks: current branch, `git worktree list`, leftover
+   `sNN/*` branches.
+2. Report, compactly:
+   - **Just completed:** the last closed sprint and its one-line outcome (STATE.md
+     sprint history).
+   - **Current sprint:** pointer, phase (drafted / in flight / closing), and — if in
+     flight — track and merge progress as far as STATE.md and git branches show.
+   - **Next up:** the drafted next sprint if one exists, else the top backlog items.
+   - **Backlog:** top 3-5 prioritized items; total count.
+   - **Health flags:** stalled background jobs, stale worktrees or `sNN/*` branches past
+     the retention lag, STATE.md pointer vs `sprints/` mismatch, closed sprints not yet
+     archived — each with its fix (usually `/sprint clean` or `/sprint direct`).
+3. End with **Recommended course of action** — one or two sentences. Examples: "sprint-04
+   is drafted and reality still matches it: start a fresh session and run /sprint direct";
+   "close-out never finished: run /sprint clean before directing anything new".
+
+### Cross-project dashboard
 
 1. Read `~/.claude/sprint/projects.json`. Empty/missing → say so, point at `/sprint init`.
 2. Per project: read `<ops>/STATE.md` — extract current-sprint pointer, status line,
@@ -202,6 +263,43 @@ Cross-project dashboard.
    and open items. Unreadable path → report it as broken registration, don't crash the dashboard.
 3. Report a compact table: project | current sprint | status | background jobs (healthy/
    stalled/none) | last updated | top open item. Flag anything that needs human attention.
+
+## /sprint clean
+
+Reconcile the ops instance with reality and sweep sprint debris. Interview-driven: clean
+NEVER removes, moves, or rewrites anything the operator has not explicitly approved.
+
+1. **Locate the instance** (same as `/sprint direct`). No instance → point at
+   `/sprint init` and stop.
+2. **Scan, don't touch.** Build a findings list:
+   - **Ledger drift:** STATE.md current-sprint pointer vs actual `sprints/` folders;
+     sprint-history rows vs sprints that actually closed; background-job entries whose
+     manifests are stale or whose processes are dead; verified-facts entries that no
+     longer hold.
+   - **Backlog drift:** BACKLOG.md items already shipped, duplicated in STATE.md's open
+     items, or contradicted by ROADMAP.md.
+   - **Sprint folders:** closed sprints still outside `sprints/archive/`; abandoned
+     half-drafted sprint folders.
+   - **Git debris:** leftover worktrees (`git worktree list`), merged `sNN/*` branches
+     past the one-sprint retention lag, unmerged `sNN/*` branches (FLAG these; they are
+     never deletion candidates).
+   - **Registry rot:** `projects.json` entries whose paths no longer exist.
+3. **Interview** the operator through the findings with init's interview discipline:
+   every question leads with a `(Recommended)` disposition (archive / delete / amend /
+   keep), independent findings batch together, dependent ones sequence. Probe
+   contradictions instead of papering over them: if the ledger says a sprint closed but
+   its branches never merged, establish which story is true BEFORE proposing a
+   disposition.
+4. **Execute only what was approved:**
+   - Move closed sprint folders → `sprints/archive/sprint-NN/`.
+   - Amend STATE.md / BACKLOG.md; log the clean in STATE.md's decisions log.
+   - Remove approved worktrees — `git -C <worktree> status` first; ANY uncommitted work
+     stops that removal and goes back to the operator. Then `git worktree prune`.
+   - Delete approved branches only after verifying merged (`git branch --merged main`).
+     For an unmerged branch offer only "keep" or "operator deletes it manually".
+   - Fix or drop dead registry entries.
+5. **Report:** what moved, what was deleted, what was amended, what was flagged and left
+   alone.
 
 ## Registry format (`~/.claude/sprint/projects.json`)
 

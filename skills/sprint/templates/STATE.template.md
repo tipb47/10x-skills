@@ -37,5 +37,7 @@ store locations, credentials mechanisms, known data states, tooling quirks. -->
 
 ## Open items for upcoming sprints
 
-<!-- init: anything raised during init that isn't sprint-01 scope. -->
-- {{OPEN_ITEM}}
+Tracked in `BACKLOG.md` — one prioritized queue, not two. List here ONLY items a
+director must see before reading the backlog (things that gate the next boot).
+
+- (none)

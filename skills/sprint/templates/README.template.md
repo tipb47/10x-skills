@@ -27,9 +27,12 @@ deviation in `STATE.md` BEFORE spawning tracks.
 ├── SPRINT_GUIDELINES.md       ← rules for tracks + directors
 ├── DIRECTOR_GUIDELINES.md     ← the director runbook
 ├── ROADMAP.md                 ← sprint arc at milestone level
-└── sprints/sprint-NN/
-    ├── SPRINT.md              ← sprint brief: goal, gates, tracks, merge order
-    └── TRACK-*.md             ← self-contained prompt per track subagent
+├── BACKLOG.md                 ← prioritized queue of future work
+└── sprints/
+    ├── archive/               ← closed sprints, moved by /sprint clean
+    └── sprint-NN/
+        ├── SPRINT.md          ← sprint brief: goal, gates, tracks, merge order
+        └── TRACK-*.md         ← self-contained prompt per track subagent
 ```
 
 ## Project surfaces

@@ -33,7 +33,9 @@ trivial audit fixes; tracks build.
 ## Phase 2 — Spawn tracks
 
 - One subagent per track, prompt = absolute path to its `TRACK-*.md` + instruction to obey
-  `SPRINT_GUIDELINES.md`. Model per the sprint file's per-track policy.
+  `SPRINT_GUIDELINES.md`. Model per the sprint file's per-track row (tier + rationale);
+  a row without a tier is a drafting gap — assign one per the model policy and amend
+  `SPRINT.md` before spawning.
 - **State each track's branch-push authority explicitly in its brief** — including the
   branches it must never push. Repeat the incremental-commit rule and, for parallel tracks,
   the stash ban and the private-scratchpad rule.
@@ -63,11 +65,18 @@ trivial audit fixes; tracks build.
 
 1. Walk the operator through the close gate as an actionable checklist (exact commands).
 2. Update `STATE.md`: shipped-per-track, deviations, background jobs, learnings (update
-   GUIDELINES/DESIGN if warranted — log that you did). Propose promoting project-agnostic
+   GUIDELINES/DESIGN if warranted — log that you did). Update `BACKLOG.md`: strike
+   shipped items, add deferred and discovered work. Propose promoting project-agnostic
    learnings into the sprint skill's `SCARS.md` — the class and its rule, not the incident.
-3. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
-   skeleton; reality wins).
-4. Final report: outcomes, merge summary, gate status, background-job dashboard,
+3. **Sprint git cleanup:** confirm every track branch merged and pushed. Check each
+   worktree with `git -C <worktree> status` — uncommitted work stops cleanup for that
+   tree — then remove this sprint's track worktrees and `git worktree prune`. Delete the
+   PREVIOUS sprint's merged track branches (verify with `git branch --merged main`);
+   this sprint's branches survive one more sprint as recovery points. Never delete an
+   unmerged branch.
+4. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
+   skeleton; BACKLOG.md is the feed; reality wins).
+5. Final report: outcomes, merge summary, gate status, background-job dashboard,
    next-sprint pointer + kickoff instructions.
 
 ## Respawn protocol

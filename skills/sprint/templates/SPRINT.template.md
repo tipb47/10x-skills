@@ -7,10 +7,13 @@ it, not vibe it.}}
 
 ## Tracks
 
-| Track | Slug/branch | Model | Scope |
-|---|---|---|---|
-| A | `sNN/{{slug}}` | {{tier}} | {{one-line scope}} |
-<!-- init: 1-4 rows. Note any shared-scaffolding races between tracks and how the
+| Track | Slug/branch | Model | Why this tier | Scope |
+|---|---|---|---|---|
+| A | `sNN/{{slug}}` | {{tier}} | {{work class → tier, one line}} | {{one-line scope}} |
+<!-- init: 1-4 rows. Tier per the model policy in SPRINT_GUIDELINES.md: fable for
+contract-defining / architecture / gnarly-debug work, sonnet for standard
+implementation, haiku only for mechanical fully-specified chores (justify it in the
+rationale column). Note any shared-scaffolding races between tracks and how the
 director pre-empts them (pre-create shared skeletons before spawning, or stagger spawns). -->
 
 ## Gate 0 (before tracks spawn)
@@ -31,6 +34,10 @@ director pre-empts them (pre-create shared skeletons before spawning, or stagger
 
 1. {{STEP — deploys the operator runs, end-to-end verifications with expected outputs,
    detached jobs to start + record in STATE.md.}}
+2. **Sprint git cleanup (director):** every merge verified landed → remove this sprint's
+   track worktrees (`git -C <worktree> status` clean first), `git worktree prune`, delete
+   the PREVIOUS sprint's merged track branches. This sprint's branches survive until the
+   next close; never delete an unmerged branch.
 
 ## Risks specific to this sprint
 

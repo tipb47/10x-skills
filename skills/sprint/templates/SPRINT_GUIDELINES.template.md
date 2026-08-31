@@ -79,6 +79,10 @@ re-runs — tracks deliver the harness verified on a sample chunk; full runs sta
 
 - All track branches audited, merged `--no-ff` to main in SPRINT.md's order, pushed;
   verification contract green on main after each merge.
+- Sprint git state cleaned: this sprint's worktrees removed (each checked for
+  uncommitted work first), `git worktree prune` run, the PREVIOUS sprint's merged track
+  branches deleted. This sprint's branches survive one more sprint as recovery points;
+  unmerged branches are never deleted.
 - {{DB_DONE_CLAUSE}} <!-- init: migrations applied + verified, if DB; else drop. -->
 - Operator close-gate checklist delivered/executed.
 - `STATE.md` updated; next sprint's files drafted or amended from reality.
@@ -90,9 +94,13 @@ re-runs — tracks deliver the harness verified on a sample chunk; full runs sta
   genuinely risky merge.
 - Tracks read what their file points to; no exploratory fan-outs — `DESIGN.md` is the map.
 - Model policy: {{MODEL_POLICY}}.
-  <!-- init: from interview — default tier for tracks; what escalates to the strongest
-  tier (contract/interface-defining work is the usual answer). Directors run on the
-  strongest available tier. -->
+  <!-- init: from interview, seeded from the engine's default tiering — director: opus;
+  contract-defining / architecture / gnarly-debug tracks: fable; standard implementation
+  tracks: sonnet; haiku only for mechanical fully-specified chores with a stated
+  justification. Any role, the director included, may escalate to fable when the work
+  genuinely warrants the deepest reasoning — recorded in SPRINT.md at drafting time,
+  never decided mid-sprint. Every SPRINT.md track row states its tier + a one-line
+  rationale. -->
 
 ## Git conventions
 

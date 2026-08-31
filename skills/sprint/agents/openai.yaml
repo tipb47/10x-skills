@@ -1,4 +1,4 @@
 interface:
   display_name: "Sprint Director"
-  short_description: "Run a sprint end to end: init, direct, or status"
-  default_prompt: "Use $sprint to run the sprint methodology. Pass init, direct, or status."
+  short_description: "Run a sprint end to end: init, direct, status, or clean"
+  default_prompt: "Use $sprint to run the sprint methodology. Pass init, direct, status, or clean."
