@@ -6,6 +6,8 @@
 | Skill | Command | What it does |
 |---|---|---|
 | [Sprint Director](#sprint-director--sprint) | `/sprint` | Sprint-directed multi-agent development methodology: `init`, `direct`, `status`, `clean` |
+| [Analyze](#analyze--analyze) | `/analyze` | Depth-scaled read-only investigation via parallel explore scouts |
+| [Plan](#plan--plan) | `/plan` | Adaptive mini-sprint: interview, then single- or multi-track plan + execution |
 | [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
 | [Handoff](#handoff--handoff) | `/handoff` | One copyable message that transfers the session to a fresh agent |
 
@@ -31,6 +33,8 @@ Then install everything:
 
 ```
 /plugin install sprint-director@my-claude-skills
+/plugin install analyze@my-claude-skills
+/plugin install plan@my-claude-skills
 /plugin install whereami@my-claude-skills
 /plugin install handoff@my-claude-skills
 ```
@@ -45,9 +49,9 @@ Copy any skill folder into your user skills directory:
 git clone https://github.com/tipb47/my-claude-skills.git
 
 # Claude Code — pick the skills you want:
-cp -r my-claude-skills/skills/sprint    ~/.claude/skills/sprint
-cp -r my-claude-skills/skills/whereami  ~/.claude/skills/whereami
-cp -r my-claude-skills/skills/handoff   ~/.claude/skills/handoff
+for s in sprint analyze plan whereami handoff; do
+  cp -r my-claude-skills/skills/$s ~/.claude/skills/$s
+done
 
 # Codex CLI: same, into ~/.codex/skills/
 ```
@@ -61,7 +65,7 @@ each skill's `agents/openai.yaml` for its display name.
 
 ```bash
 git clone https://github.com/tipb47/my-claude-skills.git ~/my-claude-skills
-for s in sprint whereami handoff; do
+for s in sprint analyze plan whereami handoff; do
   ln -s ~/my-claude-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -186,6 +190,27 @@ State lives in files, not chat:
   `init` folds the reachable ones into each project's guidelines.
 
 ---
+
+## Analyze — `/analyze`
+
+Depth-scaled, read-only investigation of a feature, bug, flow, or component:
+`/analyze <target> <depth>`. Depth runs quick → standard → deep → forensic and sets the
+fan-out: parallel read-only explore scouts keep the main context clean, each spawned on
+a stated model tier (haiku for mechanical enumeration, sonnet scouts by default, one
+opus/fable deep-reasoning subagent at forensic depth; synthesis never leaves the main
+session). Produces a structured report — flow trace with `file:line`, dependencies,
+edge cases, concerns — shaped to feed `/plan` directly. Writes no code.
+
+## Plan — `/plan`
+
+Adaptive mini-sprint planning: `/plan <task or artifact> [complexity]`. Accepts a
+described task or a requirements artifact (PRD, ticket, file, URL) — artifacts get a
+gap audit (blockers / clarifications / assumptions) before anything else. Then an
+interview to zero ambiguity, and a plan sized to the work: **single-track** (numbered
+steps, implemented in-session after approval) or **multi-track** (a mini-sprint: tracks
+with model tier + rationale, merge order, worktree isolation, director-style audit and
+`--no-ff` merges, worktrees and branches cleaned when done). Work bigger than one
+session gets pointed at `/sprint init` instead. No plan files — briefs travel inline.
 
 ## Where Am I — `/whereami`
 

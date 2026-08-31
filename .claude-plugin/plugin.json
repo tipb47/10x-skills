@@ -1,7 +1,7 @@
 {
   "name": "my-claude-skills",
-  "description": "tipb47's Claude Code skills bundle: the Sprint Director multi-agent methodology (/sprint), session situation reports (/whereami), and one-message session handoffs (/handoff).",
-  "version": "2.0.0",
+  "description": "tipb47's Claude Code skills bundle: the Sprint Director multi-agent methodology (/sprint), depth-scaled analysis (/analyze), adaptive mini-sprint planning (/plan), session situation reports (/whereami), and one-message session handoffs (/handoff).",
+  "version": "2.1.0",
   "author": {
     "name": "tipb47",
     "url": "https://github.com/tipb47"
@@ -9,6 +9,17 @@
   "homepage": "https://github.com/tipb47/my-claude-skills",
   "repository": "https://github.com/tipb47/my-claude-skills",
   "license": "MIT",
-  "keywords": ["skills", "sprint", "multi-agent", "orchestration", "methodology", "handoff", "status", "worktrees"],
+  "keywords": [
+    "skills",
+    "sprint",
+    "multi-agent",
+    "orchestration",
+    "methodology",
+    "analysis",
+    "planning",
+    "handoff",
+    "status",
+    "worktrees"
+  ],
   "skills": "./skills"
 }

@@ -7,12 +7,13 @@ their behalf. Humans: see [README.md](README.md).
 If the user said "install these skills" / "set up sprint director", follow **Part 1**.
 If they said "run a sprint" / "be the director", follow **Part 2**.
 
-The repo holds three plain skill folders under `skills/` — `sprint` (Sprint Director),
-`whereami` (session situation report), `handoff` (one-message session transfer). Each is
-a `SKILL.md` with YAML frontmatter plus an `agents/openai.yaml` interface descriptor;
-`sprint` additionally carries `templates/` and `SCARS.md`. They work in any runtime that
-loads skills from a user-level skills directory, and each installs independently —
-`whereami` and `handoff` have no dependency on `sprint`.
+The repo holds five plain skill folders under `skills/` — `sprint` (Sprint Director),
+`analyze` (depth-scaled read-only investigation), `plan` (adaptive mini-sprint
+planning), `whereami` (session situation report), `handoff` (one-message session
+transfer). Each is a `SKILL.md` with YAML frontmatter plus an `agents/openai.yaml`
+interface descriptor; `sprint` additionally carries `templates/` and `SCARS.md`. They
+work in any runtime that loads skills from a user-level skills directory, and each
+installs independently — none depends on `sprint`.
 
 ---
 
@@ -43,6 +44,8 @@ shell. Print them and ask the user to run them:
 /plugin install my-claude-skills@my-claude-skills
 # or individually:
 /plugin install sprint-director@my-claude-skills
+/plugin install analyze@my-claude-skills
+/plugin install plan@my-claude-skills
 /plugin install whereami@my-claude-skills
 /plugin install handoff@my-claude-skills
 ```
@@ -58,7 +61,7 @@ git clone https://github.com/tipb47/my-claude-skills.git /tmp/my-claude-skills
 
 # Claude Code (Codex CLI: same commands into ~/.codex/skills):
 mkdir -p ~/.claude/skills
-for s in sprint whereami handoff; do   # drop any the user does not want
+for s in sprint analyze plan whereami handoff; do   # drop any the user does not want
   cp -r /tmp/my-claude-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -80,7 +83,7 @@ installed skill in place:
 
 ```bash
 git clone https://github.com/tipb47/my-claude-skills.git ~/my-claude-skills
-for s in sprint whereami handoff; do
+for s in sprint analyze plan whereami handoff; do
   ln -s ~/my-claude-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -100,9 +103,9 @@ also intend to contribute scars back, this is the path to recommend.
 
 ## Part 2 — Operate
 
-This part covers Sprint Director (`/sprint`); `whereami` and `handoff` are
-self-contained in-chat skills with no state to orient on. The sprint skill exposes four
-subcommands. As an agent you typically *invoke the skill* and let its
+This part covers Sprint Director (`/sprint`); `analyze`, `plan`, `whereami`, and
+`handoff` are self-contained single-session skills with no cross-session state to
+orient on. The sprint skill exposes four subcommands. As an agent you typically *invoke the skill* and let its
 own instructions drive; this section is orientation so you know what each does and what state
 it touches.
 

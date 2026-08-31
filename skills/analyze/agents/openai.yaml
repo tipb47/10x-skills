@@ -1,0 +1,4 @@
+interface:
+  display_name: "Analyze"
+  short_description: "Depth-scaled read-only investigation with parallel scouts"
+  default_prompt: "Use $analyze to investigate a target. Pass <target> <depth> [context]."

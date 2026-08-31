@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan"
+  short_description: "Adaptive mini-sprint: interview, plan, execute in tracks"
+  default_prompt: "Use $plan to plan and execute a task. Pass <task or artifact> [complexity]."
