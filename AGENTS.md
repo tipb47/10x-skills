@@ -38,16 +38,16 @@ These are slash commands the **user** runs in their own session; you cannot run 
 shell. Print them and ask the user to run them:
 
 ```
-/plugin marketplace add tipb47/my-claude-skills
+/plugin marketplace add tipb47/10x-skills
 
 # everything:
-/plugin install my-claude-skills@my-claude-skills
+/plugin install 10x-skills@10x-skills
 # or individually:
-/plugin install sprint-director@my-claude-skills
-/plugin install analyze@my-claude-skills
-/plugin install plan@my-claude-skills
-/plugin install whereami@my-claude-skills
-/plugin install handoff@my-claude-skills
+/plugin install sprint-director@10x-skills
+/plugin install analyze@10x-skills
+/plugin install plan@10x-skills
+/plugin install whereami@10x-skills
+/plugin install handoff@10x-skills
 ```
 
 Then tell the user to restart the session and confirm with `/sprint` (and/or
@@ -57,12 +57,12 @@ Then tell the user to restart the session and confirm with `/sprint` (and/or
 
 ```bash
 # Clone to a temp location, then copy the wanted skills into the user's skills dir.
-git clone https://github.com/tipb47/my-claude-skills.git /tmp/my-claude-skills
+git clone https://github.com/tipb47/10x-skills.git /tmp/10x-skills
 
 # Claude Code (Codex CLI: same commands into ~/.codex/skills):
 mkdir -p ~/.claude/skills
 for s in sprint analyze plan whereami handoff; do   # drop any the user does not want
-  cp -r /tmp/my-claude-skills/skills/$s ~/.claude/skills/$s
+  cp -r /tmp/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
 
@@ -82,9 +82,9 @@ Clone the repo to a permanent location and symlink the skill, so `git pull` upda
 installed skill in place:
 
 ```bash
-git clone https://github.com/tipb47/my-claude-skills.git ~/my-claude-skills
+git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
 for s in sprint analyze plan whereami handoff; do
-  ln -s ~/my-claude-skills/skills/$s ~/.claude/skills/$s
+  ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "my-claude-skills",
+  "name": "10x-skills",
   "metadata": {
     "description": "tipb47's Claude Code skills \u2014 sprint-directed multi-agent methodology, depth-scaled analysis, adaptive planning, session status, and session handoffs."
   },
@@ -10,7 +10,7 @@
   },
   "plugins": [
     {
-      "name": "my-claude-skills",
+      "name": "10x-skills",
       "description": "Everything in this repo as one plugin: /sprint (sprint-directed multi-agent methodology), /analyze (depth-scaled read-only investigation), /plan (adaptive mini-sprint planning), /whereami (session situation report), /handoff (one-message session transfer).",
       "version": "2.1.0",
       "author": {
@@ -19,7 +19,7 @@
       },
       "source": "./",
       "category": "workflow",
-      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "homepage": "https://github.com/tipb47/10x-skills",
       "license": "MIT",
       "tags": [
         "skills",
@@ -46,7 +46,7 @@
         "."
       ],
       "category": "workflow",
-      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "homepage": "https://github.com/tipb47/10x-skills",
       "license": "MIT",
       "tags": [
         "sprint",
@@ -73,7 +73,7 @@
         "."
       ],
       "category": "workflow",
-      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "homepage": "https://github.com/tipb47/10x-skills",
       "license": "MIT",
       "tags": [
         "analysis",
@@ -96,7 +96,7 @@
         "."
       ],
       "category": "workflow",
-      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "homepage": "https://github.com/tipb47/10x-skills",
       "license": "MIT",
       "tags": [
         "planning",
@@ -119,7 +119,7 @@
         "."
       ],
       "category": "workflow",
-      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "homepage": "https://github.com/tipb47/10x-skills",
       "license": "MIT",
       "tags": [
         "status",
@@ -141,7 +141,7 @@
         "."
       ],
       "category": "workflow",
-      "homepage": "https://github.com/tipb47/my-claude-skills",
+      "homepage": "https://github.com/tipb47/10x-skills",
       "license": "MIT",
       "tags": [
         "handoff",

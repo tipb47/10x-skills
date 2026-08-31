@@ -20,23 +20,23 @@
 From inside Claude Code:
 
 ```
-/plugin marketplace add tipb47/my-claude-skills
+/plugin marketplace add tipb47/10x-skills
 ```
 
 Then install everything:
 
 ```
-/plugin install my-claude-skills@my-claude-skills
+/plugin install 10x-skills@10x-skills
 ```
 
 …or just the skills you want:
 
 ```
-/plugin install sprint-director@my-claude-skills
-/plugin install analyze@my-claude-skills
-/plugin install plan@my-claude-skills
-/plugin install whereami@my-claude-skills
-/plugin install handoff@my-claude-skills
+/plugin install sprint-director@10x-skills
+/plugin install analyze@10x-skills
+/plugin install plan@10x-skills
+/plugin install whereami@10x-skills
+/plugin install handoff@10x-skills
 ```
 
 Restart the session so the skills load.
@@ -46,11 +46,11 @@ Restart the session so the skills load.
 Copy any skill folder into your user skills directory:
 
 ```bash
-git clone https://github.com/tipb47/my-claude-skills.git
+git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
 for s in sprint analyze plan whereami handoff; do
-  cp -r my-claude-skills/skills/$s ~/.claude/skills/$s
+  cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
 # Codex CLI: same, into ~/.codex/skills/
@@ -64,9 +64,9 @@ each skill's `agents/openai.yaml` for its display name.
 `git pull` then updates the installed skills in place:
 
 ```bash
-git clone https://github.com/tipb47/my-claude-skills.git ~/my-claude-skills
+git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
 for s in sprint analyze plan whereami handoff; do
-  ln -s ~/my-claude-skills/skills/$s ~/.claude/skills/$s
+  ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
 
