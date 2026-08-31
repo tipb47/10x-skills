@@ -3,8 +3,6 @@
 **my custom skills for agentic coding CLIs that I use everyday.** Runs on
 [Claude Code](https://claude.com/claude-code) and [Codex CLI](https://developers.openai.com/codex/cli).
 
-Three skills, installable together or one at a time:
-
 | Skill | Command | What it does |
 |---|---|---|
 | [Sprint Director](#sprint-director--sprint) | `/sprint` | Sprint-directed multi-agent development methodology: `init`, `direct`, `status`, `clean` |
