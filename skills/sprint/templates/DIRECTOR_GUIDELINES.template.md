@@ -74,9 +74,11 @@ trivial audit fixes; tracks build.
 3. **Sprint git cleanup:** confirm every track branch merged and pushed. Check each
    worktree with `git -C <worktree> status` — uncommitted work stops cleanup for that
    tree — then remove this sprint's track worktrees and `git worktree prune`. Delete the
-   PREVIOUS sprint's merged track branches (verify with `git branch --merged main`);
-   this sprint's branches survive one more sprint as recovery points. Never delete an
-   unmerged branch.
+   PREVIOUS sprint's merged track branches, local and remote: verify with
+   `git branch --merged main` locally and against `origin/main` before
+   `git push origin --delete <branch>`; a branch with an open PR is not a deletion
+   candidate. This sprint's branches survive one more sprint as recovery points, locally
+   and on origin. Never delete an unmerged branch, anywhere.
 4. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
    skeleton; BACKLOG.md is the feed; reality wins). Set the next SPRINT.md's
    `Director tier:` line — default opus; fable per the model policy's escalation

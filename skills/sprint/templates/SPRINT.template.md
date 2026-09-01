@@ -42,8 +42,9 @@ director pre-empts them (pre-create shared skeletons before spawning, or stagger
    detached jobs to start + record in STATE.md.}}
 2. **Sprint git cleanup (director):** every merge verified landed → remove this sprint's
    track worktrees (`git -C <worktree> status` clean first), `git worktree prune`, delete
-   the PREVIOUS sprint's merged track branches. This sprint's branches survive until the
-   next close; never delete an unmerged branch.
+   the PREVIOUS sprint's merged track branches — local and their `origin` counterparts.
+   This sprint's branches survive until the next close, locally and on the remote; never
+   delete an unmerged branch, anywhere.
 
 ## Risks specific to this sprint
 

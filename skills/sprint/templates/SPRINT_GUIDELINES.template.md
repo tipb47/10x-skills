@@ -81,8 +81,9 @@ re-runs — tracks deliver the harness verified on a sample chunk; full runs sta
   verification contract green on main after each merge.
 - Sprint git state cleaned: this sprint's worktrees removed (each checked for
   uncommitted work first), `git worktree prune` run, the PREVIOUS sprint's merged track
-  branches deleted. This sprint's branches survive one more sprint as recovery points;
-  unmerged branches are never deleted.
+  branches deleted — local and their `origin` counterparts. This sprint's branches
+  survive one more sprint as recovery points, locally and on the remote; unmerged
+  branches are never deleted, anywhere.
 - {{DB_DONE_CLAUSE}} <!-- init: migrations applied + verified, if DB; else drop. -->
 - Operator close-gate checklist delivered/executed.
 - `STATE.md` updated; next sprint's files drafted or amended from reality.

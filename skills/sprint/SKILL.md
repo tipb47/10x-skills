@@ -216,8 +216,11 @@ Become the sprint director for the current project's active sprint.
    deferred and discovered work). **Clean sprint git state:** once every merge is
    verified landed, remove this sprint's track worktrees (`git -C <worktree> status`
    must be clean first — uncommitted work stops that removal) and `git worktree prune`;
-   delete the PREVIOUS sprint's merged track branches. This sprint's branches survive
-   one more sprint as recovery points; never delete an unmerged branch. Draft/amend the
+   delete the PREVIOUS sprint's merged track branches — local AND their `origin`
+   counterparts (`git push origin --delete <branch>`, after verifying merged into
+   `origin/main`; a branch with an open PR is not a deletion candidate). This sprint's
+   branches survive one more sprint as recovery points, locally and on the remote;
+   never delete an unmerged branch, anywhere. Draft/amend the
    next sprint's files from what actually happened (BACKLOG.md is the feed), including
    the next SPRINT.md's `Director tier:` line per § Model selection; final report with
    the next kickoff pointer, naming the model to launch the next director on.
@@ -308,6 +311,18 @@ NEVER removes, moves, or rewrites anything the operator has not explicitly appro
    - **Git debris:** leftover worktrees (`git worktree list`), merged `sNN/*` branches
      past the one-sprint retention lag, unmerged `sNN/*` branches (FLAG these; they are
      never deletion candidates).
+   - **Remote sprint debris:** `git ls-remote --heads origin` (read-only), filtered to
+     the sprint branch convention — `sNN/*` plus any project-specific sprint prefix the
+     local guidelines declare. Branches outside the convention are out of scope: never
+     listed, never touched, never mentioned. No `origin`, or no matches → skip this
+     pass and say so in the report. Classify each match against `origin/main` (fetch
+     first): merged past the one-sprint retention lag (deletion candidate), merged
+     within retention (keep — the same recovery-point rule as local), unmerged (FLAG;
+     never a deletion candidate), or remote-only with no local counterpart (FLAG as an
+     anomaly — establish its story in the interview before proposing anything). Where
+     `gh` works, check deletion candidates for open PRs: an open PR removes a branch
+     from candidacy (deleting the branch closes the PR); where `gh` is unavailable,
+     state in that branch's question that PR status is unverified.
    - **Registry rot:** `projects.json` entries whose paths no longer exist.
 3. **Interview** the operator through the findings with init's interview discipline:
    every question leads with a `(Recommended)` disposition (archive / delete / amend /
@@ -322,6 +337,10 @@ NEVER removes, moves, or rewrites anything the operator has not explicitly appro
      stops that removal and goes back to the operator. Then `git worktree prune`.
    - Delete approved branches only after verifying merged (`git branch --merged main`).
      For an unmerged branch offer only "keep" or "operator deletes it manually".
+   - Delete approved remote branches with `git push origin --delete <branch>` only
+     after re-verifying merged into `origin/main`; re-run `git ls-remote --heads origin`
+     afterward to confirm each deletion landed. Unmerged or open-PR remote branches get
+     only "keep" or "operator deletes it manually" — same as local.
    - Fix or drop dead registry entries.
 5. **Report:** what moved, what was deleted, what was amended, what was flagged and left
    alone.
