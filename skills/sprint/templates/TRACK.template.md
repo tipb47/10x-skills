@@ -1,6 +1,8 @@
 # Track {{LETTER}} — {{TRACK_TITLE}}
 
-Branch `sNN/{{slug}}`. Read `DESIGN.md` ({{relevant sections}}) first.
+Branch `sNN/{{slug}}`, cut from `origin/sNN/integration`. Push only that branch; never
+push `sNN/integration` or `{{TRUNK}}`; never merge. Read `DESIGN.md`
+({{relevant sections}}) first.
 {{ONE PARAGRAPH: what you build and why it matters to the sprint.}}
 
 ## What exists (verified — do not re-derive)

@@ -12,7 +12,9 @@ trivial audit fixes; tracks build.
    than recommended → Gate 0 operator decision: proceed anyway or relaunch on the stated
    tier. Stronger → proceed. No line → treat as opus and add it at the next amendment.
 2. Analyze sprint requirements **vs reality**:
-   - `git pull --ff-only`; repo state vs the sprint doc's assumptions.
+   - `git checkout {{TRUNK}} && git pull --ff-only`; repo state vs the sprint doc's
+     assumptions. `git fetch origin` and check whether `sNN/integration` already exists
+     on origin — if it does, this is a respawn: what is merged into it is audited state.
    - Verify claimed prior state against actual stores: {{STORE_CHECKS}}.
      <!-- init: concrete checks — DB queries via <mechanism>, bucket listings, artifact
      versions. Include known tooling quirks from STATE.md verified-facts. -->
@@ -35,63 +37,86 @@ trivial audit fixes; tracks build.
 
 ## Phase 2 — Spawn tracks
 
+- **Cut the integration branch first:** `git checkout -b sNN/integration origin/{{TRUNK}}`
+  then `git push -u origin sNN/integration`. Once per sprint; on respawn, fetch the
+  existing branch and never re-cut it. Every track cuts from `origin/sNN/integration`.
 - One subagent per track, prompt = absolute path to its `TRACK-*.md` + instruction to obey
   `SPRINT_GUIDELINES.md`. Model per the sprint file's per-track row (tier + rationale);
   a row without a tier is a drafting gap — assign one per the model policy and amend
   `SPRINT.md` before spawning.
-- **State each track's branch-push authority explicitly in its brief** — including the
-  branches it must never push. Repeat the incremental-commit rule and, for parallel tracks,
-  the stash ban and the private-scratchpad rule.
+- **State each track's branch-push authority explicitly in its brief** — its own
+  `sN/<slug>` only; it never pushes `sN/integration` or `{{TRUNK}}`. Repeat the
+  incremental-commit rule (and the `[skip ci]` rule if the CI policy needs it) and, for
+  parallel tracks, the stash ban and the private-scratchpad rule.
 - Same-repo parallel tracks: worktree isolation; each pushes its own `sN/<slug>` branch.
+- A track that depends on another track's work spawns after that work is merged into
+  `sN/integration` and cuts from the new tip. The trunk does not move for this.
 - Independent tracks spawn in ONE message. While they run: handle gate items; never
   duplicate track work.
 
-## Phase 3 — Audit & merge (in SPRINT.md's merge order)
+## Phase 3 — Audit & merge into `sNN/integration` (in SPRINT.md's merge order)
 
 1. Fetch the branch; review the FULL diff against `DESIGN.md`: contract conformance, no
    secrets, no scope creep. Diff from the MERGE-BASE
-   (`git diff $(git merge-base main <branch>) <branch>`) — a tip-vs-moved-trunk diff shows a
-   clean track "deleting" files it never touched. Grep the diff for sprint-narration comments
+   (`git diff $(git merge-base sNN/integration <branch>) <branch>`) — a tip-vs-moved-base
+   diff shows a clean track "deleting" files it never touched. Grep the diff for
+   sprint-narration comments
    (`grep -nE '\bs[0-9]+\b|Track [A-Z]|sprint-[0-9]'` over added lines) — rewrite to
    present-tense constraints or delete before merge (SPRINT_GUIDELINES comment rule).
 2. **Re-run the track's verification gates yourself** against real state. Reports are
    claims; your audit produces facts.
 3. {{MIGRATION_APPLY_STEP}}
    <!-- init: if DB — apply migration files in order after audit, verify schema + run
-   verification queries; if none, drop this step. -->
-4. Rebase onto main if needed; resolve conflicts yourself; re-run the verification
-   contract on the branch; merge `--no-ff`; re-run on main; push.
+   verification queries. State WHEN: at the integration merge when the deployed surface
+   tolerates a schema ahead of its code, otherwise at promotion. If no DB, drop this step. -->
+4. Rebase onto `sNN/integration` if needed; resolve conflicts yourself; re-run the
+   verification contract on the branch. `git checkout sNN/integration`, confirm with
+   `git branch --show-current`, merge `--no-ff`; re-run on integration; push integration.
+   `{{TRUNK}}` does not move in this phase.
 5. Long-running jobs a track delivered: verify the sample chunk end-to-end, then start the
    full run detached and record it in `STATE.md` § Background jobs.
 
 ## Phase 4 — Close
 
-1. Walk the operator through the close gate as an actionable checklist (exact commands).
-2. Update `STATE.md`: shipped-per-track, deviations, background jobs, learnings (update
+1. **Promote `sNN/integration` into `{{TRUNK}}` — on the operator's go, never before.**
+   `git fetch origin`. If `origin/{{TRUNK}}` moved since the cut, merge it INTO
+   `sNN/integration`, resolve conflicts, re-run the verification contract there. Then
+   `git checkout {{TRUNK}}`, confirm `git branch --show-current`, `git pull --ff-only`,
+   `git merge --no-ff sNN/integration`, re-run the contract on `{{TRUNK}}`, and push ONCE.
+   Verify the push landed (`git ls-remote --heads origin {{TRUNK}}` matches the local SHA)
+   and that exactly one pipeline run started. An early promotion the operator requested
+   mid-sprint follows the same steps; later tracks keep landing on integration and the
+   close gate promotes again.
+2. Walk the operator through the rest of the close gate as an actionable checklist
+   (exact commands): deploys, end-to-end checks, detached jobs.
+3. Update `STATE.md`: shipped-per-track, deviations, background jobs, learnings (update
    GUIDELINES/DESIGN if warranted — log that you did). Update `BACKLOG.md`: strike
    shipped items, add deferred and discovered work. Propose promoting project-agnostic
    learnings into the sprint skill's `SCARS.md` — the class and its rule, not the incident.
-3. **Sprint git cleanup:** confirm every track branch merged and pushed. Check each
-   worktree with `git -C <worktree> status` — uncommitted work stops cleanup for that
-   tree — then remove this sprint's track worktrees and `git worktree prune`. Delete the
-   PREVIOUS sprint's merged track branches, local and remote: verify with
-   `git branch --merged main` locally and against `origin/main` before
-   `git push origin --delete <branch>`; a branch with an open PR is not a deletion
+4. **Sprint git cleanup:** confirm every track branch merged into `sNN/integration` and
+   `sNN/integration` merged into `origin/{{TRUNK}}`. Check each worktree with
+   `git -C <worktree> status` — uncommitted work stops cleanup for that tree — then
+   remove this sprint's track worktrees and `git worktree prune`. Delete the PREVIOUS
+   sprint's merged branches (its tracks AND its integration branch), local and remote:
+   verify with `git branch --merged {{TRUNK}}` locally and against `origin/{{TRUNK}}`
+   before `git push origin --delete <branch>`; a branch with an open PR is not a deletion
    candidate. This sprint's branches survive one more sprint as recovery points, locally
    and on origin. Never delete an unmerged branch, anywhere.
-4. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
+5. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
    skeleton; BACKLOG.md is the feed; reality wins). Set the next SPRINT.md's
    `Director tier:` line — default opus; fable per the model policy's escalation
    criteria.
-5. Final report: outcomes, merge summary, gate status, background-job dashboard,
-   next-sprint pointer + kickoff instructions, naming the model to launch the next
-   director on.
+6. Final report: outcomes, merge summary, promotion state, gate status, background-job
+   dashboard, next-sprint pointer + kickoff instructions, naming the model to launch
+   the next director on.
 
 ## Respawn protocol
 
 Resuming a half-finished sprint: `STATE.md` + `git branch -a` + worktree list + job
-manifests tell you where it stopped. Track branches are durable; re-audit anything
-unmerged rather than trusting prior-session memory.
+manifests tell you where it stopped. `origin/sNN/integration` is the durable audited
+state: what is merged into it passed audit; re-audit every track branch that is not,
+rather than trusting prior-session memory. Check whether promotion happened with
+`git merge-base --is-ancestor sNN/integration origin/{{TRUNK}}`.
 
 ## Hard rules
 
@@ -119,8 +144,10 @@ unmerged rather than trusting prior-session memory.
   Check actual process liveness, not just manifest freshness. (`pgrep -f <name>` inside a
   compound command MATCHES ITS OWN command line — a finished job reads as live; exclude the
   probe or match an exact module path.)
-- Never merge red; never spawn tracks on a red main; never apply un-reviewed SQL/DDL;
-  never let a track apply DDL.
+- Never merge red; never spawn tracks on a red `sNN/integration` or a red `{{TRUNK}}`;
+  never apply un-reviewed SQL/DDL; never let a track apply DDL.
+- Never push `{{TRUNK}}` outside a promotion the operator approved; never force-push
+  `{{TRUNK}}` or `sNN/integration`.
 - {{PROD_SAFETY_RULES}}
   <!-- init: project-specific production-safety rules (shared live DBs, rate limits,
   deploy freezes), from interview. -->

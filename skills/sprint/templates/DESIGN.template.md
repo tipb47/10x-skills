@@ -19,7 +19,8 @@ how components talk. Pull from interview + repo inspection. -->
 <!-- init: where data/artifacts live (DBs, buckets, registries), with the access mechanism
 (connection method, secret location pattern — NEVER literal secrets). Table schemas if a
 DB is involved; migration policy: migrations are FILES in {{MIGRATIONS_PATH}}, applied
-ONLY by the director, in order, at merge time. -->
+ONLY by the director, in order — at the integration merge, or at promotion when the
+deployed surface cannot run ahead of its schema. -->
 
 ## 4. Conventions & reference constants
 

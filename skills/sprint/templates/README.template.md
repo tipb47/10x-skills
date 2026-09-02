@@ -36,6 +36,13 @@ deviation in `STATE.md` BEFORE spawning tracks.
         └── TRACK-*.md         ← self-contained prompt per track subagent
 ```
 
+## Branch model
+
+Trunk: `{{TRUNK}}` — a push triggers {{TRUNK_PUSH_EFFECT}}. Each sprint lands on
+`sNN/integration`; the director promotes it into `{{TRUNK}}` with one merge and one push,
+at the close gate or when you ask for an early promotion. CI: {{CI_TRIGGER_POLICY}}
+<!-- init: same values as SPRINT_GUIDELINES.md § Branch model. -->
+
 ## Project surfaces
 
 <!-- init: table of repos/packages/deploy targets + how each deploys, from interview. -->

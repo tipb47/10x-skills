@@ -18,9 +18,10 @@ Work is divided into **sprints**: bounded milestones, each run end-to-end by ONE
 agent session (the **director**) for context hygiene. The director never builds; it
 analyzes, gates, spawns **track** subagents (each with a self-contained `TRACK-*.md`
 prompt, each on its own git branch, parallel tracks in git worktrees), then audits their
-diffs, verifies their claims against real state, resolves conflicts, merges in a defined
-order, and closes by updating the ledger (`STATE.md`) and drafting the next sprint from
-what actually happened. Humans appear at **operator gates** — explicit pauses for
+diffs, verifies their claims against real state, resolves conflicts, merges them in a
+defined order into the sprint's **integration branch** (`sNN/integration`), promotes
+that branch into the trunk with ONE merge at an operator gate, and closes by updating
+the ledger (`STATE.md`) and drafting the next sprint from what actually happened. Humans appear at **operator gates** — explicit pauses for
 deployments, account signups, approvals — never as mid-flight track interruptions.
 
 ## Subcommand routing
@@ -98,6 +99,14 @@ existing files.
      history stays clean — encode the resulting rule into the generated guidelines.
    - Project surfaces: repos/packages/deploy targets a sprint touches; how deploys happen
      (manual command? CI?) — deploys are usually operator gates.
+   - Branch model: which branch sprints promote into (`main`, `staging`, ...) and what a
+     push to it triggers — lands as `{{TRUNK}}` / `{{TRUNK_PUSH_EFFECT}}`. Then how CI
+     triggers (read the workflow files first): trunk-only or PR-only → nothing to do;
+     every branch and changeable → recommend a trunk-only branch filter plus a
+     concurrency group with cancel-in-progress, as a sprint-01 Gate 0 item; every branch
+     and NOT changeable → tracks put `[skip ci]` on `wip:` commits. Lands as
+     `{{CI_TRIGGER_POLICY}}`. The integration branch itself is not a choice: every
+     sprint lands on `sNN/integration` and the trunk moves once, at promotion.
    - Team shape: solo, or other humans pushing out-of-band? (Out-of-band pushers need
      pull-and-check-recent-commits rules in the guidelines.)
    - Verification contract: what makes a track's work *provably* done — test suites,
@@ -207,18 +216,27 @@ Become the sprint director for the current project's active sprint.
    - **Verify, never trust:** "pushed"/"loaded"/"done" are claims — check git/remote/DB/
      artifact state yourself before acting on them. Re-run tracks' verification gates
      yourself at audit.
-   - Audit the FULL diff per track against DESIGN.md before merging; merge `--no-ff` in
-     SPRINT.md's stated order; suites green on main after each merge.
+   - Cut `sNN/integration` from the trunk and push it before any track spawns; tracks
+     cut from it and push only their own branch.
+   - Audit the FULL diff per track against DESIGN.md before merging; merge `--no-ff`
+     into `sNN/integration` in SPRINT.md's stated order; suites green on integration
+     after each merge. The trunk moves ONCE, at promotion — an operator gate, never a
+     side effect of a track merge. An early promotion happens only when the operator
+     asks for one.
    - Track branches are durable; if resuming a dead session, re-audit anything unmerged
      rather than trusting prior-session memory.
-6. **Close:** operator close-gate as an actionable checklist; update STATE.md (shipped,
+6. **Close:** promote first — on the operator's go, merge the trunk into
+   `sNN/integration` if it moved, re-verify, then ONE `--no-ff` merge into the trunk and
+   ONE push; confirm the push landed and exactly one pipeline run started. Then the
+   rest of the operator close-gate as an actionable checklist; update STATE.md (shipped,
    deviations, learnings, background jobs) and BACKLOG.md (strike shipped items, add
-   deferred and discovered work). **Clean sprint git state:** once every merge is
+   deferred and discovered work). **Clean sprint git state:** once the promotion is
    verified landed, remove this sprint's track worktrees (`git -C <worktree> status`
    must be clean first — uncommitted work stops that removal) and `git worktree prune`;
-   delete the PREVIOUS sprint's merged track branches — local AND their `origin`
-   counterparts (`git push origin --delete <branch>`, after verifying merged into
-   `origin/main`; a branch with an open PR is not a deletion candidate). This sprint's
+   delete the PREVIOUS sprint's merged branches, tracks and integration alike — local
+   AND their `origin` counterparts (`git push origin --delete <branch>`, after verifying
+   merged into the trunk on origin; a branch with an open PR is not a deletion
+   candidate). This sprint's
    branches survive one more sprint as recovery points, locally and on the remote;
    never delete an unmerged branch, anywhere. Draft/amend the
    next sprint's files from what actually happened (BACKLOG.md is the feed), including
@@ -272,7 +290,8 @@ detectable), give the per-project view. Otherwise give the cross-project dashboa
    - **Just completed:** the last closed sprint and its one-line outcome (STATE.md
      sprint history).
    - **Current sprint:** pointer, phase (drafted / in flight / closing), and — if in
-     flight — track and merge progress as far as STATE.md and git branches show.
+     flight — track progress, which tracks have landed on `sNN/integration`, and
+     whether integration has been promoted, as far as STATE.md and git branches show.
    - **Next up:** the drafted next sprint if one exists, else the top backlog items.
    - **Backlog:** top 3-5 prioritized items; total count.
    - **Health flags:** stalled background jobs, stale worktrees or `sNN/*` branches past
@@ -309,14 +328,17 @@ NEVER removes, moves, or rewrites anything the operator has not explicitly appro
    - **Sprint folders:** closed sprints still outside `sprints/archive/`; abandoned
      half-drafted sprint folders.
    - **Git debris:** leftover worktrees (`git worktree list`), merged `sNN/*` branches
-     past the one-sprint retention lag, unmerged `sNN/*` branches (FLAG these; they are
-     never deletion candidates).
+     (tracks and `sNN/integration` alike) past the one-sprint retention lag, unmerged
+     `sNN/*` branches (FLAG these; they are never deletion candidates). "Merged" for a
+     track means merged into its sprint's integration branch; for an integration branch
+     it means promoted into the trunk. An unpromoted integration branch with merged
+     tracks is a sprint that never shipped — establish its story in the interview.
    - **Remote sprint debris:** `git ls-remote --heads origin` (read-only), filtered to
      the sprint branch convention — `sNN/*` plus any project-specific sprint prefix the
      local guidelines declare. Branches outside the convention are out of scope: never
      listed, never touched, never mentioned. No `origin`, or no matches → skip this
-     pass and say so in the report. Classify each match against `origin/main` (fetch
-     first): merged past the one-sprint retention lag (deletion candidate), merged
+     pass and say so in the report. Classify each match against the trunk on origin
+     (fetch first): merged past the one-sprint retention lag (deletion candidate), merged
      within retention (keep — the same recovery-point rule as local), unmerged (FLAG;
      never a deletion candidate), or remote-only with no local counterpart (FLAG as an
      anomaly — establish its story in the interview before proposing anything). Where
@@ -335,10 +357,10 @@ NEVER removes, moves, or rewrites anything the operator has not explicitly appro
    - Amend STATE.md / BACKLOG.md; log the clean in STATE.md's decisions log.
    - Remove approved worktrees — `git -C <worktree> status` first; ANY uncommitted work
      stops that removal and goes back to the operator. Then `git worktree prune`.
-   - Delete approved branches only after verifying merged (`git branch --merged main`).
+   - Delete approved branches only after verifying merged (`git branch --merged <trunk>`).
      For an unmerged branch offer only "keep" or "operator deletes it manually".
    - Delete approved remote branches with `git push origin --delete <branch>` only
-     after re-verifying merged into `origin/main`; re-run `git ls-remote --heads origin`
+     after re-verifying merged into the trunk on origin; re-run `git ls-remote --heads origin`
      afterward to confirm each deletion landed. Unmerged or open-PR remote branches get
      only "keep" or "operator deletes it manually" — same as local.
    - Fix or drop dead registry entries.

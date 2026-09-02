@@ -35,6 +35,12 @@ only reproduces in one company's stack, it is a project note, not a scar.
   positive pathspec returns a false "clean" result. Use `grep -r --exclude-dir=…`, or add a
   positive pathspec: `git grep <pat> -- . ':(exclude)…'`.
 - **Never force-push the trunk.** Any exception is an operator-gated, single-purpose sprint.
+- **Never land tracks on the trunk one at a time.** Every push to a CI-watched trunk runs the
+  pipeline, and on an auto-deploying trunk it deploys — N tracks became N runs and N deploys
+  before the operator ever saw a close gate, and `wip:` pushes on track branches ran it more.
+  Tracks land on the sprint's integration branch (`sNN/integration`); the trunk receives ONE
+  merge, at an operator gate. Ask at init how CI triggers: filter it to the trunk where the
+  operator can, `[skip ci]` on `wip:` commits where they cannot.
 
 ## Agents, worktrees & orchestration
 

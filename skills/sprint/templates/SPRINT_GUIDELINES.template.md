@@ -12,7 +12,34 @@ Rules of work for every sprint, track, and director. Director runbook:
   multi-surface products. State which shape this project is and why. -->
 - Sprints contain **operator gates** — explicit pauses for the human
   ({{GATE_EXAMPLES_FROM_INTERVIEW}}). Gates live in `SPRINT.md`, never inside track
-  prompts. Gate 0 runs before tracks spawn; the close gate runs after merges.
+  prompts. Gate 0 runs before tracks spawn; the close gate runs after every track has
+  landed on the integration branch, and promotion into `{{TRUNK}}` is part of it.
+
+## Branch model
+
+- **Trunk:** `{{TRUNK}}`. A push to it triggers {{TRUNK_PUSH_EFFECT}}, which is why it
+  moves once per sprint, never once per track.
+  <!-- init: the branch sprints promote into (main, staging, ...) and what a push to it
+  triggers (CI run, preview deploy, production deploy), from interview. -->
+- **Integration branch:** `sNN/integration`, cut by the director from `origin/{{TRUNK}}`
+  at Gate 0 and pushed once, empty. Every track lands here first. The trunk never
+  receives a track directly.
+- **Track branches:** `sNN/<slug>`, cut from `origin/sNN/integration`. A track that
+  depends on another track's work spawns after that work lands on integration and cuts
+  from the integration tip, so it sees the work without the trunk moving.
+- **Promotion:** ONE `--no-ff` merge of `sNN/integration` into `{{TRUNK}}`, ONE push, ONE
+  pipeline run. It happens at the close gate, or earlier only when the operator asks for
+  an early promotion. Promotion is always an operator gate: the director never pushes
+  `{{TRUNK}}` unprompted.
+- **CI noise:** {{CI_TRIGGER_POLICY}}
+  <!-- init: resolve from the interview's CI-trigger answer:
+  • CI runs on the trunk only, or on PRs only → "CI runs only on `{{TRUNK}}`; track and
+    integration pushes cost nothing."
+  • CI runs on every branch and the operator CAN change it → "CI is filtered to
+    `{{TRUNK}}` (branch filter + concurrency group with cancel-in-progress)." Put the
+    filter change on sprint-01's Gate 0; until it lands, apply the next line.
+  • CI runs on every branch and CANNOT change → "Tracks put `[skip ci]` in the subject of
+    every `wip:` commit; the director accepts one run per integration push." -->
 
 ## Track rules
 
@@ -20,10 +47,11 @@ Rules of work for every sprint, track, and director. Director runbook:
    nothing else. Mid-flight human input required = the sprint was planned wrong.
 2. **No blocking questions.** Ambiguity → decide per `DESIGN.md`, log under "Decisions &
    open questions" in the track report.
-3. **Branch discipline.** One branch per track: `sN/<slug>`, from latest `origin/main`.
-   Push the branch; never merge, never touch main. Same-repo parallel tracks run in
-   worktrees. A track's brief states its push authority EXPLICITLY, including the branches
-   it must never push, even when that seems obvious.
+3. **Branch discipline.** One branch per track: `sN/<slug>`, from latest
+   `origin/sN/integration`. Push that branch and nothing else: never merge, never push
+   `sN/integration`, never push `{{TRUNK}}`. Same-repo parallel tracks run in worktrees.
+   A track's brief states its push authority EXPLICITLY, including the branches it must
+   never push, even when that seems obvious.
    - **Commit and push INCREMENTALLY — never save the first commit for the end.** Agents get
      killed by infrastructure limits with substantial work existing only in a worktree, and
      nothing about that failure is under the track's control. Commit at every coherent
@@ -77,13 +105,15 @@ re-runs — tracks deliver the harness verified on a sample chunk; full runs sta
 
 ## Definition of done (sprint)
 
-- All track branches audited, merged `--no-ff` to main in SPRINT.md's order, pushed;
-  verification contract green on main after each merge.
+- All track branches audited, merged `--no-ff` into `sNN/integration` in SPRINT.md's
+  order, pushed; verification contract green on the integration branch after each merge.
+- `sNN/integration` promoted into `{{TRUNK}}` on the operator's go: one `--no-ff` merge,
+  one push; verification contract green on `{{TRUNK}}` after promotion.
 - Sprint git state cleaned: this sprint's worktrees removed (each checked for
   uncommitted work first), `git worktree prune` run, the PREVIOUS sprint's merged track
-  branches deleted — local and their `origin` counterparts. This sprint's branches
-  survive one more sprint as recovery points, locally and on the remote; unmerged
-  branches are never deleted, anywhere.
+  branches deleted, its integration branch included — local and their `origin`
+  counterparts. This sprint's branches survive one more sprint as recovery points,
+  locally and on the remote; unmerged branches are never deleted, anywhere.
 - {{DB_DONE_CLAUSE}} <!-- init: migrations applied + verified, if DB; else drop. -->
 - Operator close-gate checklist delivered/executed.
 - `STATE.md` updated; next sprint's files drafted or amended from reality.
@@ -120,13 +150,16 @@ re-runs — tracks deliver the harness verified on a sample chunk; full runs sta
   `git show <commit>:<path>`; prevent with `git rm --cached` on every branch you visit.
 - With worktrees, ALWAYS `git -C <absolute-path>`.
 - Diff a track from the MERGE-BASE, never the branch tip against a moved trunk:
-  `git diff $(git merge-base main <branch>) <branch>`. The two-way diff shows a clean track
-  "deleting" files it never touched.
-- Before merging, `git checkout main` and confirm `git branch --show-current`. A repo left on
-  the feature branch merges it into ITSELF and reports "Already up to date" — a silent no-op
+  `git diff $(git merge-base sNN/integration <branch>) <branch>`. The two-way diff shows a
+  clean track "deleting" files it never touched.
+- Before merging, `git checkout` the TARGET branch (`sNN/integration` for a track,
+  `{{TRUNK}}` for promotion) and confirm `git branch --show-current`. A repo left on the
+  feature branch merges it into ITSELF and reports "Already up to date" — a silent no-op
   that reads as success.
 - Never chain push/merge after a PIPED build/test in one compound — pipes mask exit codes.
   Verify, check the exit code, THEN push. Judge builds by exit code, not stderr noise.
-- Director merges `--no-ff` per track; never force-push main.
+- Director merges `--no-ff` per track into `sNN/integration`, and `--no-ff` once into
+  `{{TRUNK}}` at promotion. Never force-push `{{TRUNK}}`; never force-push
+  `sNN/integration` either — live tracks are cut from it.
 <!-- init: if out-of-band human pushers exist: add "pull + check their recent commits at
 boot; never clobber; rebase, don't force; keep changes to their hot files minimal+flagged." -->
