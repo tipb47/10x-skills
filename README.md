@@ -12,6 +12,7 @@
 | [Optimize](#optimize--optimize) | `/optimize` | Turn recurring manual workflows into hands-off tooling: CLIs, MCPs, generated skills |
 | [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
 | [Handoff](#handoff--handoff) | `/handoff` | One copyable message that transfers the session to a fresh agent |
+| [Isolate](#isolate--isolate) | `/isolate` | Move this session into its own worktree so it can share a repo with other agents |
 
 ---
 
@@ -41,6 +42,7 @@ Then install everything:
 /plugin install optimize@10x-skills
 /plugin install whereami@10x-skills
 /plugin install handoff@10x-skills
+/plugin install isolate@10x-skills
 ```
 
 Restart the session so the skills load.
@@ -53,7 +55,7 @@ Copy any skill folder into your user skills directory:
 git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
-for s in sprint analyze plan autonomous optimize whereami handoff; do
+for s in sprint analyze plan autonomous optimize whereami handoff isolate; do
   cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
@@ -69,7 +71,7 @@ each skill's `agents/openai.yaml` for its display name.
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan autonomous optimize whereami handoff; do
+for s in sprint analyze plan autonomous optimize whereami handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -259,6 +261,21 @@ fresh agent: mission, context, verified-vs-claimed work, in-flight state, next g
 decisions with their whys, and gotchas. It closes with standing instructions that make
 the next agent verify every claim against real state and interview the operator
 relentlessly (recommended answers first) before building anything.
+
+## Isolate — `/isolate`
+
+Moves **this session** into its own git worktree and `iso/<topic>` branch so several
+agent sessions can share one repo without editing the same diff, stashing each other's
+work, or committing each other's files. `/isolate` (or `/isolate off <branch>`) creates
+the worktree, carries over only the files this session already edited, leaves every
+other dirty file exactly where it was, and installs session-long rules: every git
+command is `git -C <worktree>`, the shared checkout is read-only, stash is never the
+answer. `/isolate done` commits, verifies, pushes and opens a PR (or fast-forwards the
+base when no remote exists and nothing has it checked out), then removes the worktree.
+`/isolate status` is a read-only map of every worktree, branch, and dirty tree.
+
+`/plan` and `/sprint` already isolate their *subagents*; `/isolate` is for the top-level
+session itself, so it can coexist with them and with other terminals on the same repo.
 
 ---
 

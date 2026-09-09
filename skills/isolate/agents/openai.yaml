@@ -1,0 +1,4 @@
+interface:
+  display_name: "Isolate"
+  short_description: "Move this session into its own worktree to coexist with other agents"
+  default_prompt: "Use $isolate to move this session into its own git worktree and branch. Pass 'off <branch>', 'done', or 'status'."
