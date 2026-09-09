@@ -90,6 +90,24 @@ only reproduces in one company's stack, it is a project note, not a scar.
 
 ## Verification & gates
 
+- **An empty stub is not a neutral stand-in — it silently exercises the "nobody qualifies" path.**
+  A test whose fake returns an empty collection where the real dependency returns a populated one
+  does not weaken the assertion, it inverts what the assertion measures: the code correctly filters
+  everything out, the count reads zero, and the failure looks like a defect in the feature rather
+  than in the fixture. The tell is a positive assertion (`sent == 1`) failing against a filter that
+  is behaving exactly as designed. **Populate every collection a stub returns with the shape the
+  real dependency produces, and name in the fixture WHY it must be populated** — the next reader
+  will otherwise "simplify" it back to empty. Corollary: when a delivery or authorization filter
+  reads zero, suspect the fixture before the filter.
+- **A verification query run as a POLICY-BOUND role reports the POLICY, not the table.** Under
+  row-level security, a role with no context set matches no rows, so `SELECT count(*)` returns 0
+  from a table holding thousands — and an empty result reads as an empty table. Nothing errors.
+  The same trap catches any under-privileged probe: a filtered view, a scoped API token, a
+  tenant-bound connection. **An empty read from a credential you have not given a context to is
+  not evidence of absence.** Verify through an unfiltered credential, or set the context
+  explicitly and state which you used next to the number.
+
+
 - **Never trust, always verify.** "Done" / "pushed" / "loaded" / "green" are claims. The report
   quotes command output; the director's audit produces the facts.
 - **A passing grade is not a verdict until you know WHY it passes.** A result clearing its gate is
@@ -277,3 +295,39 @@ only reproduces in one company's stack, it is a project note, not a scar.
 - **Removing a comment is reversible only by judgment.** Keep every comment that explains *why*,
   documents an external system's quirk, or warns about fragile logic. Remove only decoration:
   banners, narration of obvious code, restatements, emoji.
+
+## A migration file's own COMMIT ends the transaction you wrapped it in
+
+**Class:** a dry run that is not a dry run — a verification harness silently becoming a write.
+
+**Mechanism.** House convention wraps each migration in its own `BEGIN; … COMMIT;`. An agent
+that wants to measure a migration's effect without applying it reaches for the obvious harness:
+
+```sql
+BEGIN;
+\i migrations/NNN_thing.sql   -- contains its own COMMIT
+-- verification queries
+ROLLBACK;                      -- "there is no transaction in progress"
+```
+
+The file's `COMMIT` closes the OUTER transaction. Every statement in the file is now durable,
+every statement after the `\i` runs in autocommit, and the trailing `ROLLBACK` reports a warning
+that reads like noise. The harness looks like a dry run in the transcript and is a full apply in
+the database. Postgres never errors; nothing in the output says "applied".
+
+This is worse where staging and production share one database: the write is immediately live to
+paying customers, ahead of any deploy, with no gate crossed and no announcement.
+
+**Rules.**
+
+1. **Strip `BEGIN`/`COMMIT` from the file before a transactional dry run**, then wrap the
+   remainder yourself. Assert the strip happened (count the substitutions) rather than assuming.
+2. **Prove you are still in a transaction before you trust a rollback.** `SELECT
+   txid_current_if_assigned()` — or simply read the `ROLLBACK` output: *"there is no transaction
+   in progress"* means the work committed.
+3. **A track never runs a migration, and "inside a transaction" is not an exception.** Say so in
+   the brief in those words; "you never apply a migration" is heard as being about intent, and an
+   agent that believes it will roll back does not think it is applying anything.
+4. **Directors: the ledger row is the tell.** A migration applied by a harness records no
+   `schema_migrations` row, so a ledger that disagrees with the catalog means something applied a
+   file outside the runbook. Check both, not just the ledger.
