@@ -12,7 +12,7 @@
     {
       "name": "10x-skills",
       "description": "Everything in this repo as one plugin: /sprint (sprint-directed multi-agent methodology), /analyze (depth-scaled read-only investigation), /plan (adaptive mini-sprint planning), /autonomous (negotiated unattended execution), /optimize (workflow optimization), /whereami (session situation report), /handoff (one-message session transfer), /isolate (per-session worktree isolation for multi-agent repos).",
-      "version": "2.4.0",
+      "version": "2.4.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -38,7 +38,7 @@
     {
       "name": "sprint-director",
       "description": "Sprint-directed multi-agent development methodology. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a living state ledger. Humans appear only at explicit operator gates.",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -65,7 +65,7 @@
     {
       "name": "analyze",
       "description": "Depth-scaled, read-only investigation of a feature, bug, flow, or component. Fans out parallel explore scouts with per-subagent model selection to keep the main context clean.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -88,7 +88,7 @@
     {
       "name": "plan",
       "description": "Adaptive mini-sprint planning: interview to zero ambiguity, then a track-shaped plan sized to the work — single-track in-session or multi-track subagents on worktrees with per-track model tiers.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -111,7 +111,7 @@
     {
       "name": "autonomous",
       "description": "Negotiated grant of unattended autonomy over an approved plan or sprint: interview until the agent declares clearance, execute to full verification with a hard floor, quarantine concerns, and deliver a wake-up report.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -134,7 +134,7 @@
     {
       "name": "optimize",
       "description": "Workflow-optimization meta skill: mine past work for repeated friction, research CLIs/MCPs/tooling, set up hands-off access behind operator gates, verify end-to-end, and generate registered custom skills.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -158,7 +158,7 @@
     {
       "name": "whereami",
       "description": "In-chat situation report for the current session: what is done, what is in progress, what comes next.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -180,7 +180,7 @@
     {
       "name": "handoff",
       "description": "One-message session handoff: a single copyable message that lets a fresh agent verify state, grill the operator, and continue the work.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -202,7 +202,7 @@
     {
       "name": "isolate",
       "description": "Move this session into its own git worktree and branch so it can share a repo with other agents: carry only your own edits, leave everyone else's diff alone, never stash, land via PR or safe fast-forward, then remove the worktree.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"

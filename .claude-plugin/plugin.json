@@ -1,7 +1,7 @@
 {
   "name": "10x-skills",
   "description": "tipb47's Claude Code skills bundle: the Sprint Director multi-agent methodology (/sprint), depth-scaled analysis (/analyze), adaptive mini-sprint planning (/plan), negotiated unattended runs (/autonomous), workflow optimization (/optimize), session situation reports (/whereami), and one-message session handoffs (/handoff).",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "author": {
     "name": "tipb47",
     "url": "https://github.com/tipb47"
