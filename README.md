@@ -8,6 +8,7 @@
 | [Sprint Director](#sprint-director--sprint) | `/sprint` | Sprint-directed multi-agent development methodology: `init`, `direct`, `status`, `clean` |
 | [Analyze](#analyze--analyze) | `/analyze` | Depth-scaled read-only investigation via parallel explore scouts |
 | [Plan](#plan--plan) | `/plan` | Adaptive mini-sprint: interview, then single- or multi-track plan + execution |
+| [Pry](#pry--pry) | `/pry` | Zero-assumption interrogation: recursive q&a rounds until nothing is up in the air |
 | [Autonomous](#autonomous--autonomous) | `/autonomous` | Negotiated unattended execution of an approved plan — go to bed, wake to a report |
 | [Optimize](#optimize--optimize) | `/optimize` | Turn recurring manual workflows into hands-off tooling: CLIs, MCPs, generated skills |
 | [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
@@ -38,6 +39,7 @@ Then install everything:
 /plugin install sprint-director@10x-skills
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
+/plugin install pry@10x-skills
 /plugin install autonomous@10x-skills
 /plugin install optimize@10x-skills
 /plugin install whereami@10x-skills
@@ -55,7 +57,7 @@ Copy any skill folder into your user skills directory:
 git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
-for s in sprint analyze plan autonomous optimize whereami handoff isolate; do
+for s in sprint analyze plan pry autonomous optimize whereami handoff isolate; do
   cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
@@ -71,7 +73,7 @@ each skill's `agents/openai.yaml` for its display name.
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan autonomous optimize whereami handoff isolate; do
+for s in sprint analyze plan pry autonomous optimize whereami handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -226,6 +228,26 @@ steps, implemented in-session after approval) or **multi-track** (a mini-sprint:
 with model tier + rationale, merge order, worktree isolation, director-style audit and
 `--no-ff` merges, worktrees and branches cleaned when done). Work bigger than one
 session gets pointed at `/sprint init` instead. No plan files — briefs travel inline.
+
+## Pry — `/pry`
+
+Zero-assumption interrogation, inspired by the classic `/grill-me` prompt. The
+doctrine: never fill ambiguity with an assumption. When a task, plan, or idea has
+anything up in the air, `/pry` interrogates it out — recursive rounds of batched
+questions, each leading with a recommended answer, each round's answers opening the
+next branches — until certainty is true and ambiguity is false. Facts get looked up
+in the codebase, never asked; only genuine decisions reach you. Contradictions
+between your answers are treated as signal and pried at, not papered over. There is
+no confirm gate: the shared understanding converges through the rounds. It fires
+proactively on material ambiguity, not just on invocation, and once understanding is
+locked it hands off by context — continue the task, feed `/plan`, or point at
+`/sprint init`. Pry itself never builds.
+
+It is also the interview-methodology reference the other skills cite: `/plan`'s
+interview phase, `/sprint`'s init and drafting interviews and the director's clarify
+loop, `/autonomous`'s envelope negotiation, and `/handoff`'s standing instruction all
+run as pry interviews where it is installed — each keeps its own inline fallback, so
+nothing breaks when it isn't.
 
 ## Autonomous — `/autonomous`
 

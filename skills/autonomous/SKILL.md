@@ -23,7 +23,9 @@ Autonomy is granted over an AGREED plan, never over a raw prompt.
 ## Pre-flight: negotiate, then clear
 
 Interview with the standard discipline (recommended answer first, batch independent,
-sequence dependent, facts looked up yourself) until NOTHING is ambiguous. Cover:
+sequence dependent, facts looked up yourself) until NOTHING is ambiguous. Where the
+`/pry` skill is installed, run this negotiation as a pry interview — it is the
+reference for the intensity; without it, this discipline stands on its own. Cover:
 
 1. **Verification contract** — the exact commands, e2e drives, and expected outputs
    that define done. "Looks right" is not a contract. No contract → no clearance.

@@ -83,6 +83,9 @@ existing files.
    beyond explicitly approved gap-fills.
 2. **Interview** the user (use your runtime's structured question tool if it has one — adapt
    wording to what you can already see in the repo; skip questions the codebase answers).
+   Where the `/pry` skill is installed, run this interview — and every later question
+   round, sprint drafting included — as a pry interview; it is the reference for the
+   intensity and mechanics. Without it, the discipline below stands on its own.
    Interview discipline, here and in every later question round:
    - **Every question carries your recommended answer** as the first option, labeled
      `(Recommended)` — never present a bare option list you have no opinion on.
@@ -194,7 +197,8 @@ Become the sprint director for the current project's active sprint.
    sprint needs are alive. **If reality contradicts the sprint doc: amend SPRINT.md and
    log the deviation in STATE.md BEFORE spawning tracks.** Docs never drift from what runs.
 4. **Clarify, reconcile, then plan:** raise ALL blocking/open/clarifying questions in one
-   round (genuine operator decisions only — look up facts yourself). Follow the
+   round (genuine operator decisions only — look up facts yourself). Where `/pry` is
+   installed, run this clarify loop as a pry interview; either way, follow the
    init interview discipline: every question leads with your `(Recommended)` answer, and
    dependent questions are sequenced, not batched with the questions they depend on. If answers
    shift scope, reconcile — amend SPRINT.md and log in STATE.md — then re-surface any new

@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "10x-skills",
   "metadata": {
-    "description": "tipb47's Claude Code skills — sprint-directed multi-agent methodology, depth-scaled analysis, adaptive planning, negotiated unattended runs, workflow optimization, session status, session handoffs, and per-session worktree isolation."
+    "description": "tipb47's Claude Code skills — sprint-directed multi-agent methodology, depth-scaled analysis, adaptive planning, zero-assumption interrogation, negotiated unattended runs, workflow optimization, session status, session handoffs, and per-session worktree isolation."
   },
   "owner": {
     "name": "tipb47",
@@ -11,8 +11,8 @@
   "plugins": [
     {
       "name": "10x-skills",
-      "description": "Everything in this repo as one plugin: /sprint (sprint-directed multi-agent methodology), /analyze (depth-scaled read-only investigation), /plan (adaptive mini-sprint planning), /autonomous (negotiated unattended execution), /optimize (workflow optimization), /whereami (session situation report), /handoff (one-message session transfer), /isolate (per-session worktree isolation for multi-agent repos).",
-      "version": "2.4.1",
+      "description": "Everything in this repo as one plugin: /sprint (sprint-directed multi-agent methodology), /analyze (depth-scaled read-only investigation), /plan (adaptive mini-sprint planning), /pry (zero-assumption interrogation), /autonomous (negotiated unattended execution), /optimize (workflow optimization), /whereami (session situation report), /handoff (one-message session transfer), /isolate (per-session worktree isolation for multi-agent repos).",
+      "version": "2.5.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -28,6 +28,7 @@
         "orchestration",
         "analysis",
         "planning",
+        "interrogation",
         "autonomy",
         "optimization",
         "handoff",
@@ -106,6 +107,30 @@
         "multi-agent",
         "worktrees",
         "tracks"
+      ]
+    },
+    {
+      "name": "pry",
+      "description": "Zero-assumption interrogation, inspired by the classic /grill-me prompt: recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Fires proactively on material ambiguity, explores the codebase instead of asking about facts, leads every question with a recommended answer, and hands off to execution, /plan, or /sprint once understanding is locked. Also the interview-methodology reference the other 10x-skills cite.",
+      "version": "1.0.0",
+      "author": {
+        "name": "tipb47",
+        "url": "https://github.com/tipb47"
+      },
+      "source": "./skills/pry",
+      "strict": false,
+      "skills": [
+        "."
+      ],
+      "category": "workflow",
+      "homepage": "https://github.com/tipb47/10x-skills",
+      "license": "MIT",
+      "tags": [
+        "interrogation",
+        "interview",
+        "clarification",
+        "requirements",
+        "planning"
       ]
     },
     {

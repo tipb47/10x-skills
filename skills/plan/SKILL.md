@@ -52,7 +52,10 @@ report for this target exists in the conversation, build on it instead of re-der
 
 ## Phase 2 — Interview to zero ambiguity
 
-The load-bearing phase. Interview discipline:
+The load-bearing phase. Where the `/pry` skill is installed, run this phase as a pry
+interview — it is the reference for interview intensity and mechanics (recursive
+rounds, contradictions pried at, no assumption survives). Without it, the discipline
+below stands on its own:
 
 - Look up facts yourself; put only genuine decisions to the user (structured question
   tool where the runtime has one).

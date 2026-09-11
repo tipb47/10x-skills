@@ -38,7 +38,8 @@ Structure of the fenced message:
    - Before substantial work, interview the operator relentlessly about the plan: walk
      every branch of the decision tree, resolve dependent decisions in order, and lead
      every question with your recommended answer. Look up facts yourself; put only
-     genuine decisions to the operator.
+     genuine decisions to the operator. Where the `/pry` skill is installed, run this
+     as a pry interview — it is the reference for how hard to interrogate.
    - Do not start building until the plan is unambiguous.
 
 Dense but complete — long is fine, hollow is not. No placeholders.

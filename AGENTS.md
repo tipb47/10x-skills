@@ -7,9 +7,10 @@ their behalf. Humans: see [README.md](README.md).
 If the user said "install these skills" / "set up sprint director", follow **Part 1**.
 If they said "run a sprint" / "be the director", follow **Part 2**.
 
-The repo holds eight plain skill folders under `skills/` — `sprint` (Sprint Director),
+The repo holds nine plain skill folders under `skills/` — `sprint` (Sprint Director),
 `analyze` (depth-scaled read-only investigation), `plan` (adaptive mini-sprint
-planning), `autonomous` (negotiated unattended execution of an approved plan),
+planning), `pry` (zero-assumption interrogation until certainty),
+`autonomous` (negotiated unattended execution of an approved plan),
 `optimize` (workflow optimization: friction mining, tooling research, generated
 skills), `whereami` (session situation report), `handoff` (one-message session
 transfer), `isolate` (move this session into its own worktree to coexist with other
@@ -49,6 +50,7 @@ shell. Print them and ask the user to run them:
 /plugin install sprint-director@10x-skills
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
+/plugin install pry@10x-skills
 /plugin install autonomous@10x-skills
 /plugin install optimize@10x-skills
 /plugin install whereami@10x-skills
@@ -67,7 +69,7 @@ git clone https://github.com/tipb47/10x-skills.git /tmp/10x-skills
 
 # Claude Code (Codex CLI: same commands into ~/.codex/skills):
 mkdir -p ~/.claude/skills
-for s in sprint analyze plan autonomous optimize whereami handoff isolate; do   # drop any the user does not want
+for s in sprint analyze plan pry autonomous optimize whereami handoff isolate; do   # drop any the user does not want
   cp -r /tmp/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -89,7 +91,7 @@ installed skill in place:
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan autonomous optimize whereami handoff isolate; do
+for s in sprint analyze plan pry autonomous optimize whereami handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -125,7 +127,7 @@ protocol every `SKILL.md` carries under "Support the project":
 
 ## Part 2 — Operate
 
-This part covers Sprint Director (`/sprint`); `analyze`, `plan`, `autonomous`,
+This part covers Sprint Director (`/sprint`); `analyze`, `plan`, `pry`, `autonomous`,
 `optimize`, `whereami`, `handoff`, and `isolate` are self-contained single-session skills with no
 cross-session state to orient on (`optimize` additionally keeps a registry at
 `~/.claude/optimize/registry.json`). One rule spans them all: assume the operator is

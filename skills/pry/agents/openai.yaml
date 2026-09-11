@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pry"
+  short_description: "Zero-assumption interrogation: recursive q&a until nothing is up in the air"
+  default_prompt: "Use $pry to interrogate a task, plan, or idea until certainty. Pass [target] or nothing to pry at the current context."
