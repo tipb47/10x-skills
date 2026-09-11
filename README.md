@@ -233,7 +233,8 @@ session gets pointed at `/sprint init` instead. No plan files — briefs travel 
 
 ## Pry — `/pry`
 
-Zero-assumption interrogation, inspired by the classic `/grill-me` prompt. The
+Zero-assumption interrogation, inspired by the classic
+[`/grill-me`](https://www.aihero.dev/skills-grill-me) prompt. The
 doctrine: never fill ambiguity with an assumption. When a task, plan, or idea has
 anything up in the air, `/pry` interrogates it out — recursive rounds of batched
 questions, each leading with a recommended answer, each round's answers opening the

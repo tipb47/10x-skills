@@ -1,6 +1,6 @@
 ---
 name: pry
-description: Zero-assumption interrogation (inspired by /grill-me) — recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Use for /pry, when the user wants to be grilled or stress-test a plan/design, and PROACTIVELY whenever what the user presented carries material ambiguity that would otherwise be filled by assumption.
+description: Zero-assumption interrogation (inspired by /grill-me, https://www.aihero.dev/skills-grill-me) — recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Use for /pry, when the user wants to be grilled or stress-test a plan/design, and PROACTIVELY whenever what the user presented carries material ambiguity that would otherwise be filled by assumption.
 argument-hint: [target — a task, plan, idea, or "this"; inferred from context when absent]
 ---
 
@@ -11,7 +11,8 @@ up in the air, interrogate it out — round after round of pointed questions —
 certainty is true and ambiguity is false, and only then let work proceed. The output
 of this skill is a locked shared understanding, never code.
 
-Inspired by the classic "grill me" prompt; this skill is its proactive, recursive
+Inspired by the classic "grill me" prompt
+(https://www.aihero.dev/skills-grill-me); this skill is its proactive, recursive
 descendant.
 
 ## When to fire

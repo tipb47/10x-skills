@@ -113,7 +113,7 @@
     },
     {
       "name": "pry",
-      "description": "Zero-assumption interrogation, inspired by the classic /grill-me prompt: recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Fires proactively on material ambiguity, explores the codebase instead of asking about facts, leads every question with a recommended answer, and hands off to execution, /plan, or /sprint once understanding is locked. Also the interview-methodology reference the other 10x-skills cite.",
+      "description": "Zero-assumption interrogation, inspired by the classic /grill-me prompt (https://www.aihero.dev/skills-grill-me): recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Fires proactively on material ambiguity, explores the codebase instead of asking about facts, leads every question with a recommended answer, and hands off to execution, /plan, or /sprint once understanding is locked. Also the interview-methodology reference the other 10x-skills cite.",
       "version": "1.0.0",
       "author": {
         "name": "tipb47",
