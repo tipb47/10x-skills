@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deslop"
+  short_description: "Remove and prevent AI slop in frontend and code, with fresh-eyes subagent audits"
+  default_prompt: "Use $deslop to design without the generic AI look, or audit existing work. Pass [target] or 'audit <target> [quick|standard|deep]'."

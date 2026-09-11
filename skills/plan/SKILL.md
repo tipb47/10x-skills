@@ -99,7 +99,10 @@ a written justification. Judgment (audit, merge, synthesis) stays in the main se
 Present the plan for approval (exit plan mode where the runtime has one). **Assume the
 operator is watching:** surface material mid-execution decisions as they arise, and
 stop at anything gate-shaped. Unattended execution is never assumed — that grant comes
-only from the `/autonomous` skill's negotiated envelope. Then:
+only from the `/autonomous` skill's negotiated envelope. Work that touches UI runs
+the `/deslop` discipline where installed — design system before pixels, and a
+fresh-context subagent audit before the work counts as done; without it, avoid the
+generic AI look and review UI with fresh eyes. Then:
 
 **Single-track:** implement in-session, step by step, verifying as you go.
 

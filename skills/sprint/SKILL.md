@@ -217,6 +217,11 @@ Become the sprint director for the current project's active sprint.
    - Spawn each track on the model tier its SPRINT.md row states (§ Model selection).
      A row without a tier is a drafting gap: assign one per the model policy and amend
      SPRINT.md before spawning.
+   - A track that touches UI follows the `/deslop` discipline where installed: honor
+     the project's root `STYLE.md` (visual design — distinct from ops/DESIGN.md's
+     architecture), and the director includes a fresh-context deslop audit of that
+     track's UI at audit time. Without deslop, audit UI against the generic-AI-look
+     failure mode explicitly.
    - **Verify, never trust:** "pushed"/"loaded"/"done" are claims — check git/remote/DB/
      artifact state yourself before acting on them. Re-run tracks' verification gates
      yourself at audit.

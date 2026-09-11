@@ -9,6 +9,7 @@
 | [Analyze](#analyze--analyze) | `/analyze` | Depth-scaled read-only investigation via parallel explore scouts |
 | [Plan](#plan--plan) | `/plan` | Adaptive mini-sprint: interview, then single- or multi-track plan + execution |
 | [Pry](#pry--pry) | `/pry` | Zero-assumption interrogation: recursive q&a rounds until nothing is up in the air |
+| [Deslop](#deslop--deslop) | `/deslop` | Slop removal and prevention: strategy-first design, tokens, fresh-eyes subagent audits |
 | [Autonomous](#autonomous--autonomous) | `/autonomous` | Negotiated unattended execution of an approved plan — go to bed, wake to a report |
 | [Optimize](#optimize--optimize) | `/optimize` | Turn recurring manual workflows into hands-off tooling: CLIs, MCPs, generated skills |
 | [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
@@ -40,6 +41,7 @@ Then install everything:
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
 /plugin install pry@10x-skills
+/plugin install deslop@10x-skills
 /plugin install autonomous@10x-skills
 /plugin install optimize@10x-skills
 /plugin install whereami@10x-skills
@@ -57,7 +59,7 @@ Copy any skill folder into your user skills directory:
 git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
-for s in sprint analyze plan pry autonomous optimize whereami handoff isolate; do
+for s in sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
   cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
@@ -73,7 +75,7 @@ each skill's `agents/openai.yaml` for its display name.
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan pry autonomous optimize whereami handoff isolate; do
+for s in sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -248,6 +250,27 @@ interview phase, `/sprint`'s init and drafting interviews and the director's cla
 loop, `/autonomous`'s envelope negotiation, and `/handoff`'s standing instruction all
 run as pry interviews where it is installed — each keeps its own inline fallback, so
 nothing breaks when it isn't.
+
+## Deslop — `/deslop`
+
+Slop removal and prevention. AI-generated work converges on the statistical median —
+in UI: Inter, indigo gradients, hero + three feature cards; in code: narrated
+comments and boilerplate hedging. `/deslop` routes by target: the **frontend path**
+(adapted from samber's
+[frontend-design-deslop](https://github.com/samber/cc-skills), MIT) runs
+strategy-first design — commit to words, translate them into OKLCH tokens, apply the
+craft layer, persist everything in a root `STYLE.md` — with a lean core and a 20-file
+reference library loaded strictly on demand. The **code path** is a minimal
+checklist for comment noise, doc slop, dead abstractions, and naming tells.
+
+It fires proactively when UI work begins (design before pixels) and when it
+completes. The audit rule is absolute: **sweeps run in fresh-context subagents that
+report back** — the session that built the UI never audits it, because its own
+context rubber-stamps its choices. `/deslop audit <target> [quick|standard|deep]`
+scales from one scout to a dimension fan-out with rendered-page checks; findings
+come back scored and worst-first, fixes applied on approval or `--fix`. `/plan`
+executions and `/sprint` tracks that touch UI cite the deslop discipline, with
+inline fallbacks when it isn't installed.
 
 ## Autonomous — `/autonomous`
 
