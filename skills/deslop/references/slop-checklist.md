@@ -130,6 +130,7 @@ These need a live render or screenshot to catch — flag them when auditing a bu
 - [ ] No uncaught script errors on load; a broken interaction or hidden content from a JS error is a bug, fix it before judging the design.
 - [ ] Content is visible at rest. If a reveal-on-scroll/entrance animation is used, ship the content visible by default and enhance the entrance — never leave it at `opacity: 0` waiting on a handler that might not run.
 - [ ] At least 8px (ideally 12-16px) of padding inside every bordered or colored container; body text never sits flush against the viewport edge.
+- [ ] Every clickable shows the hand cursor, and every disabled control shows `not-allowed`. Check `getComputedStyle(el).cursor` on the rendered page, because the source cannot show which CSS layer wins. Cover buttons, interactive ARIA roles, and any `div` or row with a click handler. On Tailwind v4, the preflight resets buttons to `cursor: default` (fix: `adapters.md`).
 
 ## Signature
 

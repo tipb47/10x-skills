@@ -22,6 +22,8 @@ The discipline below draws on Refactoring UI (Wathan and Schoger), Rauno Freiber
 
 Every interactive component needs every state specified, not just its default. The matrix: default, hover, active/pressed, focus (keyboard-visible), disabled, loading, error, and where relevant selected and read-only.
 
+The cursor is part of the matrix. Anything a click acts on shows `pointer`, and a disabled control shows `not-allowed`. A hover tint does not replace the cursor: the tint says something changed, and the cursor says the thing can be clicked. The arrow over a button is one of the quickest signs of generated UI. It usually comes from Tailwind v4, whose preflight resets `button` to `cursor: default` (fix: `adapters.md`).
+
 Two rules prevent the most common defects:
 
 1. **Font weight must not change between states** (regular to bold on hover or selected) — it shifts layout; change color, background, or a border instead, or reserve space for the bold weight.
@@ -106,6 +108,7 @@ These are first-class screens, not afterthoughts.
 ## 10. Component slop tells
 
 - Components with only a resting state (no hover, focus, active, disabled, loading).
+- Clickable controls that show the arrow cursor: a button that tints on hover but never shows the hand.
 - Placeholder text used as the label.
 - Buttons colored by meaning instead of ranked by importance.
 - Tables with center-aligned numbers, proportional (non-tabular) numerals, or heavy full borders.

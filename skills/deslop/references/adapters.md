@@ -46,6 +46,31 @@ Import the core, then reference variables directly.
 
 Usage: `<button class="bg-accent text-white font-body rounded-card px-4 py-2">`. Tailwind v4 ships its own palette in OKLCH, so custom OKLCH tokens sit naturally alongside it.
 
+**Restore the hand cursor.** Tailwind v4's preflight resets `button` to `cursor: default`; v3 set `pointer`. Without a fix, every button shows the arrow, and a hover tint does not make up for it. Generated code misses this because models learned v3, where buttons got the pointer for free. Add one base-layer rule. It sits under the utilities, so a deliberate `cursor-default` or `cursor-grab` on an element still wins:
+
+```css
+@layer base {
+  :is(button, [role="button"], [role="tab"], [role="option"], [role="menuitem"],
+      [role="menuitemradio"], [role="menuitemcheckbox"], [role="radio"], [role="checkbox"],
+      [role="switch"], [role="link"], summary,
+      input:is([type="checkbox"], [type="radio"], [type="file"], [type="range"], [type="color"]))
+    :not(:disabled, [aria-disabled="true"]),
+  label:has(> input:is([type="checkbox"], [type="radio"]):enabled) {
+    cursor: pointer;
+  }
+  :is(button, [role="button"], [role="tab"], [role="option"], [role="menuitem"],
+      [role="menuitemradio"], [role="menuitemcheckbox"], [role="radio"], [role="checkbox"],
+      [role="switch"], [role="link"],
+      input:is([type="checkbox"], [type="radio"], [type="file"], [type="range"], [type="color"]))
+    :is(:disabled, [aria-disabled="true"]),
+  label:has(> input:is([type="checkbox"], [type="radio"]):disabled) {
+    cursor: not-allowed;
+  }
+}
+```
+
+The rule cannot reach a `div`, `tr`, or card with a click handler. Those elements still need `cursor-pointer`, and the better fix is usually a real `<button>` or link.
+
 ## shadcn/ui (semantic tokens)
 
 shadcn components read semantic variables, so overriding them reskins every component at once. Override the default primary (which is otherwise the slop accent). On Tailwind v4, shadcn uses OKLCH and `@theme inline`.
