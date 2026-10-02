@@ -87,6 +87,18 @@ only reproduces in one company's stack, it is a project note, not a scar.
 - **Worktree language environments are fresh.** Missing optional dependencies "fail" tests that
   are green on the trunk. Install or invoke through the project's env manager before believing a
   worktree-only failure.
+- **A harness-created worktree starts at the TRUNK, not at the sprint's integration tip.** A
+  track that reads its brief before it checks out its branch reads the pre-amendment copy, so
+  every correction the director committed to integration at Gate 0 is invisible to it. The track
+  then "discovers" a defect that is already fixed, or follows the stale instruction. Order the
+  spawn prompt so checkout comes FIRST and the brief is read after it, or point the prompt at
+  `origin/<integration>:<path>`. At audit, a track report that quotes a brief value the director
+  already amended is the tell.
+- **Agent shells inherit the PARENT session's environment, not the user's login defaults.**
+  Changing a version manager's default (`nvm alias default`, a new PATH entry) after the session
+  started reaches no spawned agent, and a bare tool name may resolve to a different install
+  entirely (a host-OS binary under WSL). Put an explicit PATH prefix in every spawn prompt, and
+  have the track print the tool version before its first install.
 
 ## Verification & gates
 
@@ -135,6 +147,12 @@ only reproduces in one company's stack, it is a project note, not a scar.
 - **A test can pass vacuously.** Fixtures that feed a join but share no keys make the join return
   empty and every `all(...)`-style assertion pass from the day it was written. Assert the COUNT so
   an empty result is a failure, not a pass.
+- **A validator's clauses can each be untested while its suite is green.** A multi-clause
+  validator (caps, sums, allowlists) passes every existing test with several of its checks
+  DELETED, because tests exercise one representative violation, not one per clause. Coverage
+  cannot see this — the clauses execute on every happy path. Deletion-mutation is the proof:
+  remove a check, expect a red test, and add the missing violating test for every clause that
+  stays green. Budget this for validation code guarding value.
 - **A verification harness can outlive its own premise.** A gate asserting parity with an old
   expression goes red the moment the new behavior first fires — which is the FEATURE working. A
   permanently-red gate stops being read. Scope a parity claim to the population it was ever true
@@ -331,3 +349,14 @@ paying customers, ahead of any deploy, with no gate crossed and no announcement.
 4. **Directors: the ledger row is the tell.** A migration applied by a harness records no
    `schema_migrations` row, so a ledger that disagrees with the catalog means something applied a
    file outside the runbook. Check both, not just the ledger.
+
+## Parallel sprints sharing one deployed test environment
+
+- **One shared deploy target, several live sprints: the last deploy wins and silently removes
+  everyone else's code.** A peer session deployed the shared staging service from its own branch
+  and the running sprint's endpoints 404'd mid-drive, which the agent under test read as "the
+  feature is broken" and worked around. The rule: before deploying a shared environment, merge
+  the trunk (and any other sprint's landed work) into the deploying tree, tell the other live
+  sessions before and after, and after a promotion redeploy from the promoted tree. When a drive
+  suddenly loses endpoints it had a minute ago, check the service's last-modified time and the
+  deployed bundle before debugging the code.
