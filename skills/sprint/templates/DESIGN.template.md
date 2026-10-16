@@ -6,7 +6,7 @@ operator-approved and logged in `STATE.md`.
 ## 1. Mission & scope boundary
 
 {{MISSION_PARAGRAPH}}
-<!-- init: include explicit NON-goals / scope boundaries — what this arc will NOT build.
+<!-- init: include explicit NON-goals / scope boundaries — what this project will NOT build.
 Scope creep dies here or nowhere. -->
 
 ## 2. Architecture

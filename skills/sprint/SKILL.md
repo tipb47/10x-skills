@@ -1,7 +1,7 @@
 ---
 name: sprint
-description: Sprint-directed multi-agent development methodology. Use for `/sprint init` (scaffold the ops/ sprint system into a project, interview-driven), `/sprint direct` (boot as sprint director for the current project's active sprint), `/sprint status` (per-project sprint/backlog status inside a project, cross-project dashboard otherwise), `/sprint clean` (reconcile ledger, backlog, sprint folders, worktrees, and branches — interview-driven). Invoke when the user mentions sprint directing, sprint methodology, starting/running a sprint, sprint status, or sprint cleanup.
-argument-hint: init | direct | status | clean
+description: Sprint-directed multi-agent development methodology. Use for `/sprint init` (scaffold the ops/ sprint system into a project, interview-driven), `/sprint direct` (boot as sprint director for the current project's active sprint), `/sprint arc` (draft an arc — a set of sprints, some parallel, toward one large outcome — and run its checkpoints as arc director), `/sprint status` (per-project sprint/backlog status inside a project, cross-project dashboard otherwise), `/sprint clean` (reconcile ledger, backlog, sprint folders, worktrees, and branches — interview-driven). Invoke when the user mentions sprint directing, sprint methodology, starting/running a sprint, parallel sprints or an arc, sprint status, or sprint cleanup.
+argument-hint: init | direct | arc | status | clean
 ---
 
 # Sprint System — methodology engine
@@ -23,6 +23,9 @@ defined order into the sprint's **integration branch** (`sNN/integration`), prom
 that branch into the trunk with ONE merge at an operator gate, and closes by updating
 the ledger (`STATE.md`) and drafting the next sprint from what actually happened. Humans appear at **operator gates** — explicit pauses for
 deployments, account signups, approvals — never as mid-flight track interruptions.
+Work too large for one sprint, with sprints that can run in parallel, becomes an **arc**:
+sprints promote into `aNN/integration`, and an **arc director** merges them at
+checkpoints and promotes the arc into the trunk once.
 
 ## Subcommand routing
 
@@ -31,6 +34,7 @@ Parse the argument. No argument or unrecognized → print the usage summary belo
 ```
 /sprint init    — scaffold or adopt the sprint system in the current project
 /sprint direct  — become the sprint director for this project's current sprint
+/sprint arc     — draft an arc of parallel sprints, or run its next arc checkpoint
 /sprint status  — where things stand: this project in depth, or all projects
 /sprint clean   — reconcile ledger, backlog, sprint folders; sweep git debris
 ```
@@ -86,6 +90,7 @@ existing files.
    Where the `/pry` skill is installed, run this interview — and every later question
    round, sprint drafting included — as a pry interview; it is the reference for the
    intensity and mechanics. Without it, the discipline below stands on its own.
+   Locked decisions handed in by `/build` are settled: ask only what they leave open.
    Interview discipline, here and in every later question round:
    - **Every question carries your recommended answer** as the first option, labeled
      `(Recommended)` — never present a bare option list you have no opinion on.
@@ -165,13 +170,17 @@ existing files.
 ├── DESIGN.md               ← canonical contract: architecture, schemas, conventions, standing decisions
 ├── SPRINT_GUIDELINES.md    ← rules for tracks + directors: gates, branch discipline, definition of done
 ├── DIRECTOR_GUIDELINES.md  ← director runbook: boot → analyze → gate → tracks → audit → merge → close
-├── ROADMAP.md              ← sprint arc at milestone level (reality wins over this outline)
+├── ROADMAP.md              ← milestone outline (reality wins over this outline)
 ├── BACKLOG.md              ← prioritized queue of future work; feeds each next-sprint draft
+├── arcs/
+│   └── arc-NN/
+│       └── ARC.md          ← arc brief + ledger: goal, sprint graph, surfaces, gates, status
 └── sprints/
     ├── archive/            ← closed sprint folders, moved here by /sprint clean
     └── sprint-NN/
         ├── SPRINT.md       ← sprint brief: goal, gates, tracks, merge order, close checklist
-        └── TRACK-*.md      ← self-contained prompt per track subagent
+        ├── TRACK-*.md      ← self-contained prompt per track subagent
+        └── STATUS.md, CLOSE.md ← arc sprints only: sprint director's status + close report
 ```
 
 ---
@@ -179,6 +188,19 @@ existing files.
 ## /sprint direct
 
 Become the sprint director for the current project's active sprint.
+
+**In an arc.** If SPRINT.md carries an `Arc: aNN` line, you are a sprint director in an
+arc, and these rules override the steps below (§ /sprint arc):
+- The kickoff names your sprint; STATE.md points at the arc, not at one sprint.
+- Read and write ops docs at the registry's absolute `ops` path, never a worktree copy.
+- Cut `sNN/integration` from `origin/aNN/integration`, never from the trunk.
+- Write only your own `sprints/sprint-NN/` folder. Never write STATE.md, ARC.md, or
+  BACKLOG.md; log deviations, deploy needs, and blockers in your `STATUS.md`.
+- Never deploy a shared environment (staging, shared DB). Raise it in STATUS.md for
+  the next arc checkpoint.
+- Close: no trunk promotion and no next-sprint draft. Push `sNN/integration` and verify
+  it. Write `CLOSE.md` (shipped, deviations, learnings, deferred work), then set
+  STATUS.md to `done`. The arc director audits and merges it into `aNN/integration`.
 
 1. **Locate the instance:** current project in `~/.claude/sprint/projects.json`, else detect
    an ops folder, else tell the user to run `/sprint init`.
@@ -303,15 +325,19 @@ detectable), give the per-project view. Otherwise give the cross-project dashboa
 
 ### Per-project view
 
-1. Read `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, and the `sprints/` folder (including
-   `archive/`). Cheap git checks: current branch, `git worktree list`, leftover
-   `sNN/*` branches.
+1. Read `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, the `sprints/` folder (including
+   `archive/`), and the active arc's `ARC.md` if STATE.md points at one. Cheap git
+   checks: current branch, `git worktree list`, leftover `sNN/*` and `aNN/*` branches.
 2. Report, compactly:
    - **Just completed:** the last closed sprint and its one-line outcome (STATE.md
      sprint history).
    - **Current sprint:** pointer, phase (drafted / in flight / closing), and — if in
      flight — track progress, which tracks have landed on `sNN/integration`, and
      whether integration has been promoted, as far as STATE.md and git branches show.
+   - **Arc** (only when one is active): ARC.md's status table — each sprint as waiting,
+     unblocked, in flight, done, or merged into `aNN/integration` — and whether the arc
+     has been promoted into the trunk. Done-but-unmerged sprints mean an arc checkpoint
+     is due.
    - **Next up:** the drafted next sprint if one exists, else the top backlog items.
    - **Backlog:** top 3-5 prioritized items; total count.
    - **Health flags:** stalled background jobs, stale worktrees or `sNN/*` branches past
@@ -353,12 +379,16 @@ NEVER removes, moves, or rewrites anything the operator has not explicitly appro
      track means merged into its sprint's integration branch; for an integration branch
      it means promoted into the trunk. An unpromoted integration branch with merged
      tracks is a sprint that never shipped — establish its story in the interview.
+     Treat `aNN/*` branches the same way, with the same retention and merged rules:
+     `aNN/integration` is merged once promoted into the trunk; an arc sprint's
+     `sNN/integration` is merged once merged into `aNN/integration`.
    - **Remote sprint debris:** `git ls-remote --heads origin` (read-only), filtered to
-     the sprint branch convention — `sNN/*` plus any project-specific sprint prefix the
-     local guidelines declare. Branches outside the convention are out of scope: never
-     listed, never touched, never mentioned. No `origin`, or no matches → skip this
-     pass and say so in the report. Classify each match against the trunk on origin
-     (fetch first): merged past the one-sprint retention lag (deletion candidate), merged
+     the sprint branch convention — `sNN/*`, `aNN/*`, plus any project-specific sprint
+     prefix the local guidelines declare. Branches outside the convention are out of
+     scope: never listed, never touched, never mentioned. No `origin`, or no matches →
+     skip this pass and say so in the report. Classify each match against the trunk on
+     origin — an arc sprint's branches against `aNN/integration` — after a fetch:
+     merged past the one-sprint retention lag (deletion candidate), merged
      within retention (keep — the same recovery-point rule as local), unmerged (FLAG;
      never a deletion candidate), or remote-only with no local counterpart (FLAG as an
      anomaly — establish its story in the interview before proposing anything). Where
@@ -377,7 +407,8 @@ NEVER removes, moves, or rewrites anything the operator has not explicitly appro
    - Amend STATE.md / BACKLOG.md; log the clean in STATE.md's decisions log.
    - Remove approved worktrees — `git -C <worktree> status` first; ANY uncommitted work
      stops that removal and goes back to the operator. Then `git worktree prune`.
-   - Delete approved branches only after verifying merged (`git branch --merged <trunk>`).
+   - Delete approved branches only after verifying merged (`git branch --merged <trunk>`,
+     or `--merged aNN/integration` for an arc sprint's branches).
      For an unmerged branch offer only "keep" or "operator deletes it manually".
    - Delete approved remote branches with `git push origin --delete <branch>` only
      after re-verifying merged into the trunk on origin; re-run `git ls-remote --heads origin`
@@ -386,6 +417,85 @@ NEVER removes, moves, or rewrites anything the operator has not explicitly appro
    - Fix or drop dead registry entries.
 5. **Report:** what moved, what was deleted, what was amended, what was flagged and left
    alone.
+
+## /sprint arc
+
+An **arc** is a set of sprints, some parallel, that delivers one large outcome. It
+lives at `<ops>/arcs/arc-NN/ARC.md`. Use an arc only when the work needs 2+ sprints AND
+at least two of them can run in parallel on separable surfaces. Sequential multi-sprint
+work stays a normal sprint roadmap.
+
+### Arc rules
+
+- **Branching.** Each sprint in the arc cuts its `sNN/integration` from
+  `aNN/integration` and promotes into it — not into the trunk. The arc promotes ONCE
+  into the trunk, at an operator gate, when all its sprints are done. Same pattern as
+  track → sprint, one level up. Sprint numbers stay global `sNN`.
+- **Arc director = arc checkpoints.** The arc director does not stay resident. Each
+  `/sprint arc` run is one **arc checkpoint**: boot fresh, do whatever is due, update
+  ARC.md and STATE.md, exit. The operator re-runs it whenever a sprint finishes.
+- **Ledger ownership.** Inside an arc, the arc director is the ONLY writer of STATE.md,
+  ARC.md, and BACKLOG.md. A sprint director in an arc writes only its own
+  `sprints/sprint-NN/` folder: `STATUS.md` (phase, landed tracks, deviations, deploy
+  needs, blockers) and `CLOSE.md` (its close report).
+- **Checkout.** Each parallel sprint director runs in its own worktree. Track worktrees
+  nest off that sprint's integration branch as usual. Every director reads and writes
+  ops docs at the registry's absolute `ops` path.
+- **Shared environments.** Only the arc director deploys shared environments (staging,
+  shared DB, migrations against it), at an operator gate, from the arc tree after
+  merging. Sprint directors raise deploy needs in STATUS.md for the next arc checkpoint.
+
+### Arc checkpoint
+
+1. **Locate the instance** (same as `/sprint direct`). Find the active arc from
+   STATE.md's pointer. No active arc → this is a first boot.
+2. **Boot in this order:** STATE.md → ARC.md → each arc sprint's `sprints/sprint-NN/`
+   folder (SPRINT.md, STATUS.md, CLOSE.md) → DIRECTOR_GUIDELINES.md and DESIGN.md →
+   `SCARS.md` and the private scars file `~/.claude/sprint/scars.md` (if it exists).
+   STATUS.md and CLOSE.md are claims: check `aNN/integration` and each `sNN/integration`
+   on origin yourself.
+3. **First boot — draft the arc:**
+   1. Interview with init's interview discipline (a `/pry` interview where installed).
+      Locked decisions handed in by `/build` are settled: ask only what they leave open.
+      Topics: goal, non-goals, the sprint split, surface ownership, shared environments,
+      the arc's operator gates.
+   2. Test the split. Parallel sprints must own disjoint surfaces. No two sprints can run
+      in parallel → this is not an arc: draft a normal sprint roadmap instead and stop.
+   3. Draft `arcs/arc-NN/ARC.md` from `templates/ARC.template.md`, resolving every
+      `<!-- init/arc: ... -->` directive under init's quality bar. Draft a full
+      `sprints/sprint-NN/` folder for every sprint unblocked at the start. Each SPRINT.md
+      carries an `Arc: aNN` line. Sprints that wait stay outlines in ARC.md until the
+      arc checkpoint that unblocks them.
+   4. Cut `aNN/integration` from the trunk and push it. Point STATE.md at the arc.
+4. **Later boots — do whatever is due:**
+   - **Merge finished sprints.** For each sprint whose STATUS.md says `done`: audit the
+     full diff of `sNN/integration` against `aNN/integration`, DESIGN.md, and the
+     sprint's owned surfaces in ARC.md. Re-run its close gates. Merge it `--no-ff` into
+     `aNN/integration`; suites green after each merge.
+   - **Resolve cross-sprint conflicts** in that merge. Write code only for the conflict.
+   - **Fold in each CLOSE.md:** sprint history and learnings into STATE.md, deferred
+     work into BACKLOG.md.
+   - **Run shared-environment deploys** the sprints raised, at an operator gate, from
+     the arc tree after merging.
+   - **Unblock sprints** whose dependencies have merged: draft their folders if they are
+     still outlines, then emit their kickoff prompts.
+5. **Arc close** (all sprints merged): the operator says go → merge the trunk into
+   `aNN/integration` if it moved, re-verify, then ONE `--no-ff` merge into the trunk and
+   ONE push. Confirm the push landed and exactly one pipeline run started. Then the
+   arc's close gate, branch cleanup by `/sprint direct`'s close rules (`aNN/*` like
+   `sNN/*`), and the next sprint or arc drafted from what actually happened.
+6. **Update ARC.md and STATE.md, then exit.** Report what merged, what is in flight,
+   the kickoff prompts for newly unblocked sprints, and the event that triggers the
+   next arc checkpoint. Name the model for it from ARC.md's `Arc director tier:` line.
+
+### Kickoff prompt for an arc sprint
+
+Emit one per unblocked sprint, naming the model from its `Director tier:` line:
+
+> Start a fresh session on `<model>` in `<repo>`. Run `/isolate off aNN/integration`
+> (where installed; else `git worktree add <path> -b sNN/integration
+> origin/aNN/integration` and work there). Then run `/sprint direct` for sprint-NN of
+> arc aNN.
 
 ## Registry format (`~/.claude/sprint/projects.json`)
 

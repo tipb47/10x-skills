@@ -27,8 +27,10 @@ deviation in `STATE.md` BEFORE spawning tracks.
 ├── DESIGN.md                  ← canonical design contract
 ├── SPRINT_GUIDELINES.md       ← rules for tracks + directors
 ├── DIRECTOR_GUIDELINES.md     ← the director runbook
-├── ROADMAP.md                 ← sprint arc at milestone level
+├── ROADMAP.md                 ← milestone outline
 ├── BACKLOG.md                 ← prioritized queue of future work
+├── arcs/
+│   └── arc-NN/ARC.md          ← arc brief + ledger, when sprints run in parallel
 └── sprints/
     ├── archive/               ← closed sprints, moved by /sprint clean
     └── sprint-NN/

@@ -11,6 +11,11 @@ architecture/contract decisions expected mid-sprint rather than pre-drafted; pri
 sprint's audit caught seam defects its gates missed. The kickoff must name this model —
 the operator launches the session. -->
 
+<!-- init/arc: in an arc sprint only, add `**Arc:** aNN → arcs/arc-NN/ARC.md` here. Then
+rewrite Gate 0 and the close gate: `sNN/integration` cuts from and merges into
+`aNN/integration`, not `{{TRUNK}}`. The close gate has no trunk promotion; it ends with
+CLOSE.md written and STATUS.md set to `done`. Outside an arc, drop this directive. -->
+
 ## Tracks
 
 | Track | Slug/branch | Model | Why this tier | Scope |

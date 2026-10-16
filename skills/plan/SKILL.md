@@ -29,7 +29,8 @@ is `/sprint`'s job, not this skill's.
 
 Open by stating your reading in one line — task, calibrated complexity, why — and
 proceed into the phases; the user corrects course if you read it wrong. Inference
-covers the TARGET, never the interview: Phase 2 runs regardless.
+covers the TARGET, never the interview: Phase 2 runs regardless, unless `/build`
+handed in locked decisions.
 
 ## Phase 0 — Intake (only when $1 is an artifact)
 
@@ -68,13 +69,21 @@ below stands on its own:
 - Loop until nothing material is unresolved. The plan must never inherit a question
   you could have closed here.
 
+When `/build` invokes plan with locked decisions, this phase is already done: skip it.
+
 ## Phase 3 — Shape the plan
 
 Size the plan to the work — this is a drafting judgment, stated explicitly:
 
-**Graduate out.** Work spanning multiple sessions, needing a durable ledger, or
-touching many surfaces over weeks → recommend `/sprint init` and stop. A plan that
-cannot finish in one session is a sprint wearing a costume.
+**Graduate out.** A plan that cannot finish in one session is a sprint wearing a
+costume. Recommend the right engine and stop:
+- Work spanning multiple sessions or needing a durable ledger, with sprints in
+  sequence → `/sprint init`, or the next sprint(s) drafted into an existing ops
+  instance.
+- Work needing 2+ sprints where at least two can run in parallel on separable
+  surfaces → `/sprint arc`.
+
+`/build` makes this call up front, before any engine runs.
 
 **Single-track** — one coherent unit, no parallelism to win: a numbered step plan —
 files to change (paths), the change per file, order of operations, error handling,

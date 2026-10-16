@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build"
+  short_description: "Router for new functionality: analyze, pry, then hand off to plan, sprint, or arc"
+  default_prompt: "Use $build to route new functionality to the right engine. Pass [task] or nothing to build what the session is discussing."

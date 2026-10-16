@@ -1,4 +1,4 @@
-# Roadmap — Sprint Arc
+# Roadmap
 
 Confirmed {{DATE}}. Sprint-01 is detailed (`sprints/sprint-01/`); later milestones are
 outlines that each closing director turns into detailed files. **Reality wins over this
