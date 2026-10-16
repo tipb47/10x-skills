@@ -1,6 +1,6 @@
 ---
 name: pry
-description: Zero-assumption interrogation (inspired by /grill-me, https://www.aihero.dev/skills-grill-me) — recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Use for /pry, when the user wants to be grilled or stress-test a plan/design, and PROACTIVELY whenever what the user presented carries material ambiguity that would otherwise be filled by assumption.
+description: Zero-assumption interrogation (inspired by /grill-me, https://www.aihero.dev/skills-grill-me) — recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air, plus an ideas pass that proposes improvements. Use for /pry, when the user wants to be grilled or stress-test a plan/design, and PROACTIVELY whenever what the user presented carries material ambiguity that would otherwise be filled by assumption.
 argument-hint: [target — a task, plan, idea, or "this"; inferred from context when absent]
 ---
 
@@ -54,6 +54,33 @@ order, until no branch holds an open question.
   alternative — agreement reached by withholding your judgment is not shared
   understanding.
 
+### Interjections
+
+An interjection is any user input that arrives between or during rounds: added
+context, a sudden idea, or a course correction. **Interjections never end the
+interview.** The user never has to say "continue prying as needed."
+
+- Treat the interjection as new input. Fold it into the picture.
+- Pry every branch it opens, then resume the rounds.
+- Only an explicit stop ends the interview early: "stop", "enough", "skip the rest",
+  "just build it".
+
+### The ideas pass
+
+Pry does not only ask; it also proposes. The ideas pass is always on. Run it once
+the core picture is clear enough to ground ideas — never in round one.
+
+- **What to propose.** Low-hanging fruit the user is missing, UX improvements, and
+  adjacent features or small additions that make the work meaningfully better. For
+  bug work, propose edge cases and adjacent failure modes instead of new features.
+- **One idea, one question.** Each idea is its own structured question: yes / no /
+  later. Lead with your recommendation and a one-line why.
+- **Accepted ideas are branches.** Pry them like any other decision.
+- **"Later" ideas are kept.** List them in the exit summary so they are not lost.
+- **Scale.** Offer more ideas when the user says they are open to ideas, or the work
+  is greenfield, feature, or UX. Offer few or none for narrow tasks.
+- **The user decides.** An idea never expands scope silently.
+
 There is no fixed confirmation gate. The shared understanding converges through the
 rounds themselves: each answer morphs the picture, and the rounds continue until you
 cannot form another material question.
@@ -61,12 +88,13 @@ cannot form another material question.
 ## Exit and handoff
 
 When nothing material remains open, state the locked understanding compactly — the
-decisions and their whys, a few tight lines — then hand off by context:
+decisions and their whys, plus any ideas marked "later", a few tight lines — then
+hand off by context:
 
 - The session was mid-task → continue that work under the locked understanding.
-- The scope warrants a real plan → recommend `/plan` (the interview is already done;
-  carry the locked decisions in).
-- The scope spans multiple sessions → recommend `/sprint init`.
+- The scope needs routing (one session, multiple sessions, or parallel multi-sprint)
+  → recommend `/build`, which classifies the work into plan, sprint, or arc and
+  carries the locked decisions in.
 
 Pry itself never builds.
 
