@@ -143,10 +143,11 @@ existing files.
    sprint-01 track).
    Sprint-01 track files must be genuinely self-contained: a fresh subagent with no other
    context executes one end-to-end.
-   Read `SCARS.md` (this skill's folder) while generating: fold in every scar the project's
+   Read the curated core `SCARS.md` (this skill's folder) and, if it exists, the private
+   scars file `~/.claude/sprint/scars.md` while generating: fold in every scar the project's
    shape makes reachable — it has a DB, a deployed surface, parallel tracks, out-of-band
-   pushers — and leave out the rest. The generated guidelines carry the rules; `SCARS.md`
-   stays the engine's copy.
+   pushers — and leave out the rest. The generated guidelines carry the rules; both scar
+   files stay where they are.
 4. **Quality bar:** generated docs must contain zero TODOs and zero template placeholders.
    If an interview answer is "not sure yet", write the current best decision into the doc
    and log it as provisional in STATE.md's decisions table — docs ship decided, not hollow.
@@ -184,7 +185,8 @@ Become the sprint director for the current project's active sprint.
 2. **Boot in this order:** `STATE.md` (current-sprint pointer, decisions, running jobs) →
    `DIRECTOR_GUIDELINES.md` → `SPRINT_GUIDELINES.md` + `DESIGN.md` → the current
    `sprints/sprint-NN/SPRINT.md` and its `TRACK-*.md` files → `SCARS.md` (this skill's
-   folder) for the failure modes the local docs have not yet absorbed.
+   folder) and the private scars file `~/.claude/sprint/scars.md` (if it exists) for the
+   failure modes the local docs have not yet absorbed.
    **Tier check:** compare your own model to SPRINT.md's `Director tier:` line. Running
    WEAKER than recommended → flag it as a Gate 0 operator decision: proceed anyway, or
    relaunch the session on the stated tier. Stronger → proceed silently. No line → treat
@@ -251,8 +253,9 @@ Become the sprint director for the current project's active sprint.
    next sprint's files from what actually happened (BACKLOG.md is the feed), including
    the next SPRINT.md's `Director tier:` line per § Model selection; final report with
    the next kickoff pointer, naming the model to launch the next director on.
-   **Promotion path:** if a learning is project-agnostic (a git scar, an audit technique),
-   propose promoting it into this skill's templates — keep the engine improving.
+   **Promotion path:** append a project-agnostic learning (a git scar, an audit technique) to
+   the private scars file `~/.claude/sprint/scars.md` as class, mechanism, rule. Never write
+   it into the skill's `SCARS.md`. Put a project-specific learning in the project's `DESIGN.md`.
    If the sprint paid a repeated manual tax (operator copy-paste, hand-run
    verification, the same service poked by hand every track), flag it in the close
    report as an optimization candidate and offer to run `/optimize` on it (where
@@ -260,11 +263,18 @@ Become the sprint director for the current project's active sprint.
 
 ### Universal scars
 
-`SCARS.md` (this skill's folder) is the engine's catalog of failure modes that have already
-cost real sprints — git and branch footguns, agent/worktree hazards, the epistemics of a
-verification gate, deployment and environment parity, data and schema traps, browser
-surfaces, comment hygiene. Read it at boot and apply it at audit. The four that bite most
-often, inline so they are never missed:
+Scars come in two tiers. Read both at boot and apply them at audit.
+
+- **Curated core:** `SCARS.md` (this skill's folder) holds failure modes that bite any sprint
+  on any stack — git and branch footguns, agent and worktree hazards, verification
+  epistemics, seams between tracks. It is read-only to directors.
+- **Private scars file:** `~/.claude/sprint/scars.md` holds stack-specific and
+  project-specific scars. It is per-user, never committed, and the only scar file directors
+  write to.
+
+A scar moves from the private file into the core only when the operator explicitly asks,
+for example through a pull request to the skill's repo. The four that bite most often,
+inline so they are never missed:
 
 - **Verify, never trust.** "Pushed" / "loaded" / "done" / "green" are claims. Check git,
   the store, the process, the deployed path yourself before acting on any of them.
@@ -277,9 +287,10 @@ often, inline so they are never missed:
 - **A track's own gates cannot see the seam between tracks.** Drive the actual deliverable
   end-to-end — on the deployed origin for anything customer-facing — before closing.
 
-**Promotion path.** When a sprint pays for a new failure mode, write the class (not the
-incident) into `SCARS.md`: one sentence naming the class, the mechanism, then the rule. If
-it only reproduces in one company's stack, it belongs in that project's `DESIGN.md`, not here.
+**Promotion path.** When a sprint pays for a new failure mode, append the class (not the
+incident) to the private scars file: one sentence naming the class, the mechanism, then the
+rule. If it only reproduces in one project, put it in that project's `DESIGN.md` instead.
+Never edit the skill's `SCARS.md`.
 
 ---
 

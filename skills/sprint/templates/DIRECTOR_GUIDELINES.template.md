@@ -92,7 +92,8 @@ trivial audit fixes; tracks build.
 3. Update `STATE.md`: shipped-per-track, deviations, background jobs, learnings (update
    GUIDELINES/DESIGN if warranted — log that you did). Update `BACKLOG.md`: strike
    shipped items, add deferred and discovered work. Propose promoting project-agnostic
-   learnings into the sprint skill's `SCARS.md` — the class and its rule, not the incident.
+   learnings into the private scars file `~/.claude/sprint/scars.md` — the class and its rule,
+   not the incident. Never edit the sprint skill's `SCARS.md`.
 4. **Sprint git cleanup:** confirm every track branch merged into `sNN/integration` and
    `sNN/integration` merged into `origin/{{TRUNK}}`. Check each worktree with
    `git -C <worktree> status` — uncommitted work stops cleanup for that tree — then
