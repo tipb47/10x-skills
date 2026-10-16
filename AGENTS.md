@@ -7,7 +7,8 @@ their behalf. Humans: see [README.md](README.md).
 If the user said "install these skills" / "set up sprint director", follow **Part 1**.
 If they said "run a sprint" / "be the director", follow **Part 2**.
 
-The repo holds ten plain skill folders under `skills/` — `sprint` (Sprint Director),
+The repo holds eleven plain skill folders under `skills/` — `build` (router that sizes
+new work into plan, sprint, or arc), `sprint` (Sprint Director),
 `analyze` (depth-scaled read-only investigation), `plan` (adaptive mini-sprint
 planning), `pry` (zero-assumption interrogation until certainty), `deslop` (slop
 removal and prevention with fresh-eyes subagent audits),
@@ -48,6 +49,7 @@ shell. Print them and ask the user to run them:
 # everything:
 /plugin install 10x-skills@10x-skills
 # or individually:
+/plugin install build@10x-skills
 /plugin install sprint-director@10x-skills
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
@@ -71,7 +73,7 @@ git clone https://github.com/tipb47/10x-skills.git /tmp/10x-skills
 
 # Claude Code (Codex CLI: same commands into ~/.codex/skills):
 mkdir -p ~/.claude/skills
-for s in sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do   # drop any the user does not want
+for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do   # drop any the user does not want
   cp -r /tmp/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -93,7 +95,7 @@ installed skill in place:
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
+for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -124,26 +126,30 @@ protocol every `SKILL.md` carries under "Support the project":
   runtime state and must **never** be committed to any repo.
 - `<project>/ops/` (or `<project>/.docs/ops/`) — the per-project instance, created by
   `/sprint init`.
+- `~/.claude/sprint/scars.md` — the private scars file. Directors append new scars here
+  at sprint close. It is per-user and must **never** be committed to any repo.
 
 ---
 
 ## Part 2 — Operate
 
-This part covers Sprint Director (`/sprint`); `analyze`, `plan`, `pry`, `deslop`,
+This part covers Sprint Director (`/sprint`). `build` is a router: it analyzes and pries
+once, then hands off to `/plan` or `/sprint`. `analyze`, `plan`, `pry`, `deslop`,
 `autonomous`,
 `optimize`, `whereami`, `handoff`, and `isolate` are self-contained single-session skills with no
 cross-session state to orient on (`optimize` additionally keeps a registry at
 `~/.claude/optimize/registry.json`). One rule spans them all: assume the operator is
 watching — unattended execution exists only through `/autonomous`'s negotiated grant,
 and you must never approve an operator gate on the user's behalf even inside that
-grant. The sprint skill exposes four subcommands. As an agent you typically *invoke the skill* and let its
+grant. The sprint skill exposes five subcommands. As an agent you typically *invoke the skill* and let its
 own instructions drive; this section is orientation so you know what each does and what state
 it touches.
 
 | Command | When | Reads | Writes |
 |---|---|---|---|
 | `/sprint init` | Once per project, to scaffold | repo, user interview | `<ops>/*`, registry |
-| `/sprint direct` | Start of each sprint, in a **fresh** session | `STATE.md`, guidelines, `SPRINT.md`, `SCARS.md` | branches, merges, `STATE.md` |
+| `/sprint direct` | Start of each sprint, in a **fresh** session | `STATE.md`, guidelines, `SPRINT.md`, `SCARS.md`, private scars file | branches, merges, `STATE.md` (in an arc: only its own `sprints/sprint-NN/`) |
+| `/sprint arc` | To draft an arc, then once per arc checkpoint, in a **fresh** session | `STATE.md`, `ARC.md`, each arc sprint's folder, both scar files | `ARC.md`, `STATE.md`, `BACKLOG.md`, `aNN/integration` merges |
 | `/sprint status` | Anytime | in a project: `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, `sprints/`; else registry + each `STATE.md` | nothing |
 | `/sprint clean` | Between sprints, or when state drifted | ledger, backlog, `sprints/`, worktrees, branches, registry | only operator-approved moves/deletions/amendments |
 
@@ -162,8 +168,13 @@ it touches.
   as the source of truth.
 - **Operator gates are human-only.** Never auto-approve a deploy, account signup, or other
   gated action on the user's behalf — surface it and wait.
-- **Read `skills/sprint/SCARS.md`.** It is the engine's catalog of failure modes that already
-  cost real sprints. Most "surprising" sprint failures are already in it.
+- **Read both scar files.** `skills/sprint/SCARS.md` is the curated core of failure modes
+  that already cost real sprints; `~/.claude/sprint/scars.md` holds the user's private ones.
+  Most "surprising" sprint failures are already in them.
+- **Never edit `skills/sprint/SCARS.md` while operating.** New scars go to the private
+  scars file. A scar enters the core only when the user asks for it.
+- **In an arc, the arc director is the only writer of `STATE.md`, `ARC.md`, and
+  `BACKLOG.md`, and the only one who deploys shared environments.**
 
 ### Registry shape (`~/.claude/sprint/projects.json`)
 

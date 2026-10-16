@@ -5,7 +5,8 @@
 
 | Skill | Command | What it does |
 |---|---|---|
-| [Sprint Director](#sprint-director--sprint) | `/sprint` | Sprint-directed multi-agent development methodology: `init`, `direct`, `status`, `clean` |
+| [Build](#build--build) | `/build` | Router for new functionality: analyze and pry once, then hand off to plan, sprint, or arc |
+| [Sprint Director](#sprint-director--sprint) | `/sprint` | Sprint-directed multi-agent development methodology: `init`, `direct`, `arc`, `status`, `clean` |
 | [Analyze](#analyze--analyze) | `/analyze` | Depth-scaled read-only investigation via parallel explore scouts |
 | [Plan](#plan--plan) | `/plan` | Adaptive mini-sprint: interview, then single- or multi-track plan + execution |
 | [Pry](#pry--pry) | `/pry` | Zero-assumption interrogation: recursive q&a rounds until nothing is up in the air |
@@ -37,6 +38,7 @@ Then install everything:
 …or just the skills you want:
 
 ```
+/plugin install build@10x-skills
 /plugin install sprint-director@10x-skills
 /plugin install analyze@10x-skills
 /plugin install plan@10x-skills
@@ -59,7 +61,7 @@ Copy any skill folder into your user skills directory:
 git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
-for s in sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
+for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
   cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
@@ -75,7 +77,7 @@ each skill's `agents/openai.yaml` for its display name.
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
+for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -88,6 +90,25 @@ offer the user a one-time ⭐ star of this repo. Ask once, only act on an explic
 (`gh api -X PUT /user/starred/tipb47/10x-skills`, or share
 https://github.com/tipb47/10x-skills if `gh` can't), and
 `touch ~/.claude/.10x-skills-star-asked` whatever the answer so no skill asks again.
+
+---
+
+## Build — `/build`
+
+The front door for new functionality. Describe what you want built, with or without
+the command, and `/build` sizes the work before any engine runs:
+
+1. It analyzes the codebase once and runs one `/pry` interview, ideas pass included.
+2. It picks a tier, states why, and asks you to confirm.
+3. It hands off with the locked decisions, so the engine never interviews you again.
+
+| Tier | Fits when | Engine |
+|---|---|---|
+| **plan** | The work finishes in one session, single- or multi-track. | `/plan` |
+| **sprint** | The work needs multiple sessions, and its sprints run in sequence. | `/sprint init`, or the next sprint drafted into an existing `ops/` |
+| **arc** | The work needs 2+ sprints, and at least two can run in parallel on separate surfaces. | `/sprint arc` |
+
+`/build` skips bug fixes, one-liners, and requests that already name `/plan` or `/sprint`.
 
 ---
 
@@ -125,9 +146,13 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
   the director on opus — so top-tier tokens go where the judgment is.
 - **No hollow docs.** `/sprint init` interviews you and refuses to generate
   placeholder-laden scaffolding — every sprint ships decided, not "TODO".
-- **Hard-won scars baked in.** Git footguns, zombie dev servers, self-resuming agents,
-  gates that pass while the product is broken — real failure modes, each encoded as a
-  standing rule in [`SCARS.md`](skills/sprint/SCARS.md).
+- **Hard-won scars baked in.** Git footguns, self-resuming agents, gates that pass
+  while the product is broken — real failure modes, each encoded as a standing rule.
+  The curated core lives in [`SCARS.md`](skills/sprint/SCARS.md). Directors write new
+  scars only to your private scars file, `~/.claude/sprint/scars.md`, so no project
+  ever edits the public file.
+- **Parallel sprints when the work allows.** An arc runs several sprints at once under
+  an arc director, each in its own session and worktree.
 
 ### Subcommands
 
@@ -139,6 +164,11 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
 - **`/sprint direct`** — become the director for the current sprint, in a **fresh
   session**. Boot the ledger → analyze the sprint against reality → clarify → plan →
   spawn tracks → audit → merge → close.
+- **`/sprint arc`** — run an arc: a set of sprints, some parallel, that delivers one
+  large outcome. The first run interviews you and drafts `ARC.md` with the sprint
+  dependency graph. Each later run is an **arc checkpoint**: it merges finished sprints
+  into `aNN/integration`, deploys shared environments at a gate, prints kickoff prompts
+  for unblocked sprints, and exits. The arc promotes into the trunk once, at a gate.
 - **`/sprint status`** — where things stand. Inside a registered project: last closed
   sprint, current sprint and phase, what's next, top backlog items, health flags, and a
   recommended course of action. Outside a project: a compact cross-project dashboard.
@@ -158,17 +188,21 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
 ├── DESIGN.md               ← canonical contract: architecture, schemas, conventions, standing decisions
 ├── SPRINT_GUIDELINES.md    ← rules for tracks + directors: gates, branch discipline, definition of done
 ├── DIRECTOR_GUIDELINES.md  ← director runbook: boot → analyze → gate → tracks → audit → merge → close
-├── ROADMAP.md              ← sprint arc at milestone level (reality wins over this outline)
+├── ROADMAP.md              ← milestone outline (reality wins over this outline)
 ├── BACKLOG.md              ← prioritized queue of future work; feeds each next-sprint draft
+├── arcs/
+│   └── arc-NN/
+│       └── ARC.md          ← arc brief + ledger: goal, sprint graph, surfaces, gates, status
 └── sprints/
     ├── archive/            ← closed sprint folders, moved here by /sprint clean
     └── sprint-NN/
         ├── SPRINT.md       ← sprint brief: goal, gates, tracks, merge order, close checklist
-        └── TRACK-*.md      ← self-contained prompt per track subagent
+        ├── TRACK-*.md      ← self-contained prompt per track subagent
+        └── STATUS.md, CLOSE.md ← arc sprints only: sprint director's status + close report
 ```
 
 The engine's templates live in [`skills/sprint/templates/`](skills/sprint/templates);
-the failure-mode catalog is [`skills/sprint/SCARS.md`](skills/sprint/SCARS.md).
+the curated failure-mode catalog is [`skills/sprint/SCARS.md`](skills/sprint/SCARS.md).
 
 ### How the pieces fit
 
@@ -204,9 +238,15 @@ State lives in files, not chat:
 - **Verification contract** — what makes work *provably* done (test commands,
   data-quality queries with expected output, build artifacts). Tracks quote actual
   output; the director re-runs it at audit.
+- **Arc** — a set of sprints, some parallel, that delivers one large outcome. Sprints
+  promote into the arc's integration branch (`aNN/integration`); the arc promotes into
+  the trunk once. The **arc director** runs as short checkpoints and is the only writer
+  of `STATE.md` during an arc.
 - **Scar** — a hard-won failure mode encoded as a standing rule, so the same footgun is
-  never fired twice. The engine keeps them in [`SCARS.md`](skills/sprint/SCARS.md);
-  `init` folds the reachable ones into each project's guidelines.
+  never fired twice. Two tiers: the curated core in [`SCARS.md`](skills/sprint/SCARS.md),
+  which directors never edit, and your private scars file `~/.claude/sprint/scars.md`,
+  where directors append new ones. `init` folds the reachable scars from both into each
+  project's guidelines.
 
 ---
 
@@ -229,7 +269,8 @@ interview to zero ambiguity, and a plan sized to the work: **single-track** (num
 steps, implemented in-session after approval) or **multi-track** (a mini-sprint: tracks
 with model tier + rationale, merge order, worktree isolation, director-style audit and
 `--no-ff` merges, worktrees and branches cleaned when done). Work bigger than one
-session gets pointed at `/sprint init` instead. No plan files — briefs travel inline.
+session gets pointed at `/sprint init`, or at `/sprint arc` when sprints can run in
+parallel. `/build` makes that call up front. No plan files — briefs travel inline.
 
 ## Pry — `/pry`
 
@@ -242,9 +283,17 @@ next branches — until certainty is true and ambiguity is false. Facts get look
 in the codebase, never asked; only genuine decisions reach you. Contradictions
 between your answers are treated as signal and pried at, not papered over. There is
 no confirm gate: the shared understanding converges through the rounds. It fires
-proactively on material ambiguity, not just on invocation, and once understanding is
-locked it hands off by context — continue the task, feed `/plan`, or point at
-`/sprint init`. Pry itself never builds.
+proactively on material ambiguity, not just on invocation.
+
+- **Interjections never end it.** Add context or an idea mid-interview, and pry folds
+  it in and keeps going. Only an explicit stop ("stop", "enough", "just build it")
+  ends the interview early.
+- **It proposes, too.** An always-on ideas pass offers low-hanging fruit, UX
+  improvements, and features you may be missing, each as a yes / no / later question
+  with a recommendation. For bug work, the ideas pass turns to edge cases.
+
+Once understanding is locked, pry hands off by context: continue the task, or route
+through `/build` to plan, sprint, or arc. Pry itself never builds.
 
 It is also the interview-methodology reference the other skills cite: `/plan`'s
 interview phase, `/sprint`'s init and drafting interviews and the director's clarify
@@ -347,7 +396,8 @@ merges) but works fine on a purely local repo.
 deterministic, machine-followable install and bootstrap procedure.
 
 **Where does my data go?** Nowhere external. Everything is local files: the per-project
-`ops/` folder and the per-user registry at `~/.claude/sprint/projects.json`.
+`ops/` folder, the per-user registry at `~/.claude/sprint/projects.json`, and your
+private scars file at `~/.claude/sprint/scars.md`.
 
 ---
 
@@ -358,6 +408,7 @@ reproducible failure modes with the rule that prevents them — and template imp
 that generalize across projects. Keep additions project-agnostic: no traces of any
 specific company's infrastructure.
 
-A scar belongs in [`SCARS.md`](skills/sprint/SCARS.md) if it states a **class**, not an
-incident: one sentence naming the class, then the mechanism, then the rule. If it only
-reproduces in one company's stack, it belongs in that project's own `DESIGN.md`.
+[`SCARS.md`](skills/sprint/SCARS.md) is a curated core. A scar enters it only by a
+reviewed pull request, never by a director. It belongs there if it bites any sprint on
+any stack and states a **class**, not an incident: one sentence naming the class, then
+the mechanism, then the rule. A stack-specific scar stays in your private scars file.
