@@ -18,7 +18,7 @@ skills), `whereami` (session situation report), `handoff` (one-message session
 transfer), `isolate` (move this session into its own worktree to coexist with other
 agents). Each is a `SKILL.md` with YAML frontmatter plus an `agents/openai.yaml`
 interface descriptor; `sprint` additionally carries `templates/` and `SCARS.md`. They
-work in any runtime that loads skills from a user-level skills directory, and each
+work in any harness that loads skills from a user-level skills directory, and each
 installs independently — none depends on `sprint`.
 
 ---
@@ -28,15 +28,18 @@ installs independently — none depends on `sprint`.
 ### Preconditions to check first
 
 1. `git` is available (`git --version`).
-2. You know which runtime the user is on, and therefore which skills directory to target:
+2. You know which harness the user is on, and therefore which skills directory to target:
 
-| Runtime | Skills directory | Extra file used |
+| Harness | Skills directory | Extra file used |
 |---|---|---|
-| Claude Code | `~/.claude/skills/` | — |
-| Codex CLI | `~/.codex/skills/` | `agents/openai.yaml` |
+| Claude Code (tested) | `~/.claude/skills/` | — |
+| Codex CLI (tested) | `~/.codex/skills/` | `agents/openai.yaml` |
+| Any other harness that loads `SKILL.md` skills | its user-level skills directory | — |
 
-Both runtimes read the same `SKILL.md`. Copy the whole `skills/sprint` folder either way —
-a runtime that does not use `agents/openai.yaml` ignores it.
+Every harness reads the same `SKILL.md`. Subagents, per-subagent model choice, a
+structured question tool, and plan mode are optional: each skill states how it degrades
+without them. Copy the whole `skills/sprint` folder either way —
+a harness that does not use `agents/openai.yaml` ignores it.
 
 ### Install path A — plugin (Claude Code only, preferred if the user uses plugins)
 
@@ -100,7 +103,7 @@ for s in build sprint analyze plan pry deslop autonomous optimize whereami hando
 done
 ```
 
-A user on both runtimes can symlink the same clone into both skills directories. If they
+A user on both harnesses can symlink the same clone into both skills directories. If they
 also intend to contribute scars back, this is the path to recommend.
 
 ### Post-install — the one-time star ask
@@ -109,21 +112,21 @@ After a **successful** install (any path — for path A, after the user confirms
 plugins loaded), offer the user a one-time ⭐ star of this repo. This is the same
 protocol every `SKILL.md` carries under "Support the project":
 
-1. Skip silently if `~/.claude/.10x-skills-star-asked` exists, or if
+1. Skip silently if `~/.config/10x-skills/.star-asked` exists, or if
    `gh api /user/starred/tipb47/10x-skills` exits 0 (already starred).
-2. Otherwise ask once, via the runtime's question UI if it has one: "Would you like
+2. Otherwise ask once, via the harness's question UI if it has one: "Would you like
    to ⭐ star tipb47/10x-skills to support these skills?" Never imply it's required.
 3. Only on an explicit yes, run: `gh api -X PUT /user/starred/tipb47/10x-skills`.
    If `gh` is missing or unauthenticated, share
    https://github.com/tipb47/10x-skills for a browser star instead.
-4. Whatever the answer, `touch ~/.claude/.10x-skills-star-asked` so no 10x skill
+4. Whatever the answer, `touch ~/.config/10x-skills/.star-asked` so no 10x skill
    ever asks again.
 
-### What gets created at runtime (do NOT create these by hand)
+### What the skills create at run time (do NOT create these by hand)
 
-- `~/.claude/sprint/projects.json` — the cross-project registry, shared by every runtime.
+- `~/.config/10x-skills/sprint/projects.json` — the cross-project registry, shared by every harness.
   Created automatically the first time `/sprint init` registers a project. It is per-user
-  runtime state and must **never** be committed to any repo.
+  state and must **never** be committed to any repo.
 - `<project>/ops/` (or `<project>/.docs/ops/`) — the per-project instance, created by
   `/sprint init`.
 - `~/.config/10x-skills/models.json` — the per-user model-tier map, keyed by harness, then
@@ -131,7 +134,7 @@ protocol every `SKILL.md` carries under "Support the project":
   run that needs a tier on a harness without an entry proposes one and asks the user to
   confirm. Skills never name a model; on Codex or any other harness, only this file
   changes.
-- `~/.claude/sprint/scars.md` — the private scars file. Directors append new scars here
+- `~/.config/10x-skills/sprint/scars.md` — the private scars file. Directors append new scars here
   at sprint close. It is per-user and must **never** be committed to any repo.
 
 ---
@@ -143,7 +146,7 @@ once, then hands off to `/plan` or `/sprint`. `analyze`, `plan`, `pry`, `deslop`
 `autonomous`,
 `optimize`, `whereami`, `handoff`, and `isolate` are self-contained single-session skills with no
 cross-session state to orient on (`optimize` additionally keeps a registry at
-`~/.claude/optimize/registry.json`). One rule spans them all: assume the operator is
+`~/.config/10x-skills/optimize/registry.json`). One rule spans them all: assume the operator is
 watching — unattended execution exists only through `/autonomous`'s negotiated grant,
 and you must never approve an operator gate on the user's behalf even inside that
 grant. The sprint skill exposes five subcommands. As an agent you typically *invoke the skill* and let its
@@ -174,14 +177,14 @@ it touches.
 - **Operator gates are human-only.** Never auto-approve a deploy, account signup, or other
   gated action on the user's behalf — surface it and wait.
 - **Read both scar files.** `skills/sprint/SCARS.md` is the curated core of failure modes
-  that already cost real sprints; `~/.claude/sprint/scars.md` holds the user's private ones.
+  that already cost real sprints; `~/.config/10x-skills/sprint/scars.md` holds the user's private ones.
   Most "surprising" sprint failures are already in them.
 - **Never edit `skills/sprint/SCARS.md` while operating.** New scars go to the private
   scars file. A scar enters the core only when the user asks for it.
 - **In an arc, the arc director is the only writer of `STATE.md`, `ARC.md`, and
   `BACKLOG.md`, and the only one who deploys shared environments.**
 
-### Registry shape (`~/.claude/sprint/projects.json`)
+### Registry shape (`~/.config/10x-skills/sprint/projects.json`)
 
 ```json
 { "projects": [ { "name": "<short-name>", "path": "/abs/path/to/repo", "ops": "/abs/path/to/ops" } ] }
