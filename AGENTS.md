@@ -126,6 +126,11 @@ protocol every `SKILL.md` carries under "Support the project":
   runtime state and must **never** be committed to any repo.
 - `<project>/ops/` (or `<project>/.docs/ops/`) — the per-project instance, created by
   `/sprint init`.
+- `~/.config/10x-skills/models.json` — the per-user model-tier map, keyed by harness, then
+  tier (`frontier` / `strong` / `fast` / `light` → `{model, effort}`). The first skill
+  run that needs a tier on a harness without an entry proposes one and asks the user to
+  confirm. Skills never name a model; on Codex or any other harness, only this file
+  changes.
 - `~/.claude/sprint/scars.md` — the private scars file. Directors append new scars here
   at sprint close. It is per-user and must **never** be committed to any repo.
 

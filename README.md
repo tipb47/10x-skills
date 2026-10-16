@@ -99,10 +99,10 @@ The front door for new functionality. Describe what you want built, with or with
 the command, and `/build` sizes the work before any engine runs:
 
 1. It analyzes the codebase once and runs one `/pry` interview, ideas pass included.
-2. It picks a tier, states why, and asks you to confirm.
+2. It picks a scale, states why, and asks you to confirm.
 3. It hands off with the locked decisions, so the engine never interviews you again.
 
-| Tier | Fits when | Engine |
+| Scale | Fits when | Engine |
 |---|---|---|
 | **plan** | The work finishes in one session, single- or multi-track. | `/plan` |
 | **sprint** | The work needs multiple sessions, and its sprints run in sequence. | `/sprint init`, or the next sprint drafted into an existing `ops/` |
@@ -141,9 +141,10 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
   planned order, and close-out sweeps the worktrees and lagged branches away.
 - **Verify, never trust.** "Done" / "pushed" / "loaded" are treated as *claims*. The
   director re-runs every track's verification gates against real state before merging.
-- **Deliberate model spend.** Every track row in a sprint doc states a model tier plus a
-  rationale — fable for contract-defining work, sonnet for standard implementation,
-  the director on opus — so top-tier tokens go where the judgment is.
+- **Deliberate model spend, on any harness.** Every track row in a sprint doc states a
+  model tier plus a rationale — strong for judgment and contracts, fast for standard
+  implementation, frontier only for genuinely hard problems — so top-tier tokens go
+  where the difficulty is.
 - **No hollow docs.** `/sprint init` interviews you and refuses to generate
   placeholder-laden scaffolding — every sprint ships decided, not "TODO".
 - **Hard-won scars baked in.** Git footguns, self-resuming agents, gates that pass
@@ -213,14 +214,28 @@ the curated failure-mode catalog is [`skills/sprint/SCARS.md`](skills/sprint/SCA
 | **Track** | A subagent per unit of work | Builds on its own branch; reports verifiable output; never merges |
 | **Operator** | You, the human | Appears only at gates: approvals, deploys, signups |
 
-Model tiers are a drafting decision, stated per track in `SPRINT.md`: director on
-**opus**; contract-defining / architecture / gnarly-debug tracks on **fable**; standard
-implementation on **sonnet**; **haiku** only for mechanical fully-specified chores with
-a written justification. Any role — the director included — escalates to fable when the
-work genuinely warrants it: each `SPRINT.md` carries a `Director tier:` line (fable when
-merge/seam risk concentrates in the director), the close-out kickoff names the model to
-launch the next director on, and a booting director that finds itself on a weaker tier
-than the doc recommends raises it as a Gate 0 decision.
+Model tiers are a drafting decision, stated per track in `SPRINT.md`. The skills name
+four tiers and never a model:
+
+| Model tier | Use for | Claude Code example |
+|---|---|---|
+| **frontier** | Hard problems only: novel algorithms, modeling engines, breakthroughs | fable |
+| **strong** | The workhorse: directors, contracts, architecture, gnarly debugging | opus |
+| **fast** | Standard implementation and investigation | sonnet |
+| **light** | Mechanical, fully specified chores, with a written justification | haiku |
+
+Your per-user map, `~/.config/10x-skills/models.json`, turns each tier into a model and
+an effort level for each harness. The first skill run that needs a tier on a new
+harness proposes a mapping and asks you to confirm it. On a harness with fewer models,
+such as Codex, two tiers can share one model at different efforts. When a mapped model
+disappears or a newer one ships, the skill proposes a remap once; it never edits the
+map silently. Docs record tier words only, so a sprint drafted today still runs after a
+model upgrade or a harness switch.
+
+Each `SPRINT.md` carries a `Director tier:` line (default strong). The close-out
+kickoff names the tier and the model it resolves to, and a booting director that finds
+itself on a weaker model than the tier resolves to raises it as a Gate 0 decision. A
+project can raise or lower the defaults in its `SPRINT_GUIDELINES.md`.
 
 State lives in files, not chat:
 
@@ -243,7 +258,7 @@ State lives in files, not chat:
   the trunk once. The **arc director** runs as short checkpoints and is the only writer
   of `STATE.md` during an arc.
 - **Scar** — a hard-won failure mode encoded as a standing rule, so the same footgun is
-  never fired twice. Two tiers: the curated core in [`SCARS.md`](skills/sprint/SCARS.md),
+  never fired twice. Two layers: the curated core in [`SCARS.md`](skills/sprint/SCARS.md),
   which directors never edit, and your private scars file `~/.claude/sprint/scars.md`,
   where directors append new ones. `init` folds the reachable scars from both into each
   project's guidelines.
@@ -255,8 +270,8 @@ State lives in files, not chat:
 Depth-scaled, read-only investigation of a feature, bug, flow, or component:
 `/analyze <target> <depth>`. Depth runs quick → standard → deep → forensic and sets the
 fan-out: parallel read-only explore scouts keep the main context clean, each spawned on
-a stated model tier (haiku for mechanical enumeration, sonnet scouts by default, one
-opus/fable deep-reasoning subagent at forensic depth; synthesis never leaves the main
+a stated model tier (light for mechanical enumeration, fast scouts by default, one
+strong deep-reasoning subagent at forensic depth; synthesis never leaves the main
 session). Produces a structured report — flow trace with `file:line`, dependencies,
 edge cases, concerns — shaped to feed `/plan` directly. Writes no code.
 

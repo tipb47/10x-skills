@@ -12,7 +12,7 @@
     {
       "name": "10x-skills",
       "description": "Everything in this repo as one plugin: /build (router: plan, sprint, or arc), /sprint (sprint-directed multi-agent methodology), /analyze (depth-scaled read-only investigation), /plan (adaptive mini-sprint planning), /pry (zero-assumption interrogation), /deslop (slop removal and prevention with fresh-eyes audits), /autonomous (negotiated unattended execution), /optimize (workflow optimization), /whereami (session situation report), /handoff (one-message session transfer), /isolate (per-session worktree isolation for multi-agent repos).",
-      "version": "2.7.0",
+      "version": "2.8.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -41,8 +41,8 @@
     },
     {
       "name": "build",
-      "description": "Router for new functionality: analyzes and pries once, classifies the work as plan (one session), sprint (multi-session), or arc (parallel sprints), confirms the tier with you, then hands off to /plan or /sprint with the locked decisions so the engine never re-interviews you. Fires proactively when you describe something to build.",
-      "version": "1.0.0",
+      "description": "Router for new functionality: analyzes and pries once, classifies the work as plan (one session), sprint (multi-session), or arc (parallel sprints), confirms the scale with you, then hands off to /plan or /sprint with the locked decisions so the engine never re-interviews you. Fires proactively when you describe something to build.",
+      "version": "1.0.1",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -66,7 +66,7 @@
     {
       "name": "sprint-director",
       "description": "Sprint-directed multi-agent development methodology. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a living state ledger. Humans appear only at explicit operator gates. Arc mode (/sprint arc) runs parallel sprints under a checkpoint-driven arc director. Scars split into a curated core and a private per-user file.",
-      "version": "2.1.0",
+      "version": "2.2.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -93,7 +93,7 @@
     {
       "name": "analyze",
       "description": "Depth-scaled, read-only investigation of a feature, bug, flow, or component. Fans out parallel explore scouts with per-subagent model selection to keep the main context clean.",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -116,7 +116,7 @@
     {
       "name": "plan",
       "description": "Adaptive mini-sprint planning: interview to zero ambiguity, then a track-shaped plan sized to the work — single-track in-session or multi-track subagents on worktrees with per-track model tiers.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
@@ -163,7 +163,7 @@
     {
       "name": "deslop",
       "description": "Remove and prevent AI slop. Frontend path (inspired by samber's frontend-design-deslop, MIT): strategy-first design, OKLCH tokens, a craft layer, a durable STYLE.md, and slop audits that always run in fresh-context subagents — the session that built the UI never audits it. Fires when UI work begins and completes, or explicitly via /deslop audit <target> [quick|standard|deep]. Minimal code path for comment noise, doc slop, and dead abstractions.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "tipb47",
         "url": "https://github.com/tipb47"
