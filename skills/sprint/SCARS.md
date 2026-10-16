@@ -5,7 +5,7 @@ curated core: it holds only rules that bite any sprint on any stack. The directo
 boot; `/sprint init` folds the relevant rules into the project's generated guidelines.
 
 Directors never edit this file. A director appends new scars to the private scars file,
-`~/.claude/sprint/scars.md`, which is never committed anywhere. A scar enters this core only
+`~/.config/10x-skills/sprint/scars.md`, which is never committed anywhere. A scar enters this core only
 when the operator explicitly asks, for example through a pull request to this repo.
 
 Scar shape: state the class in one sentence, then the mechanism, then the rule. A scar that
