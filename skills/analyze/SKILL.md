@@ -45,13 +45,13 @@ supports them:
   is self-contained: the specific aspect to investigate, and the return format —
   key findings, the 5–10 most important files (with paths), anomalies noticed, a
   control/data-flow summary. Scouts return conclusions, not file dumps.
-- **Model per task, stated at spawn (tier + one-line why):**
+- **Model tier per task, stated at spawn (tier + one-line why; § Model tiers):**
 
-| Work class | Tier |
+| Work class | Model tier |
 |---|---|
-| Mechanical enumeration — file inventories, call-site listings, no judgment | haiku |
-| Scout investigation (default) | sonnet |
-| Root-cause deep reasoning: ONE subagent, forensic depth only | opus or fable |
+| Mechanical enumeration — file inventories, call-site listings, no judgment | light |
+| Scout investigation (default) | fast |
+| Root-cause deep reasoning: ONE subagent, forensic depth only | strong; frontier only when the root cause is a genuinely hard problem |
 | Synthesis of findings | main session — never delegated |
 
 ## Phases
@@ -87,6 +87,33 @@ sections are ready input for `/plan`.
 - Verify, never trust: a scout's summary is a claim — spot-check the load-bearing ones
   against the actual files before building the report on them.
 - Respect the depth the user paid for — no forensic sweeps on a quick ask.
+
+## Model tiers
+
+Skills name a model tier, never a model. The tier says how much reasoning the work
+needs; your map says which model delivers it on this harness.
+
+| Tier | Use for |
+|---|---|
+| **frontier** | Hard problems only: novel algorithms, modeling engines, breakthroughs |
+| **strong** | The workhorse: judgment, contracts, architecture, gnarly debugging |
+| **fast** | Standard implementation and investigation |
+| **light** | Mechanical, fully specified chores; never judgment |
+
+**Resolve a tier at spawn time:**
+
+1. Read `~/.config/10x-skills/models.json`, keyed by harness, then tier:
+   `{ "<harness>": { "<tier>": { "model": "...", "effort": "..." } } }`.
+2. No entry for this harness → list the models the harness offers, propose a mapping
+   (two tiers may share a model at different efforts), confirm it with the user, and
+   save it.
+3. A mapped model is gone, or a newer one is offered → propose a remap once. Never
+   change the map silently.
+4. The harness cannot pick a model per subagent → apply the tier's effort only. It
+   cannot set effort either → inherit the session model, and say so in one line.
+
+A legacy model name in an old doc reads as its tier: first by reverse lookup in the
+map, else opus → strong, fable → frontier, sonnet → fast, haiku → light.
 
 ## Support the project
 

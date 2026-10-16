@@ -9,9 +9,10 @@
 cuts from it and is merged into it. It promotes into `{{TRUNK}}` once, at the arc close
 gate.
 
-**Arc director tier:** {{model — one-line why}}
-<!-- init/arc: default opus. Fable when cross-sprint seams are dense or contract decisions
-land at arc checkpoints. -->
+**Arc director tier:** {{model tier — one-line why}}
+<!-- init/arc: a model tier, never a model name. Default strong; raise its effort when
+cross-sprint seams are dense or contract decisions land at arc checkpoints. Frontier only
+when the arc director itself must solve a hard problem. -->
 
 **Ledger rule:** the arc director is the only writer of this file, `STATE.md`, and
 `BACKLOG.md`. Sprint directors write only their own `sprints/sprint-NN/` folder.

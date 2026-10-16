@@ -41,37 +41,68 @@ Parse the argument. No argument or unrecognized → print the usage summary belo
 
 ## Model selection
 
-Choosing a model per role is part of sprint DRAFTING, not a mid-sprint whim: every
-SPRINT.md track row carries a model tier plus a one-line rationale, and the director
-honors it at spawn time. The point is token economy in both directions — a top tier
-burned on mechanical work is waste, and an underpowered model on contract-defining work
-costs more in rework than it saves.
+Choosing a model tier per role is part of sprint DRAFTING, not a mid-sprint whim:
+every SPRINT.md track row carries a model tier plus a one-line rationale, and the
+director honors it at spawn time. The point is token economy in both directions — a
+top tier burned on mechanical work is waste, and an underpowered model on
+contract-defining work costs more in rework than it saves.
 
-Default tiering. The init interview offers this as the recommendation; once set, the
-project's model policy in `SPRINT_GUIDELINES.md` is authoritative:
+### Model tiers
 
-| Role / work class | Tier |
+Skills name a model tier, never a model. The tier says how much reasoning the work
+needs; your map says which model delivers it on this harness.
+
+| Tier | Use for |
 |---|---|
-| Director (analyze, audit, merge, close) | opus |
-| Contract-defining, architecture, cross-cutting, or gnarly-debug tracks | fable |
-| Standard implementation tracks | sonnet |
-| Genuinely mechanical chores (single-file, low-risk, fully specified) | haiku — only with a stated justification in the sprint doc |
+| **frontier** | Hard problems only: novel algorithms, modeling engines, breakthroughs |
+| **strong** | The workhorse: judgment, contracts, architecture, gnarly debugging |
+| **fast** | Standard implementation and investigation |
+| **light** | Mechanical, fully specified chores; never judgment |
 
-Escalation: ANY role — the director included — may run on fable when the work genuinely
-warrants the deepest reasoning; record that as a drafting decision in the sprint doc.
-Haiku is off the table for anything that requires judgment.
+**Resolve a tier at spawn time:**
 
-The DIRECTOR's tier is declared per sprint: SPRINT.md carries a `Director tier:` line
-(model + one-line why), set by the closing director when drafting the sprint. Default
-opus; escalate the director to fable when ANY of these hold:
+1. Read `~/.config/10x-skills/models.json`, keyed by harness, then tier:
+   `{ "<harness>": { "<tier>": { "model": "...", "effort": "..." } } }`.
+2. No entry for this harness → list the models the harness offers, propose a mapping
+   (two tiers may share a model at different efforts), confirm it with the user, and
+   save it.
+3. A mapped model is gone, or a newer one is offered → propose a remap once. Never
+   change the map silently.
+4. The harness cannot pick a model per subagent → apply the tier's effort only. It
+   cannot set effort either → inherit the session model, and say so in one line.
 
-- 3+ parallel tracks touch shared surfaces — merge/seam risk concentrates in the director;
-- architecture or contract decisions are expected to be MADE mid-sprint rather than
-  pre-drafted;
-- the prior sprint's audit caught seam defects its gates missed.
+A legacy model name in an old doc reads as its tier: first by reverse lookup in the
+map, else opus → strong, fable → frontier, sonnet → fast, haiku → light.
+
+### Default policy
+
+The init interview offers this as the recommendation. Once set, the project's model
+policy in `SPRINT_GUIDELINES.md` is authoritative, and it may raise or lower any
+default (a modeling-engine project may run its core tracks on frontier):
+
+| Role / work class | Model tier |
+|---|---|
+| Director (analyze, audit, merge, close) | strong |
+| Contract-defining, architecture, cross-cutting, or gnarly-debug tracks | strong |
+| Standard implementation tracks | fast |
+| Genuinely mechanical chores (single-file, low-risk, fully specified) | light — only with a stated justification in the sprint doc |
+
+**Frontier is for hard problems, never for size.** Any role may run on frontier when
+the problem itself needs a breakthrough: a novel algorithm, a modeling or simulation
+engine, hard math or performance work. Many tracks, dense seams, or heavy coordination
+escalate to strong at a higher effort, not to frontier. Record every frontier choice as
+a drafting decision with its one-line why. Light is off the table for judgment.
+
+The DIRECTOR's model tier is declared per sprint: SPRINT.md carries a `Director tier:`
+line (model tier + one-line why), set by the closing director when drafting the sprint.
+Default strong. Raise the director's effort when 3+ parallel tracks touch shared
+surfaces, when contract decisions are expected mid-sprint, or when the prior audit
+caught seam defects its gates missed. Frontier only when the director itself must
+solve a hard problem.
 
 The operator launches the session, so the tier only binds if the kickoff names it — the
-close report and the ops README kickoff prompt both say which model to launch.
+close report and the ops README kickoff prompt both name the tier AND the model it
+resolves to on the operator's harness.
 
 ---
 
@@ -122,10 +153,11 @@ existing files.
      artifacts, or a mix? This shapes the guidelines' "gates" section.
    - Database/migrations: does the project have a DB? If so: migrations are FILES tracks
      write and ONLY the director applies — confirm the apply mechanism (CLI, MCP, etc.).
-   - Model policy: present the engine's default tiering (§ Model selection) as the
-     recommendation and confirm or adapt it — director tier, per-work-class track tiers,
-     what escalates to fable, whether haiku is ever acceptable. The answer lands in
-     SPRINT_GUIDELINES.md and in every SPRINT.md track row (tier + one-line rationale).
+   - Model policy: present the engine's default policy (§ Model selection) as the
+     recommendation and confirm or adapt it — director tier, per-work-class model
+     tiers, what earns frontier in this project, whether light is ever acceptable. The
+     answer lands in SPRINT_GUIDELINES.md and in every SPRINT.md track row (model tier +
+     one-line rationale). The tier-to-model map is per-user, never per-project.
    - Roadmap seed: the next 3–6 milestone-level goals, and which ONE becomes sprint-01.
 
    After the fixed questions, do a **grill pass** — proactive, not reactive: attack the
@@ -209,10 +241,11 @@ arc, and these rules override the steps below (§ /sprint arc):
    `sprints/sprint-NN/SPRINT.md` and its `TRACK-*.md` files → `SCARS.md` (this skill's
    folder) and the private scars file `~/.claude/sprint/scars.md` (if it exists) for the
    failure modes the local docs have not yet absorbed.
-   **Tier check:** compare your own model to SPRINT.md's `Director tier:` line. Running
-   WEAKER than recommended → flag it as a Gate 0 operator decision: proceed anyway, or
-   relaunch the session on the stated tier. Stronger → proceed silently. No line → treat
-   as opus and add the line when you next amend SPRINT.md.
+   **Tier check:** resolve SPRINT.md's `Director tier:` line through the map (§ Model
+   tiers) and compare the result to your own model. Running WEAKER than recommended →
+   flag it as a Gate 0 operator decision: proceed anyway, or relaunch the session on the
+   stated tier. Stronger → proceed silently. No line → treat it as strong and add the
+   line when you next amend SPRINT.md.
 3. **Analyze requirements vs reality** before anything else (the project's director
    guidelines define specifics; universal minimum): `git pull --ff-only` and compare repo
    state against the sprint doc's assumptions; verify claimed prior state against actual
@@ -238,7 +271,8 @@ arc, and these rules override the steps below (§ /sprint arc):
      of blocking, and everything else about this section still applies.
    - One subagent per track; parallel same-repo tracks get `isolation: "worktree"`;
      independent tracks spawn in one message.
-   - Spawn each track on the model tier its SPRINT.md row states (§ Model selection).
+   - Spawn each track on the model tier its SPRINT.md row states, resolved through the
+     map (§ Model tiers).
      A row without a tier is a drafting gap: assign one per the model policy and amend
      SPRINT.md before spawning.
    - A track that touches UI follows the `/deslop` discipline where installed: honor
@@ -274,7 +308,8 @@ arc, and these rules override the steps below (§ /sprint arc):
    never delete an unmerged branch, anywhere. Draft/amend the
    next sprint's files from what actually happened (BACKLOG.md is the feed), including
    the next SPRINT.md's `Director tier:` line per § Model selection; final report with
-   the next kickoff pointer, naming the model to launch the next director on.
+   the next kickoff pointer, naming the model tier and resolved model to launch the next
+   director on.
    **Promotion path:** append a project-agnostic learning (a git scar, an audit technique) to
    the private scars file `~/.claude/sprint/scars.md` as class, mechanism, rule. Never write
    it into the skill's `SCARS.md`. Put a project-specific learning in the project's `DESIGN.md`.
@@ -285,7 +320,7 @@ arc, and these rules override the steps below (§ /sprint arc):
 
 ### Universal scars
 
-Scars come in two tiers. Read both at boot and apply them at audit.
+Scars come in two layers. Read both at boot and apply them at audit.
 
 - **Curated core:** `SCARS.md` (this skill's folder) holds failure modes that bite any sprint
   on any stack — git and branch footguns, agent and worktree hazards, verification
@@ -486,11 +521,13 @@ work stays a normal sprint roadmap.
    `sNN/*`), and the next sprint or arc drafted from what actually happened.
 6. **Update ARC.md and STATE.md, then exit.** Report what merged, what is in flight,
    the kickoff prompts for newly unblocked sprints, and the event that triggers the
-   next arc checkpoint. Name the model for it from ARC.md's `Arc director tier:` line.
+   next arc checkpoint. Name its model tier from ARC.md's `Arc director tier:` line and
+   the model that tier resolves to.
 
 ### Kickoff prompt for an arc sprint
 
-Emit one per unblocked sprint, naming the model from its `Director tier:` line:
+Emit one per unblocked sprint. Resolve its `Director tier:` line through the map and
+name that model:
 
 > Start a fresh session on `<model>` in `<repo>`. Run `/isolate off aNN/integration`
 > (where installed; else `git worktree add <path> -b sNN/integration

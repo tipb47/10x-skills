@@ -125,13 +125,16 @@ re-runs — tracks deliver the harness verified on a sample chunk; full runs sta
   genuinely risky merge.
 - Tracks read what their file points to; no exploratory fan-outs — `DESIGN.md` is the map.
 - Model policy: {{MODEL_POLICY}}.
-  <!-- init: from interview, seeded from the engine's default tiering — director: opus;
-  contract-defining / architecture / gnarly-debug tracks: fable; standard implementation
-  tracks: sonnet; haiku only for mechanical fully-specified chores with a stated
-  justification. Any role, the director included, may escalate to fable when the work
-  genuinely warrants the deepest reasoning — recorded in SPRINT.md at drafting time,
-  never decided mid-sprint. Every SPRINT.md track row states its tier + a one-line
-  rationale. -->
+  <!-- init: from interview, seeded from the engine's default policy, in model tiers
+  (frontier / strong / fast / light), never model names — director: strong;
+  contract-defining / architecture / gnarly-debug tracks: strong; standard
+  implementation tracks: fast; light only for mechanical fully-specified chores with a
+  stated justification. Frontier only for genuinely hard problems (novel algorithms,
+  modeling engines); state which work in THIS project earns it, and raise any default
+  the project needs (e.g. core engine tracks on frontier). Recorded in SPRINT.md at
+  drafting time, never decided mid-sprint. Every SPRINT.md track row states its model
+  tier + a one-line rationale. The tier-to-model map is per-user
+  (`~/.config/10x-skills/models.json`), never written here. -->
 
 ## Git conventions
 

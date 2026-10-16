@@ -5,11 +5,13 @@
 **Definition of done:** {{CONCRETE, VERIFIABLE end-state — phrased so a director can test
 it, not vibe it.}}
 
-**Director tier:** {{model — one-line why}}
-<!-- init: default opus. Fable when ANY hold: 3+ parallel tracks on shared surfaces;
-architecture/contract decisions expected mid-sprint rather than pre-drafted; prior
-sprint's audit caught seam defects its gates missed. The kickoff must name this model —
-the operator launches the session. -->
+**Director tier:** {{model tier — one-line why}}
+<!-- init: write a model tier (frontier / strong / fast / light), never a model name.
+Default strong. Raise the director's effort when ANY hold: 3+ parallel tracks on shared
+surfaces; contract decisions expected mid-sprint; prior sprint's audit caught seam
+defects its gates missed. Frontier only when the director itself must solve a hard
+problem. The kickoff must name this tier and the model it resolves to — the operator
+launches the session. -->
 
 <!-- init/arc: in an arc sprint only, add `**Arc:** aNN → arcs/arc-NN/ARC.md` here. Then
 rewrite Gate 0 and the close gate: `sNN/integration` cuts from and merges into
@@ -18,13 +20,14 @@ CLOSE.md written and STATUS.md set to `done`. Outside an arc, drop this directiv
 
 ## Tracks
 
-| Track | Slug/branch | Model | Why this tier | Scope |
+| Track | Slug/branch | Model tier | Why this tier | Scope |
 |---|---|---|---|---|
 | A | `sNN/{{slug}}` | {{tier}} | {{work class → tier, one line}} | {{one-line scope}} |
-<!-- init: 1-4 rows. Tier per the model policy in SPRINT_GUIDELINES.md: fable for
-contract-defining / architecture / gnarly-debug work, sonnet for standard
-implementation, haiku only for mechanical fully-specified chores (justify it in the
-rationale column). Note any shared-scaffolding races between tracks and how the
+<!-- init: 1-4 rows. Model tier per the model policy in SPRINT_GUIDELINES.md: strong
+for contract-defining / architecture / gnarly-debug work, fast for standard
+implementation, light only for mechanical fully-specified chores (justify it in the
+rationale column), frontier only for a genuinely hard problem. Write tier words, never
+model names: the director resolves them at spawn. Note any shared-scaffolding races between tracks and how the
 director pre-empts them (pre-create shared skeletons before spawning, or stagger spawns). -->
 
 ## Gate 0 (before tracks spawn)

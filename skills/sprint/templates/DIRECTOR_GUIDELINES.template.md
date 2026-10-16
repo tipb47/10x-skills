@@ -8,9 +8,11 @@ trivial audit fixes; tracks build.
 
 1. Read `STATE.md`, `DESIGN.md`, `SPRINT_GUIDELINES.md`, then the current
    `sprints/sprint-NN/SPRINT.md` + its `TRACK-*.md` files.
-   **Tier check:** compare your own model to SPRINT.md's `Director tier:` line. Weaker
+   **Tier check:** resolve SPRINT.md's `Director tier:` line through
+   `~/.config/10x-skills/models.json` and compare the result to your own model. Weaker
    than recommended → Gate 0 operator decision: proceed anyway or relaunch on the stated
-   tier. Stronger → proceed. No line → treat as opus and add it at the next amendment.
+   tier. Stronger → proceed. No line → treat it as strong and add it at the next
+   amendment.
 2. Analyze sprint requirements **vs reality**:
    - `git checkout {{TRUNK}} && git pull --ff-only`; repo state vs the sprint doc's
      assumptions. `git fetch origin` and check whether `sNN/integration` already exists
@@ -41,7 +43,8 @@ trivial audit fixes; tracks build.
   then `git push -u origin sNN/integration`. Once per sprint; on respawn, fetch the
   existing branch and never re-cut it. Every track cuts from `origin/sNN/integration`.
 - One subagent per track, prompt = absolute path to its `TRACK-*.md` + instruction to obey
-  `SPRINT_GUIDELINES.md`. Model per the sprint file's per-track row (tier + rationale);
+  `SPRINT_GUIDELINES.md`. Model tier per the sprint file's per-track row (tier +
+  rationale), resolved through the map at spawn;
   a row without a tier is a drafting gap — assign one per the model policy and amend
   `SPRINT.md` before spawning.
 - **State each track's branch-push authority explicitly in its brief** — its own
@@ -105,11 +108,11 @@ trivial audit fixes; tracks build.
    and on origin. Never delete an unmerged branch, anywhere.
 5. Draft/amend the NEXT sprint's files from what actually happened (ROADMAP is the
    skeleton; BACKLOG.md is the feed; reality wins). Set the next SPRINT.md's
-   `Director tier:` line — default opus; fable per the model policy's escalation
-   criteria.
+   `Director tier:` line — default strong; frontier only per the model policy's
+   hard-problem criteria.
 6. Final report: outcomes, merge summary, promotion state, gate status, background-job
-   dashboard, next-sprint pointer + kickoff instructions, naming the model to launch
-   the next director on.
+   dashboard, next-sprint pointer + kickoff instructions, naming the model tier and
+   the model it resolves to for the next director.
 
 ## Respawn protocol
 

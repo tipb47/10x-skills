@@ -102,10 +102,10 @@ Intensity — stated explicitly, defaulted by scope when unstated:
 |---|---|---|
 | quick | ONE scout: full checklist pass on the named target | a component, one page, every small completion auto-fire |
 | standard | 2–3 scouts split by dimension: color+typography, layout+components, motion+a11y | a feature's UI, a few pages, mid-size completion auto-fire |
-| deep | dimension scouts + a rendered-page scout (screenshots/browser where available: layout defects, build correctness) + one opus/fable synthesis judge for verdicts | whole app or site, pre-launch, "unslop everything" |
+| deep | dimension scouts + a rendered-page scout (screenshots/browser where available: layout defects, build correctness) + one strong-tier synthesis judge for verdicts | whole app or site, pre-launch, "unslop everything" |
 
 Auto-fire on completion scales the same way: size the intensity to how much UI the
-session just touched. Scouts run sonnet by default; judgment never goes to haiku.
+session just touched. Scouts run on the fast tier by default; judgment never goes to light (§ Model tiers).
 
 Each scout audits against `references/slop-checklist.md` plus the STYLE.md contract
 when one exists (render vs commitment, promise by promise — the divergence check in
@@ -137,6 +137,33 @@ a fresh-eyes scout for audits (same prime directive):
 
 The fix is deletion first, rewrite second. Report findings worst-first; apply on
 approval or `--fix`.
+
+## Model tiers
+
+Skills name a model tier, never a model. The tier says how much reasoning the work
+needs; your map says which model delivers it on this harness.
+
+| Tier | Use for |
+|---|---|
+| **frontier** | Hard problems only: novel algorithms, modeling engines, breakthroughs |
+| **strong** | The workhorse: judgment, contracts, architecture, gnarly debugging |
+| **fast** | Standard implementation and investigation |
+| **light** | Mechanical, fully specified chores; never judgment |
+
+**Resolve a tier at spawn time:**
+
+1. Read `~/.config/10x-skills/models.json`, keyed by harness, then tier:
+   `{ "<harness>": { "<tier>": { "model": "...", "effort": "..." } } }`.
+2. No entry for this harness → list the models the harness offers, propose a mapping
+   (two tiers may share a model at different efforts), confirm it with the user, and
+   save it.
+3. A mapped model is gone, or a newer one is offered → propose a remap once. Never
+   change the map silently.
+4. The harness cannot pick a model per subagent → apply the tier's effort only. It
+   cannot set effort either → inherit the session model, and say so in one line.
+
+A legacy model name in an old doc reads as its tier: first by reverse lookup in the
+map, else opus → strong, fable → frontier, sonnet → fast, haiku → light.
 
 ## Support the project
 

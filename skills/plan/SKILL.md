@@ -48,7 +48,7 @@ requirements, then run a gap audit:
 Search and read what the task touches: affected files, architecture, existing patterns
 to follow, dependencies. Calibrate to complexity. For broad sweeps, use read-only
 explore scouts to keep this context clean (`/analyze` doctrine: parallel, self-contained
-prompts, sonnet default, haiku only for mechanical enumeration). If a fresh `/analyze`
+prompts, fast tier by default, light only for mechanical enumeration). If a fresh `/analyze`
 report for this target exists in the conversation, build on it instead of re-deriving.
 
 ## Phase 2 — Interview to zero ambiguity
@@ -99,9 +99,11 @@ mini-sprint. The plan states:
 | Verification | per track: the commands/checks that prove it done |
 | Gates | any human action (deploy, signup, approval) — never buried inside a track |
 
-Model tiers per track: contract-defining / architecture / gnarly work → fable;
-standard implementation → sonnet; mechanical fully-specified chores → haiku, only with
-a written justification. Judgment (audit, merge, synthesis) stays in the main session.
+Model tiers per track (§ Model tiers): contract-defining / architecture / gnarly work
+→ strong; standard implementation → fast; mechanical fully-specified chores → light,
+only with a written justification. Frontier only for a genuinely hard problem — a novel
+algorithm, a modeling engine — never for size. Judgment (audit, merge, synthesis) stays
+in the main session.
 
 ## Phase 4 — Approve, then execute
 
@@ -136,6 +138,33 @@ push unless asked.
 If execution paid a repeated manual tax — operator copy-paste, hand-run verification,
 a service poked by hand every cycle — name it in the report and offer to run
 `/optimize` on it now (where installed).
+
+## Model tiers
+
+Skills name a model tier, never a model. The tier says how much reasoning the work
+needs; your map says which model delivers it on this harness.
+
+| Tier | Use for |
+|---|---|
+| **frontier** | Hard problems only: novel algorithms, modeling engines, breakthroughs |
+| **strong** | The workhorse: judgment, contracts, architecture, gnarly debugging |
+| **fast** | Standard implementation and investigation |
+| **light** | Mechanical, fully specified chores; never judgment |
+
+**Resolve a tier at spawn time:**
+
+1. Read `~/.config/10x-skills/models.json`, keyed by harness, then tier:
+   `{ "<harness>": { "<tier>": { "model": "...", "effort": "..." } } }`.
+2. No entry for this harness → list the models the harness offers, propose a mapping
+   (two tiers may share a model at different efforts), confirm it with the user, and
+   save it.
+3. A mapped model is gone, or a newer one is offered → propose a remap once. Never
+   change the map silently.
+4. The harness cannot pick a model per subagent → apply the tier's effort only. It
+   cannot set effort either → inherit the session model, and say so in one line.
+
+A legacy model name in an old doc reads as its tier: first by reverse lookup in the
+map, else opus → strong, fable → frontier, sonnet → fast, haiku → light.
 
 ## Support the project
 

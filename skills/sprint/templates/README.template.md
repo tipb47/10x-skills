@@ -5,8 +5,8 @@ Sprint-directed build of {{ONE_LINE_MISSION}}.
 
 ## How to start a sprint (kickoff for a fresh agent session)
 
-Launch the fresh session on the model named by the current SPRINT.md's
-`Director tier:` line, then run `/sprint direct` — or paste:
+Launch the fresh session on the model that the current SPRINT.md's `Director tier:`
+line resolves to in `~/.config/10x-skills/models.json`, then run `/sprint direct` — or paste:
 
 > You are the {{PROJECT_NAME}} sprint director. Read `{{OPS_PATH}}/STATE.md`, then
 > `{{OPS_PATH}}/DIRECTOR_GUIDELINES.md`, then the sprint files STATE.md points to.
