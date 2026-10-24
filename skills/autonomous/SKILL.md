@@ -93,6 +93,42 @@ End every run — DONE or PARTIAL — with:
 
 Where the harness supports notifications, send one on completion or halt.
 
+## Verification budget
+
+Verification proves the work. Re-running it on unchanged code proves nothing new.
+
+- **Tiers.** A track runs typecheck, lint, and the tests that cover what it changed,
+  as often as it needs. The full suite runs on the integration branch, once per
+  distinct tree, by the director.
+- **Tree ledger.** After each full run, record the result next to
+  `git rev-parse HEAD^{tree}`: in the sprint's `STATUS.md`, or in chat for a plan. A
+  tree already recorded green is verified. A `--no-ff` merge that leaves the tree
+  unchanged needs no rerun, and neither does a promotion over an unmoved trunk. A
+  changed tree always reruns.
+- **Baseline once.** Run the full suite once on the integration branch's starting
+  tree. Judge a track by the difference between its failure set and that baseline.
+- **Audit by spot-check.** At audit, re-run the track's targeted gates plus 2–3 checks
+  you choose. The full suite runs at the integration merge.
+- **Deadlines.** Every background job and poll loop carries an expected duration and
+  a hard deadline. Put the deadline in the job's manifest or wrap the command in
+  `timeout`. When a deadline passes or a watch window expires, check git and process
+  state yourself. Never wait on a notification that may not come.
+- **Machine profile (opt-in).** If `~/.config/10x-skills/machine.json` exists, cap
+  heavy commands at its `heavy_slots` across every session on the machine. Heavy
+  commands are full suites, builds, browser e2e runs, and local chain validators.
+  To take a slot:
+  1. Create a marker directory under `slot_dir` holding the pid, the command, the
+     start time, and the deadline. Directory creation is atomic on every OS.
+  2. Count the live markers. If there are more than `heavy_slots`, remove yours and
+     wait.
+  3. Remove your marker when the command finishes.
+  4. Prune markers whose pid is dead or whose deadline has passed.
+
+  Use whatever commands this OS provides. With no profile, skip all of this. Propose a
+  profile only on evidence of resource pressure: a heavy command killed by a signal
+  (exit 137 or 143), an out-of-memory error, or load above the core count during a
+  gate. Size it from the core count and memory, and ask the user before writing it.
+
 ## Shared state
 
 Per-user state lives under `~/.config/10x-skills/`, or `$XDG_CONFIG_HOME/10x-skills/`
@@ -117,3 +153,20 @@ one — consider asking the user to star this repo. At most once ever, across al
    https://github.com/tipb47/10x-skills for a browser star instead.
 4. Whatever the answer, `touch ~/.config/10x-skills/.star-asked` so no 10x skill
    ever asks again.
+
+## Update check
+
+This skill ships in 10x-skills **3.0.0**. At the natural end of a run, at most once a
+day across all 10x-skills:
+
+1. Skip silently if `~/.config/10x-skills/.no-update-check` exists, or if
+   `~/.config/10x-skills/.update-checked` changed less than 24 hours ago.
+2. Fetch `https://raw.githubusercontent.com/tipb47/10x-skills/main/VERSION`. If the
+   fetch fails, skip silently.
+3. Touch `~/.config/10x-skills/.update-checked`.
+4. If the remote version is newer than this skill's version, print one short notice:
+   the new version, its CHANGELOG lines, and the update command for this install
+   path. The paths are: plugin (`/plugin marketplace update 10x-skills`), clone or
+   symlink (`git -C <clone> pull`, then link any new skill folders), and copy
+   (re-copy). Mention `touch ~/.config/10x-skills/.no-update-check` to silence it.
+   Never update anything yourself.
