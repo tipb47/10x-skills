@@ -1,6 +1,6 @@
 ---
 name: pry
-description: Zero-assumption interrogation (inspired by /grill-me, https://www.aihero.dev/skills-grill-me) — recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air, plus an ideas pass that proposes improvements. Use for /pry, when the user wants to be grilled or stress-test a plan/design, and PROACTIVELY whenever what the user presented carries material ambiguity that would otherwise be filled by assumption.
+description: Zero-assumption interrogation (inspired by /grill-me, https://www.aihero.dev/skills-grill-me) — recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air, plus an ideas pass that pitches only improvements worth doing now. Use for /pry, when the user wants to be grilled or stress-test a plan/design, and PROACTIVELY whenever what the user presented carries material ambiguity that would otherwise be filled by assumption.
 argument-hint: [target — a task, plan, idea, or "this"; inferred from context when absent]
 ---
 
@@ -70,15 +70,20 @@ interview.** The user never has to say "continue prying as needed."
 Pry does not only ask; it also proposes. The ideas pass is always on. Run it once
 the core picture is clear enough to ground ideas — never in round one.
 
-- **What to propose.** Low-hanging fruit the user is missing, UX improvements, and
-  adjacent features or small additions that make the work meaningfully better. For
-  bug work, propose edge cases and adjacent failure modes instead of new features.
-- **One idea, one question.** Each idea is its own structured question: yes / no /
-  later. Lead with your recommendation and a one-line why.
+- **The bar: recommend "yes, now".** Pitch an idea only if you would recommend doing
+  it now. It qualifies if it is one of these:
+  - real low-hanging value the user is missing
+  - a materially better approach than the current one
+  - a genuinely novel angle
+
+  For bug work, the same bar applies to edge cases and adjacent failure modes.
+- **Zero ideas is valid.** Never fill a quota. If no idea clears the bar, pitch none.
+- **One idea, one question.** Each idea is its own structured question: yes / no.
+  Lead with your recommendation and a one-line why.
 - **Accepted ideas are branches.** Pry them like any other decision.
-- **"Later" ideas are kept.** List them in the exit summary so they are not lost.
-- **Scale.** Offer more ideas when the user says they are open to ideas, or the work
-  is greenfield, feature, or UX. Offer few or none for narrow tasks.
+- **"Later"-grade ideas are parked, not pitched.** An idea you would recommend only
+  for later never becomes a question. Put such ideas on at most one "Parked:" line in
+  the exit summary.
 - **The user decides.** An idea never expands scope silently.
 
 There is no fixed confirmation gate. The shared understanding converges through the
@@ -88,7 +93,7 @@ cannot form another material question.
 ## Exit and handoff
 
 When nothing material remains open, state the locked understanding compactly — the
-decisions and their whys, plus any ideas marked "later", a few tight lines — then
+decisions and their whys, plus at most one "Parked:" line, a few tight lines — then
 hand off by context:
 
 - The session was mid-task → continue that work under the locked understanding.
