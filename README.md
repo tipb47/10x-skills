@@ -16,6 +16,7 @@ They work on any agent harness that loads `SKILL.md` skills — see
 | [Autonomous](#autonomous--autonomous) | `/autonomous` | Negotiated unattended execution of an approved plan — go to bed, wake to a report |
 | [Optimize](#optimize--optimize) | `/optimize` | Turn recurring manual workflows into hands-off tooling: CLIs, MCPs, generated skills |
 | [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
+| [Explain](#explain--explain) | `/explain` | Plain-language explanation of an answer, a diff, a file, or a concept |
 | [Handoff](#handoff--handoff) | `/handoff` | One copyable message that transfers the session to a fresh agent |
 | [Isolate](#isolate--isolate) | `/isolate` | Move this session into its own worktree so it can share a repo with other agents |
 
@@ -49,6 +50,7 @@ Then install everything:
 /plugin install autonomous@10x-skills
 /plugin install optimize@10x-skills
 /plugin install whereami@10x-skills
+/plugin install explain@10x-skills
 /plugin install handoff@10x-skills
 /plugin install isolate@10x-skills
 ```
@@ -63,7 +65,7 @@ Copy any skill folder into your harness's user-level skills directory:
 git clone https://github.com/tipb47/10x-skills.git
 
 # Claude Code — pick the skills you want:
-for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
+for s in build sprint analyze plan pry deslop autonomous optimize whereami explain handoff isolate; do
   cp -r 10x-skills/skills/$s ~/.claude/skills/$s
 done
 
@@ -88,7 +90,8 @@ ignore that file.
 
 Per-user state lives in `~/.config/10x-skills/` (or `$XDG_CONFIG_HOME/10x-skills/`) on
 every harness: the model-tier map, the sprint registry, your private scars file, and
-the optimize registry. Files from older installs under `~/.claude/` move there on
+the optimize registry, the optional machine profile (`machine.json`, a per-user cap on
+heavy commands), and the update-check markers. Files from older installs under `~/.claude/` move there on
 first use.
 
 ### Option C — symlink (track the repo)
@@ -97,7 +100,7 @@ first use.
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
+for s in build sprint analyze plan pry deslop autonomous optimize whereami explain handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -118,9 +121,18 @@ https://github.com/tipb47/10x-skills if `gh` can't), and
 The front door for new functionality. Describe what you want built, with or without
 the command, and `/build` sizes the work before any engine runs:
 
-1. It analyzes the codebase once and runs one `/pry` interview, ideas pass included.
-2. It picks a scale, states why, and asks you to confirm.
-3. It hands off with the locked decisions, so the engine never interviews you again.
+1. If the idea is not concrete yet, it runs **Discover** first (see below).
+2. It analyzes the codebase once and runs one `/pry` interview, ideas pass included.
+3. It picks a scale, states why, and asks you to confirm.
+4. It hands off with the locked decisions, so the engine never interviews you again.
+   For a sprint, the decisions land in the `## Locked decisions` section of `SPRINT.md`.
+
+**Discover** fits a new product or a vague capability. `/build` cycles `/analyze` in
+research mode and `/pry` until you sign off. Then it writes `BLUEPRINT.md` at the repo
+root: problem, users, core capabilities, non-goals, chosen approaches with sources, and
+open risks. You can stop there, or continue to the scale pick. `/sprint init`,
+`/sprint arc`, and `/plan` read `BLUEPRINT.md` when it exists. Concrete work skips
+Discover.
 
 | Scale | Fits when | Engine |
 |---|---|---|
@@ -205,9 +217,10 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
 ```
 <ops>/
 ├── README.md               ← layout + kickoff prompt for fresh director sessions
-├── STATE.md                ← living ledger: current sprint, decisions, history, running jobs. READ FIRST.
+├── STATE.md                ← thin index: verified facts, decisions, running jobs, one line per sprint. READ FIRST.
 ├── DESIGN.md               ← canonical contract: architecture, schemas, conventions, standing decisions
 ├── SPRINT_GUIDELINES.md    ← rules for tracks + directors: gates, branch discipline, definition of done
+├── TRACK_RULES.md          ← standing rules for track agents: push authority, commits, report format
 ├── DIRECTOR_GUIDELINES.md  ← director runbook: boot → analyze → gate → tracks → audit → merge → close
 ├── ROADMAP.md              ← milestone outline (reality wins over this outline)
 ├── BACKLOG.md              ← prioritized queue of future work; feeds each next-sprint draft
@@ -219,8 +232,13 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
     └── sprint-NN/
         ├── SPRINT.md       ← sprint brief: goal, gates, tracks, merge order, close checklist
         ├── TRACK-*.md      ← self-contained prompt per track subagent
-        └── STATUS.md, CLOSE.md ← arc sprints only: sprint director's status + close report
+        ├── STATUS.md       ← live header: phase, tracks landed, tree ledger, blockers. Only this sprint's director writes it.
+        └── CLOSE.md        ← close report, written once: shipped, deviations, learnings, deferred work
 ```
+
+Sprint narrative never goes into `STATE.md`. It goes into the sprint's `CLOSE.md`, and
+`STATE.md` keeps one line per sprint that points there. The in-flight view comes from
+the `STATUS.md` headers, so parallel sprints and two developers do not collide in one file.
 
 The engine's templates live in [`skills/sprint/templates/`](skills/sprint/templates);
 the curated failure-mode catalog is [`skills/sprint/SCARS.md`](skills/sprint/SCARS.md).
@@ -393,6 +411,16 @@ with the single most useful next action. Read-only; writes nothing.
 
 Use it mid-session to reorient — especially when juggling several agents at once.
 
+## Explain — `/explain`
+
+A plain-language explanation of something you do not follow yet: `/explain [target]`.
+The target is inferred. It can be the last answer, a commit or diff, a file, or a
+concept. `/explain` builds up from what a non-specialist already knows: one idea per
+paragraph, a concrete analogy where it helps, and names defined on first use. It ends
+with a short "in technical terms" line that maps back to the real words. It calibrates
+its own level, and "simpler" or "deeper" re-runs it at another level. It never reports
+status — that is `/whereami`. Read-only.
+
 ## Handoff — `/handoff`
 
 Produces ONE copyable message — in chat, never a file — that transfers the session to a
@@ -415,6 +443,34 @@ base when no remote exists and nothing has it checked out), then removes the wor
 
 `/plan` and `/sprint` already isolate their *subagents*; `/isolate` is for the top-level
 session itself, so it can coexist with them and with other terminals on the same repo.
+
+---
+
+## Updates
+
+Each skill checks for a newer release at the end of a run, at most once a day across
+all 10x-skills:
+
+1. It skips the check if `~/.config/10x-skills/.no-update-check` exists, or if
+   `~/.config/10x-skills/.update-checked` changed less than 24 hours ago.
+2. It reads [`VERSION`](VERSION) on `main`. If the read fails, it skips silently.
+3. It touches `.update-checked`.
+4. If the remote version is newer, it prints one notice: the new version, its
+   [CHANGELOG](CHANGELOG.md) lines, and the update command for your install path.
+
+The skill never updates anything itself. To turn the check off, run:
+
+```bash
+touch ~/.config/10x-skills/.no-update-check
+```
+
+To update, run the command for your install path:
+
+| Install path | Update command |
+|---|---|
+| Plugin (Option A) | `/plugin marketplace update 10x-skills` |
+| Symlink (Option C) | `git -C ~/10x-skills pull`, then link any new skill folders |
+| Manual copy (Option B) | Clone again and re-copy the skill folders |
 
 ---
 

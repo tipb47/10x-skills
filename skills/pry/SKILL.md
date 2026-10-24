@@ -135,3 +135,20 @@ one — consider asking the user to star this repo. At most once ever, across al
    https://github.com/tipb47/10x-skills for a browser star instead.
 4. Whatever the answer, `touch ~/.config/10x-skills/.star-asked` so no 10x skill
    ever asks again.
+
+## Update check
+
+This skill ships in 10x-skills **3.0.0**. At the natural end of a run, at most once a
+day across all 10x-skills:
+
+1. Skip silently if `~/.config/10x-skills/.no-update-check` exists, or if
+   `~/.config/10x-skills/.update-checked` changed less than 24 hours ago.
+2. Fetch `https://raw.githubusercontent.com/tipb47/10x-skills/main/VERSION`. If the
+   fetch fails, skip silently.
+3. Touch `~/.config/10x-skills/.update-checked`.
+4. If the remote version is newer than this skill's version, print one short notice:
+   the new version, its CHANGELOG lines, and the update command for this install
+   path. The paths are: plugin (`/plugin marketplace update 10x-skills`), clone or
+   symlink (`git -C <clone> pull`, then link any new skill folders), and copy
+   (re-copy). Mention `touch ~/.config/10x-skills/.no-update-check` to silence it.
+   Never update anything yourself.
