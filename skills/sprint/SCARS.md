@@ -8,12 +8,14 @@ Directors never edit this file. A director appends new scars to the private scar
 `~/.config/10x-skills/sprint/scars.md`, which is never committed anywhere. A scar enters this core only
 when the operator explicitly asks, for example through a pull request to this repo.
 
-Scar shape: state the class in one sentence, then the mechanism, then the rule. A scar that
-only reproduces in one stack is a project note or a private scar, never a core rule.
+Scar shape: state the class in one sentence, then the mechanism, then the rule, in 1–3
+lines. Never the incident story; that stays in the sprint's `CLOSE.md`. A scar that only
+reproduces in one stack is a project note or a private scar, never a core rule. Each
+section heading carries its tags; every section here is `[all]`.
 
 ---
 
-## Git & branches
+## Git & branches [all]
 
 - **With worktrees, ALWAYS `git -C <absolute-path>`.** A bare git command in a stale cwd has
   reset a branch mid-merge.
@@ -28,16 +30,20 @@ only reproduces in one stack is a project note or a private scar, never a core r
   there reports "Already up to date", a silent no-op that reads as success. Check out the
   trunk, confirm `git branch --show-current`, then merge. If "Already up to date" is
   unexpected, run `git merge-base --is-ancestor <branch> <trunk>`.
-- **Confirm the ops ledger's tracked or untracked status on EVERY branch you check out.** A
-  ledger gitignored on one branch but TRACKED on another gets OVERWRITTEN by the stale tracked
-  copy at checkout. Recover with `git show <commit>:<path>`. Prevent with `git rm --cached` on
-  every branch the director visits.
+- **Confirm the ops folder's tracked or untracked status on EVERY branch you check out.** An
+  ops folder gitignored on one branch but TRACKED on another gets OVERWRITTEN by the stale
+  tracked copy at checkout. Recover with `git show <commit>:<path>`. Prevent with
+  `git rm --cached` on every branch the director visits.
 - **Never force-push the trunk, and land tracks only on the integration branch.** Any
   force-push is an operator-gated, single-purpose sprint. Tracks merge into `sNN/integration`.
   The trunk receives ONE merge, at an operator gate. Per-track trunk pushes multiply CI runs
   and deploys.
+- **Ignore harness directories inside the checkout with a ROOT-ANCHORED pattern.** Harnesses
+  put worktrees under a dot-directory in the repo, so repo-wide linters and `**/` globs scan
+  or skip them by accident. Anchor the ignore at the root in both the linter and
+  `.gitignore`, and confirm the gate's processed-file COUNT in the main tree and a worktree.
 
-## Agents, worktrees & orchestration
+## Agents, worktrees & orchestration [all]
 
 - **Tracks commit and push INCREMENTALLY.** Infrastructure limits (token caps, timeouts,
   crashes) kill agents with all work still in a worktree. Commit at every milestone, label
@@ -64,8 +70,11 @@ only reproduces in one stack is a project note or a private scar, never a core r
   reads its brief before checking out its branch reads the pre-amendment copy and misses every
   Gate 0 correction. Order the spawn prompt so checkout comes FIRST, or point it at
   `origin/<integration>:<path>`. A report quoting an already-amended brief value is the tell.
+- **A worktree track cannot write the shared ops folder.** Harnesses refuse writes outside
+  the agent's worktree. Tell tracks to put the report in the final message and any file
+  inside their worktree; the director relocates it and drops it from the integration diff.
 
-## Verification & gates
+## Verification & gates [all]
 
 - **A track's own gates cannot see the seam BETWEEN tracks.** Every gate can pass while the
   product is broken, because each track made a correct decision about a boundary the other
@@ -95,9 +104,11 @@ only reproduces in one stack is a project note or a private scar, never a core r
   produced each number.
 - **A green suite can MASK a silently-skipping subtree.** Compare skip COUNTS against the track's
   reported numbers, not just exit codes.
-- **A track's reported baseline can diverge from yours because of environment.** Verify the
-  trunk's SHA yourself, run the suite IDENTICALLY on trunk and branch, and diff the FAILURE
-  SETS. The branch is clean when it adds zero new failures and its own tests pass.
+- **Baseline once per sprint, then trust the tree ledger.** A track's reported baseline can
+  diverge from yours because of environment, and re-running unchanged trees proves nothing.
+  Run the full suite once on the integration branch's starting tree and record it against
+  `git rev-parse HEAD^{tree}`. Judge each later run by its FAILURE SET against that
+  baseline: clean means zero new failures. Never re-run a tree already recorded.
 - **Enumerated-file-list scopes systematically MISS repo-root surfaces.** Repo-wide renames and
   contract changes leave the README, API spec, `.env.example`, and top-level docs stale. Give
   ONE track ownership of "repo root + docs + spec", or budget a director cleanup pass, and run

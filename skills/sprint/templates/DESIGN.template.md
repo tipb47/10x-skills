@@ -1,7 +1,7 @@
 # DESIGN — {{PROJECT_NAME}} Contract
 
 Canonical design contract. Tracks and directors obey this file; changes are
-operator-approved and logged in `STATE.md`.
+operator-approved and logged in the STATE index decisions log (`STATE.md`).
 
 ## 1. Mission & scope boundary
 
