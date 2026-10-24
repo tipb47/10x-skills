@@ -1,7 +1,7 @@
 # DESIGN — {{PROJECT_NAME}} Contract
 
 Canonical design contract. Tracks and directors obey this file; changes are
-operator-approved and logged in `STATE.md`.
+operator-approved and logged in the STATE index decisions log (`STATE.md`).
 
 ## 1. Mission & scope boundary
 
@@ -42,7 +42,7 @@ director re-runs them at audit. -->
 <!-- init: add project-specific rules (PII, rate limits on external services, prod-DB
 safety like batch sizes / no table locks). -->
 
-## 7. Standing decisions ledger (operator-confirmed)
+## 7. Standing decisions (operator-confirmed)
 
 | Date | Decision |
 |---|---|

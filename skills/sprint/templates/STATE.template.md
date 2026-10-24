@@ -1,43 +1,42 @@
-# STATE — Living Ledger
+# STATE index
 
-**Current sprint:** sprint-01 (drafted, NOT started) → `sprints/sprint-01/SPRINT.md`
 **Last updated:** {{DATE}} (init — system scaffolded)
+**Active arc:** none
+<!-- init: keep "none". `/sprint arc` sets this line to `aNN → arcs/arc-NN/ARC.md`. -->
 
-## Status
-
-Pre-sprint-01. Ops system generated via `/sprint init` and operator-reviewed.
-<!-- init: 1-3 sentences of where the project actually stands right now. -->
+**Rule: never append sprint narrative here.** Narrative goes to the sprint's
+`CLOSE.md`; in-flight state goes to the sprint's `STATUS.md`. This file holds only the
+facts, decisions, jobs, and one-line history rows below. The in-flight view comes from
+the header of each `sprints/*/STATUS.md`.
 
 ## Background jobs
 
-<!-- init: include this section if the project has long-running jobs (backfills, batch
-processing, deploys-in-flight); otherwise keep the empty table — directors check it every boot. -->
-| Job | Status | Manifest/where to check | Started | Notes |
-|---|---|---|---|---|
-| (none) | | | | |
+<!-- init: keep the empty table if the project has no long-running jobs; directors check
+it every boot. Every row carries an expected duration and a hard deadline. A job past its
+deadline is dead until process state proves otherwise. -->
+| Job | Sprint | Status | Manifest / where to check | Started | Expected duration | Deadline |
+|---|---|---|---|---|---|---|
+| (none) | | | | | | |
 
-## Verified facts a director can rely on ({{DATE}})
+## Verified facts
 
-<!-- init: facts established during setup that a fresh director shouldn't re-derive:
-store locations, credentials mechanisms, known data states, tooling quirks. -->
-- {{FACT}}
+<!-- init: facts established during setup that a fresh director must not re-derive:
+store locations, credential mechanisms, known data states, tooling quirks. One line each,
+each with its verification date. -->
+- {{FACT}} (verified {{DATE}})
 
 ## Decisions log
 
 | Date | Decision | Where recorded |
 |---|---|---|
-| {{DATE}} | Standing decisions from init interview | `DESIGN.md` standing-decisions ledger |
+| {{DATE}} | Standing decisions from the init interview | `DESIGN.md` § Standing decisions |
 <!-- init: add one row per provisional decision (answers that were "not sure yet"). -->
 
 ## Sprint history
 
-| Sprint | Outcome |
-|---|---|
-| (none run yet) | |
+One line per closed sprint. Each sprint's full record is its `CLOSE.md`, in
+`sprints/sprint-NN/` or, once archived, `sprints/archive/sprint-NN/`.
 
-## Open items for upcoming sprints
-
-Tracked in `BACKLOG.md` — one prioritized queue, not two. List here ONLY items a
-director must see before reading the backlog (things that gate the next boot).
-
-- (none)
+| Sprint | Closed | Outcome (one line) |
+|---|---|---|
+| (none run yet) | | |

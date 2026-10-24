@@ -14,8 +14,9 @@ gate.
 cross-sprint seams are dense or contract decisions land at arc checkpoints. Frontier only
 when the arc director itself must solve a hard problem. -->
 
-**Ledger rule:** the arc director is the only writer of this file, `STATE.md`, and
-`BACKLOG.md`. Sprint directors write only their own `sprints/sprint-NN/` folder.
+**Writer rule:** the arc director is the only writer of this file, the STATE index
+(`STATE.md`), and `BACKLOG.md`. Sprint directors write only their own
+`sprints/sprint-NN/` folder: its `STATUS.md` and `CLOSE.md`.
 
 ## Non-goals
 
@@ -61,7 +62,8 @@ deploys to them, at an operator gate, from the arc tree after merging. -->
 
 1. {{GATE — shared-environment deploys, approvals, external signups.}}
 2. **Arc close:** operator says go → merge `origin/{{TRUNK}}` into `aNN/integration` if
-   the trunk moved, re-verify, then ONE `--no-ff` merge into `{{TRUNK}}` and ONE push.
+   the trunk moved, and run the full suite only if that changed the tree. Then ONE
+   `--no-ff` merge into `{{TRUNK}}` and ONE push.
    Expected: exactly one pipeline run, {{TRUNK_PUSH_EFFECT}}.
 
 ## Status
@@ -72,6 +74,17 @@ waiting / unblocked / in flight / done / merged. -->
 | Sprint | Status | `sNN/integration` | Notes |
 |---|---|---|---|
 | sNN | {{STATUS}} | {{pushed / merged into aNN/integration}} | {{deploy needs, blockers}} |
+
+## Tree ledger
+
+One row per full-suite run on `aNN/integration` (sprint skill § Verification budget).
+After merging each sprint, the arc director runs the full suite once per distinct tree
+and records it here. A tree recorded green here is verified. A green row in a sprint's
+`STATUS.md` is only a claim.
+
+| Tree (`git rev-parse "HEAD^{tree}"`) | `aNN/integration` @ commit | Full suite | Failures vs baseline | Date |
+|---|---|---|---|---|
+| | | | | |
 
 ## Arc checkpoint log
 

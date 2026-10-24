@@ -1,6 +1,6 @@
 ---
 name: deslop
-description: Remove and prevent AI slop — the statistical-median look and voice of generated work. Frontend path (deep, inspired by samber's frontend-design-deslop): strategy-first design, OKLCH tokens, craft layer, STYLE.md, fresh-eyes slop audits via subagents. Code path (minimal): LLM tells in comments, docs, and structure. Use for /deslop [target] and /deslop audit [target] [intensity]; PROACTIVELY when UI work begins (design before pixels) and when UI work completes (self-audit); and when the user says deslop, unslop, slop audit, "make it not look like AI", or "less generic".
+description: Remove and prevent AI slop — the statistical-median look and voice of generated work. Frontend path (deep, inspired by samber's frontend-design-deslop): strategy-first design, OKLCH tokens, craft layer, STYLE.md, fresh-eyes slop audits via subagents. Code path (minimal): LLM tells in comments, docs, and structure. Use for /deslop [target] and /deslop audit [target] [intensity]; PROACTIVELY at two bookends only: when a NEW UI surface or a redesign starts with no STYLE.md covering it (design before pixels), and once when a unit of UI work completes (one self-audit). Follow-up tweaks to an already-styled surface do not trigger it; and when the user says deslop, unslop, slop audit, "make it not look like AI", or "less generic".
 argument-hint: [target | audit <target> [quick|standard|deep]] — routes frontend vs code from context clues
 ---
 
@@ -29,12 +29,16 @@ session was just doing. Then route:
 
 ## When to fire without being invoked
 
-- **UI work begins** → run the frontend build discipline first. Slop prevented is
-  cheaper than slop removed. Skip only for trivial touches (a copy fix, a spacing
-  nudge) that change no design decision.
-- **UI work completes** (new UI, polish, a redesign) → run a completion audit,
-  scaled by how much was touched (see Audit mode). This fires every time; it is the
-  point of the skill.
+Fire at two bookends only. Follow-up tweaks to a styled surface invoke nothing:
+STYLE.md applies passively: you read its core and honor it.
+
+- **Start of a new surface or redesign** with no STYLE.md covering it → run the
+  frontend build discipline first. Slop prevented is cheaper than slop removed.
+  Skip it for trivial touches (a copy fix, a spacing nudge) and for any change to a
+  surface that STYLE.md already covers.
+- **End of a unit of UI work** (new UI, a redesign, a polish pass) → run ONE
+  completion audit, scaled by how much was touched (see Audit mode). Do not re-run it
+  for each follow-up tweak that comes after.
 
 ## Frontend path — build discipline
 
@@ -42,8 +46,9 @@ Lean core here; depth lives in `references/` and is pulled ONLY when doing that
 work. Never preload the library.
 
 **Phase 0 — Discover.** Check for `STYLE.md` at the project root (and `docs/`).
-Exists → read it, honor its tokens, skip answered questions, extend rather than
-restart. Missing → lock three things before any pixel: WHAT the artifact is
+Exists → read its core; grep `## Reference` when needed. Honor its tokens, skip
+answered questions, extend rather than restart. No core/reference split → propose the
+split to the user; never rewrite it unasked. Missing → lock three things before any pixel: WHAT the artifact is
 (`references/artifact-types.md`), WHO it serves and the single primary action, and
 3–5 committed brand adjectives. Run the questions as a `/pry` interview (where
 installed): recommended answer first, batch independent, infer-then-confirm — only
@@ -78,9 +83,10 @@ artifact-relevant subset of `references/catalogs.md` as inspiration to transpose
 never clone.
 
 **Phase 3 — STYLE.md.** The durable output: one `STYLE.md` at the project root —
-discovery context, aesthetic commitment, signature move, tokens, craft decisions,
-audit log. Schema: `references/style-md.md`. STYLE.md wins over drifted CSS or
-components; later sessions read it instead of re-running discovery. (In sprint
+discovery context, aesthetic commitment, signature move, tokens, craft decisions.
+It holds a short core plus a reference part. Schema: `references/style-md.md`.
+STYLE.md wins over drifted CSS or components; later sessions read it instead of
+re-running discovery. (In sprint
 projects it sits beside `ops/DESIGN.md`: STYLE.md is visual design, ops/DESIGN.md is
 architecture.)
 
@@ -106,7 +112,8 @@ Intensity — stated explicitly, defaulted by scope when unstated:
 | deep | dimension scouts + a rendered-page scout (screenshots/browser where available: layout defects, build correctness) + one strong-tier synthesis judge for verdicts | whole app or site, pre-launch, "unslop everything" |
 
 Auto-fire on completion scales the same way: size the intensity to how much UI the
-session just touched. Scouts run on the fast tier by default; judgment never goes to light (§ Model tiers).
+session just touched. Scouts run on the fast tier by default; judgment never goes to
+light (§ Model tiers).
 
 Each scout audits against `references/slop-checklist.md` plus the STYLE.md contract
 when one exists (render vs commitment, promise by promise — the divergence check in
@@ -115,8 +122,8 @@ or a screenshot region and the concrete fix.
 
 **Report, then fix.** Present the synthesized findings. Apply fixes only on approval
 — or immediately when invoked with `--fix`. Fixing goes back through the build
-discipline (tokens first, not spot-patches), and the audit result + changelog land
-in STYLE.md.
+discipline (tokens first, not spot-patches), and the audit result goes in the
+audit report and the commit message. Never append it to STYLE.md.
 
 ## Code path — minimal, grows later
 
@@ -163,6 +170,12 @@ needs; your map says which model delivers it on this harness.
 4. The harness cannot pick a model per subagent → apply the tier's effort only. It
    cannot set effort either → inherit the session model, and say so in one line.
 
+**Every spawn names its tier.** State the tier and a one-line why at each spawn.
+Never let a subagent inherit the session model by default. A fork inherits, so never
+fork for tiered work. Spawn a typed agent with an explicit tier instead. Directors
+and drafters (sprint drafting, `/build`, `/sprint arc`) run on strong or above.
+Their effort scales with the work's size and seams; the tier does not drop.
+
 A legacy model name in an old doc reads as its tier: first by reverse lookup in the
 map, else opus → strong, fable → frontier, sonnet → fast, haiku → light.
 
@@ -190,3 +203,20 @@ one — consider asking the user to star this repo. At most once ever, across al
    https://github.com/tipb47/10x-skills for a browser star instead.
 4. Whatever the answer, `touch ~/.config/10x-skills/.star-asked` so no 10x skill
    ever asks again.
+
+## Update check
+
+This skill ships in 10x-skills **3.0.0**. At the natural end of a run, at most once a
+day across all 10x-skills:
+
+1. Skip silently if `~/.config/10x-skills/.no-update-check` exists, or if
+   `~/.config/10x-skills/.update-checked` changed less than 24 hours ago.
+2. Fetch `https://raw.githubusercontent.com/tipb47/10x-skills/main/VERSION`. If the
+   fetch fails, skip silently.
+3. Touch `~/.config/10x-skills/.update-checked`.
+4. If the remote version is newer than this skill's version, print one short notice:
+   the new version, its CHANGELOG lines, and the update command for this install
+   path. The paths are: plugin (`/plugin marketplace update 10x-skills`), clone or
+   symlink (`git -C <clone> pull`, then link any new skill folders), and copy
+   (re-copy). Mention `touch ~/.config/10x-skills/.no-update-check` to silence it.
+   Never update anything yourself.

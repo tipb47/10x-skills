@@ -7,14 +7,15 @@ their behalf. Humans: see [README.md](README.md).
 If the user said "install these skills" / "set up sprint director", follow **Part 1**.
 If they said "run a sprint" / "be the director", follow **Part 2**.
 
-The repo holds eleven plain skill folders under `skills/` — `build` (router that sizes
+The repo holds twelve plain skill folders under `skills/` — `build` (router that sizes
 new work into plan, sprint, or arc), `sprint` (Sprint Director),
 `analyze` (depth-scaled read-only investigation), `plan` (adaptive mini-sprint
 planning), `pry` (zero-assumption interrogation until certainty), `deslop` (slop
 removal and prevention with fresh-eyes subagent audits),
 `autonomous` (negotiated unattended execution of an approved plan),
 `optimize` (workflow optimization: friction mining, tooling research, generated
-skills), `whereami` (session situation report), `handoff` (one-message session
+skills), `whereami` (session situation report), `explain` (plain-language
+explanation of an answer, diff, file, or concept), `handoff` (one-message session
 transfer), `isolate` (move this session into its own worktree to coexist with other
 agents). Each is a `SKILL.md` with YAML frontmatter plus an `agents/openai.yaml`
 interface descriptor; `sprint` additionally carries `templates/` and `SCARS.md`. They
@@ -61,12 +62,13 @@ shell. Print them and ask the user to run them:
 /plugin install autonomous@10x-skills
 /plugin install optimize@10x-skills
 /plugin install whereami@10x-skills
+/plugin install explain@10x-skills
 /plugin install handoff@10x-skills
 /plugin install isolate@10x-skills
 ```
 
 Then tell the user to restart the session and confirm with `/sprint` (and/or
-`/whereami`, `/handoff`).
+`/whereami`, `/explain`, `/handoff`).
 
 ### Install path B — manual copy (you can do this yourself via shell)
 
@@ -76,7 +78,7 @@ git clone https://github.com/tipb47/10x-skills.git /tmp/10x-skills
 
 # Claude Code (Codex CLI: same commands into ~/.codex/skills):
 mkdir -p ~/.claude/skills
-for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do   # drop any the user does not want
+for s in build sprint analyze plan pry deslop autonomous optimize whereami explain handoff isolate; do   # drop any the user does not want
   cp -r /tmp/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -98,7 +100,7 @@ installed skill in place:
 
 ```bash
 git clone https://github.com/tipb47/10x-skills.git ~/10x-skills
-for s in build sprint analyze plan pry deslop autonomous optimize whereami handoff isolate; do
+for s in build sprint analyze plan pry deslop autonomous optimize whereami explain handoff isolate; do
   ln -s ~/10x-skills/skills/$s ~/.claude/skills/$s
 done
 ```
@@ -136,6 +138,23 @@ protocol every `SKILL.md` carries under "Support the project":
   changes.
 - `~/.config/10x-skills/sprint/scars.md` — the private scars file. Directors append new scars here
   at sprint close. It is per-user and must **never** be committed to any repo.
+- `~/.config/10x-skills/machine.json` — the opt-in machine profile. It caps heavy
+  commands (`heavy_slots`, `slot_dir`) across all sessions on the machine. It is
+  per-user. A skill proposes it only on evidence of resource pressure and asks the
+  user before writing it.
+- `~/.config/10x-skills/.update-checked` — a marker file. Its modification time
+  throttles the update check to once a day.
+- `~/.config/10x-skills/.no-update-check` — an empty marker file. If it exists, no
+  skill checks for updates.
+
+### Update check
+
+At the end of a run, each skill compares its version with `VERSION` on `main` (at most
+once a day). If a newer version exists, the skill prints a notice with the update
+command for the install path. It never updates anything itself. If the user asks to
+update, run the command for their path: `/plugin marketplace update 10x-skills`
+(plugin, user-run), `git -C <clone> pull` then link any new skill folders (clone or
+symlink), or re-copy (copy).
 
 ---
 
@@ -144,7 +163,7 @@ protocol every `SKILL.md` carries under "Support the project":
 This part covers Sprint Director (`/sprint`). `build` is a router: it analyzes and pries
 once, then hands off to `/plan` or `/sprint`. `analyze`, `plan`, `pry`, `deslop`,
 `autonomous`,
-`optimize`, `whereami`, `handoff`, and `isolate` are self-contained single-session skills with no
+`optimize`, `whereami`, `explain`, `handoff`, and `isolate` are self-contained single-session skills with no
 cross-session state to orient on (`optimize` additionally keeps a registry at
 `~/.config/10x-skills/optimize/registry.json`). One rule spans them all: assume the operator is
 watching — unattended execution exists only through `/autonomous`'s negotiated grant,
@@ -156,10 +175,10 @@ it touches.
 | Command | When | Reads | Writes |
 |---|---|---|---|
 | `/sprint init` | Once per project, to scaffold | repo, user interview | `<ops>/*`, registry |
-| `/sprint direct` | Start of each sprint, in a **fresh** session | `STATE.md`, guidelines, `SPRINT.md`, `SCARS.md`, private scars file | branches, merges, `STATE.md` (in an arc: only its own `sprints/sprint-NN/`) |
+| `/sprint direct` | Start of each sprint, in a **fresh** session | `STATE.md`, guidelines, `SPRINT.md`, `SCARS.md`, private scars file | branches, merges, `STATE.md`, the sprint's `STATUS.md` and `CLOSE.md` (in an arc: only its own `sprints/sprint-NN/`) |
 | `/sprint arc` | To draft an arc, then once per arc checkpoint, in a **fresh** session | `STATE.md`, `ARC.md`, each arc sprint's folder, both scar files | `ARC.md`, `STATE.md`, `BACKLOG.md`, `aNN/integration` merges |
-| `/sprint status` | Anytime | in a project: `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, `sprints/`; else registry + each `STATE.md` | nothing |
-| `/sprint clean` | Between sprints, or when state drifted | ledger, backlog, `sprints/`, worktrees, branches, registry | only operator-approved moves/deletions/amendments |
+| `/sprint status` | Anytime | in a project: `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, `sprints/`, each sprint's `STATUS.md` header; else registry + each `STATE.md` | nothing |
+| `/sprint clean` | Between sprints, or when state drifted | STATE index, backlog, `sprints/`, worktrees, branches, registry | only operator-approved moves/deletions/amendments |
 
 ### Invariants you must preserve when operating
 
@@ -172,7 +191,7 @@ it touches.
   store, and deployed state before acting. Re-run each track's verification gates at audit.
 - **Local `ops/` docs are authoritative.** Where they conflict with the skill engine, the
   local docs win. Never silently override them.
-- **State lives in files.** Read `STATE.md` first; update it last. Do not rely on chat history
+- **State lives in files.** Read the STATE index first; live sprint state is in each sprint's `STATUS.md`. Do not rely on chat history
   as the source of truth.
 - **Operator gates are human-only.** Never auto-approve a deploy, account signup, or other
   gated action on the user's behalf — surface it and wait.

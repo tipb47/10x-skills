@@ -1,16 +1,16 @@
-# Backlog — prioritized queue of future work
+# Backlog
 
-The feed for next-sprint drafting: the closing director pulls from the top;
-`/sprint clean` reconciles shipped and stale items. `ROADMAP.md` holds the milestone
-outline; this file holds the concrete, ordered queue.
+The prioritized queue of future work and the feed for next-sprint drafting. One row per
+item. Detail lives where the pointer says, never here. `ROADMAP.md` holds the milestone
+outline.
+
+**Rule: delete a row when its item ships.** The shipping sprint's `CLOSE.md` records the
+ids it closed, and git keeps the history where ops is tracked.
 
 <!-- init: seed from the interview — roadmap-seed goals not chosen for sprint-01, plus
-anything raised that isn't sprint-01 scope. Order by priority. No placeholder rows. -->
+anything raised that is not sprint-01 scope. Order by priority. No placeholder rows. Ids
+are stable and never reused: B1, B2, ... -->
 
-| Pri | Item | Origin | Notes |
+| Id | Pri | Title | Pointer |
 |---|---|---|---|
-| 1 | {{ITEM}} | {{init interview / sprint-NN close}} | {{constraints, dependencies}} |
-
-## Parked (worth keeping, not worth ranking yet)
-
-- {{IDEA}}
+| B1 | {{P1 / P2 / P3 / parked}} | {{one-line title}} | {{where the detail lives: init interview, sprint-NN CLOSE.md, DESIGN.md §, issue URL}} |
