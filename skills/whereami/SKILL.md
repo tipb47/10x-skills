@@ -1,7 +1,7 @@
 ---
 name: whereami
 description: In-chat situation report in plain words — what this session (or every recently active session across projects) has done, is doing, and does next. Use when the user asks where we are, what's left, what the agents did, for a status or recap, or runs /whereami.
-argument-hint: [this | all | project name] — optional; scope is inferred from the prompt
+argument-hint: [scope — optional; inferred from the prompt]
 ---
 
 # whereami — situation report
