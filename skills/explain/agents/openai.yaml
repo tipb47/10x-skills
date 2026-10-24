@@ -1,0 +1,4 @@
+interface:
+  display_name: "Explain"
+  short_description: "Plain-language explainer for concepts, commits, and answers"
+  default_prompt: "Use $explain to explain a target simply. Pass [target] and optionally simpler or deeper."
