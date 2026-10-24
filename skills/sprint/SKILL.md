@@ -108,9 +108,9 @@ needs two surfaces or two contracts is two tracks.
 
 The DIRECTOR's model tier is declared per sprint: SPRINT.md carries a `Director tier:`
 line (model tier + one-line why), set by the closing director when drafting the sprint.
-Strong is the minimum; effort scales with size. Raise the director's effort when 3+ parallel tracks touch shared
-surfaces, when contract decisions are expected mid-sprint, or when the prior audit
-caught seam defects its gates missed. Frontier only when the director itself must
+Strong is the minimum; effort scales with size. Raise the director's effort when 3+
+parallel tracks touch shared surfaces, when contract decisions are expected mid-sprint,
+or when the prior audit caught seam defects its gates missed. Frontier only when the director itself must
 solve a hard problem.
 
 The operator launches the session, so the tier only binds if the kickoff names it — the
@@ -242,8 +242,9 @@ Become the sprint director for the current project's active sprint.
 arc, and these rules override the steps below (§ /sprint arc):
 - Read and write ops docs at the registry's absolute `ops` path, never a worktree copy.
 - Cut `sNN/integration` from `origin/aNN/integration`, never from the trunk.
-- Write only your own `sprints/sprint-NN/` folder. Put deploy needs and blockers in your
-  STATUS.md header.
+- Write only your own `sprints/sprint-NN/` folder. Put deploy needs, blockers, and
+  background jobs (expected duration and deadline) in your STATUS.md header. The arc
+  checkpoint copies the jobs into the STATE index jobs table.
 - Never deploy a shared environment (staging, shared DB). Raise it in STATUS.md for
   the next arc checkpoint.
 - Close: push `sNN/integration` and verify it, write CLOSE.md, set STATUS.md to `done`,
@@ -311,7 +312,9 @@ arc, and these rules override the steps below (§ /sprint arc):
      duration in STATUS.md. When it passes, check the track's branch and worktree
      yourself.
    - **UI tracks.** The brief carries the project's `STYLE.md` core plus the 2–3
-     reference excerpts its surface needs. Tracks load no UI skill. At audit, run ONE
+     reference excerpts its surface needs. If no STYLE.md covers the surface (a new
+     surface or a redesign), you or the drafter run deslop's design-first step before
+     the UI track spawns: it is a Gate 0 item. Tracks load no UI skill. At audit, run ONE
      fresh-eyes `/deslop` audit per UI unit of work (a surface built or redesigned), not
      per fix round. Without deslop, audit UI against the generic-AI-look failure mode
      explicitly.
@@ -346,14 +349,15 @@ arc, and these rules override the steps below (§ /sprint arc):
         new rows.
       - Remove this sprint's track worktrees, each clean per `git -C <worktree> status`
         first (uncommitted work stops that removal), then `git worktree prune`.
-      - Delete the previous sprint's merged `sNN/*` branches, tracks and integration
-        alike, local and on `origin` (`git push origin --delete <branch>`), after
-        verifying each is merged into the trunk on origin. A branch with an open PR is
-        not a candidate. This sprint's branches survive one more sprint as recovery
-        points, locally and on the remote.
+      - The **previous sprint** is the previous closed sprint in this sprint's own
+        lineage: the sprint this one was drafted from. Delete only its merged `sNN/*`
+        branches, tracks and integration alike, local and on `origin`
+        (`git push origin --delete <branch>`), after verifying each is merged into the
+        trunk on origin. A branch with an open PR is not a candidate. This sprint's
+        branches survive one more sprint as recovery points, locally and on the remote.
       - Archive the previous sprint's folder into `sprints/archive/` once its STATUS.md
         says `done`.
-   4. **The close never touches** another sprint's folder or branches, another
+   4. **The close never touches** any other sprint's folder or branches, another
       developer's branches, an unmerged branch, a live STATUS.md, or the registry. List
       each such item as a finding in the close report and in CLOSE.md, ending with
       "run /sprint clean to resolve N items".
@@ -565,11 +569,12 @@ work stays a normal sprint roadmap.
      full diff of `sNN/integration` against `aNN/integration`, DESIGN.md, and the
      sprint's owned surfaces in ARC.md. Spot-check its close gates (§ Verification
      budget). Merge it `--no-ff` into `aNN/integration`, then run the full suite once
-     per distinct tree and record it in ARC.md's tree ledger. A tree the sprint's
-     STATUS.md already recorded green is verified.
+     per distinct tree and record it in ARC.md's tree ledger. A green row in the
+     sprint's STATUS.md is only a claim: it never replaces this run.
    - **Resolve cross-sprint conflicts** in that merge. Write code only for the conflict.
    - **Fold in each CLOSE.md:** add its one-line history row to the STATE index, delete
-     the backlog rows it shipped, and add its deferred work as rows. Its narrative stays
+     the backlog rows it shipped, and add its deferred work as rows. Copy the background
+     jobs from its STATUS.md header into the STATE index jobs table. Its narrative stays
      in CLOSE.md. Then run the cleanup arc sprints skip: for each sprint merged at an
      earlier checkpoint, delete its merged branches and archive its folder, per
      `/sprint direct` step 6 with `aNN/integration` as the merge target.

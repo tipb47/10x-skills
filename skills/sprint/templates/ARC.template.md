@@ -77,10 +77,12 @@ waiting / unblocked / in flight / done / merged. -->
 
 ## Tree ledger
 
-One row per full-suite run on `aNN/integration`, per § Verification budget. A tree
-already recorded green, here or in a sprint's `STATUS.md`, is verified.
+One row per full-suite run on `aNN/integration` (sprint skill § Verification budget).
+After merging each sprint, the arc director runs the full suite once per distinct tree
+and records it here. A tree recorded green here is verified. A green row in a sprint's
+`STATUS.md` is only a claim.
 
-| Tree (`git rev-parse HEAD^{tree}`) | `aNN/integration` @ commit | Full suite | Failures vs baseline | Date |
+| Tree (`git rev-parse "HEAD^{tree}"`) | `aNN/integration` @ commit | Full suite | Failures vs baseline | Date |
 |---|---|---|---|---|
 | | | | | |
 

@@ -70,9 +70,9 @@ section heading carries its tags; every section here is `[all]`.
   reads its brief before checking out its branch reads the pre-amendment copy and misses every
   Gate 0 correction. Order the spawn prompt so checkout comes FIRST, or point it at
   `origin/<integration>:<path>`. A report quoting an already-amended brief value is the tell.
-- **A worktree track cannot write the shared ops folder.** Harnesses refuse writes outside
-  the agent's worktree. Tell tracks to put the report in the final message and any file
-  inside their worktree; the director relocates it and drops it from the integration diff.
+- **Tracks never write the shared ops folder.** The report goes in the final message,
+  with a fallback path inside the worktree. The director relocates a fallback file and
+  drops it from the integration diff.
 
 ## Verification & gates [all]
 
@@ -107,8 +107,9 @@ section heading carries its tags; every section here is `[all]`.
 - **Baseline once per sprint, then trust the tree ledger.** A track's reported baseline can
   diverge from yours because of environment, and re-running unchanged trees proves nothing.
   Run the full suite once on the integration branch's starting tree and record it against
-  `git rev-parse HEAD^{tree}`. Judge each later run by its FAILURE SET against that
-  baseline: clean means zero new failures. Never re-run a tree already recorded.
+  `git rev-parse "HEAD^{tree}"`. Judge each later run by its FAILURE SET against that
+  baseline: clean means zero new failures. Never re-run a tree already recorded green. A
+  red or flaky result may always be re-run to diagnose.
 - **Enumerated-file-list scopes systematically MISS repo-root surfaces.** Repo-wide renames and
   contract changes leave the README, API spec, `.env.example`, and top-level docs stale. Give
   ONE track ownership of "repo root + docs + spec", or budget a director cleanup pass, and run

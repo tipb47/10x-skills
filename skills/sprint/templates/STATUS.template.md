@@ -13,15 +13,19 @@ phase is `done`. -->
 <!-- init/director: in an arc sprint, write "n/a — the arc director merges into aNN/integration". -->
 **Blockers:** none
 **Deploy needs:** none
+**Background jobs:** none
+<!-- init/director: in an arc sprint, one entry per job you started: name, expected
+duration, deadline. The arc checkpoint copies them into the STATE index jobs table.
+Outside an arc, jobs go straight to the STATE index. -->
 
 ---
 
 ## Tree ledger
 
-One row per full-suite run, per § Verification budget. A tree recorded green is verified;
+One row per full-suite run (sprint skill § Verification budget). A tree recorded green is verified;
 never re-run it.
 
-| Tree (`git rev-parse HEAD^{tree}`) | Branch @ commit | Full suite | Failures vs baseline | Date |
+| Tree (`git rev-parse "HEAD^{tree}"`) | Branch @ commit | Full suite | Failures vs baseline | Date |
 |---|---|---|---|---|
 | | | | | |
 

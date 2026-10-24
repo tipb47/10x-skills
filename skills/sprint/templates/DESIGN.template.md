@@ -42,7 +42,7 @@ director re-runs them at audit. -->
 <!-- init: add project-specific rules (PII, rate limits on external services, prod-DB
 safety like batch sizes / no table locks). -->
 
-## 7. Standing decisions ledger (operator-confirmed)
+## 7. Standing decisions (operator-confirmed)
 
 | Date | Decision |
 |---|---|
