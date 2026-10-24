@@ -8,9 +8,9 @@ argument-hint: init | direct | arc | status | clean
 
 This skill is the **engine** for a sprint-directed development methodology. Each project
 keeps its own **instance**: an `ops/` folder holding its design contract, guidelines,
-roadmap, sprint folders, and a thin **STATE index** (`STATE.md`). **The project's local ops/ docs are
-always authoritative — wherever they conflict with this skill, the local docs win.** This
-skill provides the boot rituals, the scaffolding templates, and the cross-project registry.
+roadmap, sprint folders, and a thin **STATE index** (`STATE.md`). **The project's local
+ops/ docs are always authoritative — wherever they conflict with this skill, the local
+docs win.** This skill provides the boot rituals, the scaffolding templates, and the cross-project registry.
 
 ## The methodology in one paragraph
 
