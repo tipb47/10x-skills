@@ -50,6 +50,8 @@ to follow, dependencies. Calibrate to complexity. For broad sweeps, use read-onl
 explore scouts to keep this context clean (`/analyze` doctrine: parallel, self-contained
 prompts, fast tier by default, light only for mechanical enumeration). If a fresh `/analyze`
 report for this target exists in the conversation, build on it instead of re-deriving.
+If a repo-root `BLUEPRINT.md` exists (from `/build`'s Discover stage), read it first.
+Its chosen approaches and non-goals are settled; plan within them.
 
 ## Phase 2 — Interview to zero ambiguity
 
@@ -110,10 +112,15 @@ in the main session.
 Present the plan for approval (exit plan mode where the harness has one). **Assume the
 operator is watching:** surface material mid-execution decisions as they arise, and
 stop at anything gate-shaped. Unattended execution is never assumed — that grant comes
-only from the `/autonomous` skill's negotiated envelope. Work that touches UI runs
-the `/deslop` discipline where installed — design system before pixels, and a
-fresh-context subagent audit before the work counts as done; without it, avoid the
-generic AI look and review UI with fresh eyes. Then:
+only from the `/autonomous` skill's negotiated envelope. Verification follows
+§ Verification budget. UI work follows the `/deslop` bookends where installed:
+- **Design first** only for a new surface or a redesign with no `STYLE.md` covering
+  it. Tweaks to a styled surface invoke nothing; `STYLE.md` applies on its own.
+- **One audit at the end:** a single fresh-context deslop audit when the UI work is
+  done, not one per step or per track.
+
+Without `/deslop`, avoid the generic AI look and review the finished UI once with
+fresh eyes. Then:
 
 **Single-track:** implement in-session, step by step, verifying as you go.
 
@@ -125,12 +132,14 @@ generic AI look and review UI with fresh eyes. Then:
   independent tracks spawn in one message.
 - No subagents on this harness → implement the tracks yourself, one after another,
   each on its own branch, with the same audit and merge. Say so in the plan.
-- Audit each track's FULL diff from the merge base; re-run its verification yourself —
-  reports are claims. With worktrees, always `git -C <absolute-path>`; stage explicit
-  paths; never run mutating git in a tree while an agent is live in it.
-- Merge in the stated order, `--no-ff`, suite green after each merge. Then remove the
-  plan's worktrees (check `git -C <worktree> status` first) and delete merged
-  `plan/<slug>` branches — a one-session plan keeps no branch archaeology.
+- Audit each track's FULL diff from the merge base. Re-run its verification per
+  § Verification budget — reports are claims. With worktrees, always
+  `git -C <absolute-path>`; stage explicit paths; never run mutating git in a tree
+  while an agent is live in it.
+- Merge in the stated order, `--no-ff`. Run the full suite per § Verification budget:
+  once per distinct tree, recorded in chat. Then remove the plan's worktrees (check
+  `git -C <worktree> status` first) and delete merged `plan/<slug>` branches — a
+  one-session plan keeps no branch archaeology.
 
 ## Phase 5 — Deliver
 
