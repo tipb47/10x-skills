@@ -1,6 +1,6 @@
 ---
 name: analyze
-description: Depth-scaled, read-only investigation of a feature, bug, flow, or component. Fans out parallel explore subagents to keep the main context clean, with per-subagent model selection. Use for /analyze [target] [depth] — both optional: "/analyze this" resolves the target from context and the agent self-calibrates depth — or when the user asks how something works, wants an issue investigated, or wants a flow traced without changing code.
+description: Depth-scaled, read-only investigation of code, a product question, or a research question — a feature, bug, flow, or component, but also approaches, libraries, prior art, competitors, or papers. Infers its sources (code, web, literature) from the task next to its depth. Fans out parallel explore subagents to keep the main context clean, with per-subagent model selection. Use for /analyze [target] [depth] — both optional: "/analyze this" resolves the target from context and the agent self-calibrates depth and sources — or when the user asks how something works, wants an issue investigated, wants a flow traced without changing code, or says "analyze, search the web" or "research this".
 argument-hint: [target] [depth] [context]
 ---
 
@@ -12,9 +12,9 @@ directly.
 
 ## Parameters — all optional, inferred when absent
 
-- **Target** ($1): what to analyze — feature, bug, flow, component, issue. "This", or
-  no target at all, refers to whatever the session was just doing or discussing —
-  resolve it from context.
+- **Target** ($1): what to analyze — feature, bug, flow, component, issue, approach, or
+  research question. "This", or no target at all, refers to whatever the session was
+  just doing or discussing — resolve it from context.
 - **Depth** ($2): quick | standard | deep | forensic, or any descriptive phrase
   ("pretty thorough but not crazy") — interpret it sensibly. **No depth given → you
   calibrate it** from the stakes and size of the question: a one-function "how does
@@ -23,9 +23,27 @@ directly.
 - **Context** ($3): anything extra the user supplied — including a follow-on action
   ("/analyze then plan/fix X"): finish the analysis first, then carry its findings
   into that next step.
+- **Sources** (always inferred): which of code, web, and literature to search. See
+  § Source axis.
 
-Open by stating your reading in one line — target, depth, why — and proceed; the user
-corrects course if you read it wrong. Don't stop to confirm.
+Open by stating your reading in one line — target, depth, sources, why — and proceed;
+the user corrects course if you read it wrong. Don't stop to confirm.
+
+## Source axis
+
+Infer the sources from the task, next to depth. Most tasks use a mix.
+
+| Source | Fits when | Examples |
+|---|---|---|
+| **code** | The answer lives in this repo | bugs, flows, how a component works |
+| **web** | The answer lives outside the repo | approaches, libraries, prior art, pricing, competitors |
+| **literature** | The work is novel or frontier | papers, arXiv preprints, benchmarks |
+
+- **Scale with novelty.** A bug is code only. A new implementation adds web. Novel or
+  frontier work adds literature.
+- **Research mode** means web and literature lead, and code supports. `/build` uses it
+  in its Discover stage.
+- **No web tools** on this harness → say so in the opening line and stay on code.
 
 ## Depth calibration
 
@@ -35,6 +53,9 @@ corrects course if you read it wrong. Don't stop to confirm.
 | standard | 1–2 scouts | core flows, primary dependencies |
 | deep | 2–3 scouts in parallel | all code paths, edge cases, related systems |
 | forensic | 3–4+ scouts, + one deep-reasoning subagent | full trace, all references, history |
+
+Depth sets the scout count across all sources. A mixed-source task splits its scouts
+between code and research.
 
 ## Subagent doctrine
 
@@ -46,12 +67,14 @@ and say so in the report. Where the harness supports them:
   is self-contained: the specific aspect to investigate, and the return format —
   key findings, the 5–10 most important files (with paths), anomalies noticed, a
   control/data-flow summary. Scouts return conclusions, not file dumps.
+- **Research scouts** (web or literature) return claims, not page dumps. Each claim
+  carries its source URL and that source's date.
 - **Model tier per task, stated at spawn (tier + one-line why; § Model tiers):**
 
 | Work class | Model tier |
 |---|---|
 | Mechanical enumeration — file inventories, call-site listings, no judgment | light |
-| Scout investigation (default) | fast |
+| Scout investigation, code or research (default) | fast |
 | Root-cause deep reasoning: ONE subagent, forensic depth only | strong; frontier only when the root cause is a genuinely hard problem |
 | Synthesis of findings | main session — never delegated |
 
@@ -66,7 +89,8 @@ and say so in the report. Where the harness supports them:
 2. **Discovery.** Fan out per the depth table. At quick depth: search and read directly,
    no subagents.
 3. **Deep read.** Read the files the scouts flagged in the MAIN context; trace the flow
-   end to end; capture file:line for every finding.
+   end to end; capture file:line for every finding. For research, cross-check each
+   load-bearing claim against a second, independent source.
 4. **Clarify as you go.** A genuine fork mid-investigation (two plausible
    interpretations, possible scope change) goes to the user immediately — recommended
    answer first. Never silently assume.
@@ -77,16 +101,21 @@ and say so in the report. Where the harness supports them:
    - **Code flow** — numbered trace with `file:line` per step.
    - **Edge cases & error handling** — covered and not covered.
    - **Concerns** — risks, smells, anomalies, each with location. Flag, don't fix.
-   - **Open questions** — what code alone could not answer.
+   - **Open questions** — what the sources could not answer.
+   - **Sources** — research only: each URL with its date, and which claims it backs.
+
+   Drop sections the task does not use. A pure research report has no code flow.
 
 If the user's next step is implementation, say so: the Concerns and Open questions
 sections are ready input for `/plan`.
 
 ## Hard rules
 
-- Read files before drawing conclusions about them. Claims carry `file:line`.
+- Read files before drawing conclusions about them. Code claims carry `file:line`;
+  research claims carry a source URL and date.
 - Verify, never trust: a scout's summary is a claim — spot-check the load-bearing ones
-  against the actual files before building the report on them.
+  against the actual files before building the report on them. A load-bearing
+  research claim with only one source is marked unconfirmed.
 - Respect the depth the user paid for — no forensic sweeps on a quick ask.
 
 ## Model tiers
