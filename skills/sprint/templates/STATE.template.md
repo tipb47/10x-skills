@@ -29,7 +29,7 @@ each with its verification date. -->
 
 | Date | Decision | Where recorded |
 |---|---|---|
-| {{DATE}} | Standing decisions from the init interview | `DESIGN.md` standing-decisions ledger |
+| {{DATE}} | Standing decisions from the init interview | `DESIGN.md` § Standing decisions |
 <!-- init: add one row per provisional decision (answers that were "not sure yet"). -->
 
 ## Sprint history

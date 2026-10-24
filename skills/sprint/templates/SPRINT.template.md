@@ -9,8 +9,8 @@ it, not vibe it.}}
 <!-- init: write a model tier (frontier / strong / fast / light), never a model name.
 Strong is the minimum; effort scales with size. Raise the director's effort when ANY
 hold: 3+ parallel tracks on shared surfaces; contract decisions expected mid-sprint;
-prior sprint's audit caught seam defects its gates missed. Frontier only when the director itself must solve a hard
-problem. The kickoff must name this tier and the model it resolves to — the operator
+prior sprint's audit caught seam defects its gates missed. Frontier only when the
+director itself must solve a hard problem. The kickoff must name this tier and the model it resolves to — the operator
 launches the session. -->
 
 <!-- init/arc: in an arc sprint only, add `**Arc:** aNN → arcs/arc-NN/ARC.md` here. Then
@@ -71,7 +71,9 @@ Every track merges into `sNN/integration`; `{{TRUNK}}` moves only at promotion.}
    the tree. Then ONE `--no-ff` merge of `sNN/integration` into `{{TRUNK}}` and ONE push.
    Expected: exactly one pipeline run, {{TRUNK_PUSH_EFFECT}}.
 2. {{STEP — deploys the operator runs, end-to-end verifications with expected outputs,
-   detached jobs to start, each recorded in the STATE index jobs table with its deadline.}}
+   detached jobs to start, each recorded in the STATE index jobs table with its deadline;
+   in an arc, in this sprint's STATUS.md header, which the arc checkpoint copies into the
+   STATE index.}}
 3. **Scoped auto-clean (director):** the close steps of `DIRECTOR_GUIDELINES.md` Phase 4.
    Anything this sprint does not own goes to the close report's findings list.
 

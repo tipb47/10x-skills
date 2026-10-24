@@ -45,7 +45,8 @@ line. -->
   <!-- init: the project's targeted-test pattern from the interview, as exact commands. -->
 - **The director runs:** the full suite, {{FULL_SUITE}}, on the integration branch,
   once per distinct tree. Do not run it yourself unless your brief says so.
-- **Every background command carries a deadline.** Wrap it in `timeout`, or record the
+- **Every background command carries a deadline.** Wrap it in a timeout (`timeout` on
+  Linux, `gtimeout` on macOS; elsewhere record the deadline and poll), or record the
   deadline in its manifest.
 - Quote actual command output. "Done", "pushed", and "green" are claims until output
   backs them.

@@ -1,9 +1,9 @@
 # Sprint Guidelines
 
-Rules for every sprint and director. Director runbook: `DIRECTOR_GUIDELINES.md`. Tracks
-obey `TRACK_RULES.md`. All obey this file and `DESIGN.md`. **This file holds 1–3 line
-rules, never incident narrative**; the story behind a rule stays in a sprint's
-`CLOSE.md`.
+Rules for every sprint and director. Director runbook: `DIRECTOR_GUIDELINES.md`.
+Directors obey this file and `DESIGN.md`. Tracks obey `TRACK_RULES.md`. **This file
+holds 1–3 line rules, never incident narrative**; the story behind a rule stays in a
+sprint's `CLOSE.md`.
 
 ## Project shape
 
@@ -25,6 +25,9 @@ with one of these tags. -->
   landed on the integration branch, and promotion into `{{TRUNK}}` is part of it.
 
 ## Branch model
+
+**In an arc (SPRINT.md has `Arc:`):** cut from and merge into `aNN/integration`, never
+`{{TRUNK}}`; no promotion, no next-sprint draft.
 
 - **Trunk:** `{{TRUNK}}`. A push to it triggers {{TRUNK_PUSH_EFFECT}}, which is why it
   moves once per sprint, never once per track.
@@ -92,8 +95,10 @@ sample chunk; full runs start at close. -->
 - `sNN/integration` promoted into `{{TRUNK}}` on the operator's go: one `--no-ff` merge,
   one push, onto a tree the tree ledger recorded green.
 - Scoped auto-clean done: this sprint's worktrees removed (each checked for uncommitted
-  work first), `git worktree prune` run, the PREVIOUS sprint's merged branches deleted
-  local and on `origin`, and its folder archived. This sprint's branches survive one
+  work first), `git worktree prune` run, the previous sprint's merged branches deleted
+  local and on `origin`, and its `done` folder archived. The previous sprint is the
+  previous closed sprint in this sprint's own lineage: the sprint this one was drafted
+  from. No other sprint is touched. This sprint's branches survive one
   more sprint as recovery points; unmerged branches are never deleted, anywhere.
 - {{DB_DONE_CLAUSE}} <!-- init: migrations applied + verified, if DB; else drop. -->
 - Operator close-gate checklist delivered/executed.
@@ -113,8 +118,9 @@ sample chunk; full runs start at close. -->
   minimum; contract-defining / architecture / gnarly-debug tracks: strong; standard
   implementation tracks, scouts, and mechanical audit checks: fast; fix rounds: the
   track's tier, or fast when the director fully specifies the fix; light only for
-  mechanical fully-specified chores with a stated justification. Frontier only for genuinely hard problems (novel algorithms,
-  modeling engines); state which work in THIS project earns it, and raise any default
+  mechanical fully-specified chores with a stated justification. Frontier only for
+  genuinely hard problems (novel algorithms, modeling engines); state which work in THIS
+  project earns it, and raise any default
   the project needs (e.g. core engine tracks on frontier). Recorded in SPRINT.md at
   drafting time, never decided mid-sprint. Every SPRINT.md track row states its model
   tier + a one-line rationale. The tier-to-model map is per-user

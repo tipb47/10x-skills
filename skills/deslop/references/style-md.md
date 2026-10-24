@@ -11,7 +11,7 @@ Everything this skill produces lives in a single `STYLE.md` at the project root.
 ## Lifecycle
 
 1. On any UI task, first check for `STYLE.md` at the project root (and common locations like `docs/`).
-2. If it exists: read it, honor its tokens, skip questions it already answers, and extend it. Do not re-originate a theme.
+2. If it exists: read its core, and grep `## Reference` when needed. Honor its tokens, skip questions it already answers, and extend it. Do not re-originate a theme. If it has no core/reference split, propose the split to the user. Never rewrite it unasked.
 3. If it does not exist: run discovery, Phase 1, and Phase 2, then write STYLE.md before or alongside building components.
 4. After the self-audit, put the audit result in the audit report and the commit message. Never append it to STYLE.md. Edit STYLE.md only to change a design decision, and log that change in one Changelog line.
 5. Keep `token-core.css` and the chosen adapter in sync with the Tokens section; if they drift, STYLE.md wins.

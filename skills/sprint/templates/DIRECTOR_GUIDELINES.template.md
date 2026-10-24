@@ -2,8 +2,9 @@
 
 You are a fresh agent session directing one sprint end to end: analyze →
 gates → tracks → audit → merge → close. You write code only to resolve merge conflicts or
-trivial audit fixes; tracks build. You write only your own sprint folder and row edits
-to the STATE index.
+trivial audit fixes; tracks build. Your ops writes are your own sprint folder, STATE
+index rows, `BACKLOG.md` rows, rules in `DESIGN.md` or a guidelines file, and the
+private scars file. In an arc, you write only your own sprint folder.
 
 ## Phase 0 — Boot & analyze
 
@@ -47,6 +48,9 @@ to the STATE index.
 
 ## Phase 2 — Spawn tracks
 
+**In an arc (SPRINT.md has `Arc:`):** cut from and merge into `aNN/integration`, never
+`{{TRUNK}}`; no promotion, no next-sprint draft.
+
 - **Cut the integration branch first:** `git checkout -b sNN/integration origin/{{TRUNK}}`
   then `git push -u origin sNN/integration`. Once per sprint; on respawn, fetch the
   existing branch and never re-cut it. Every track cuts from `origin/sNN/integration`.
@@ -88,15 +92,20 @@ to the STATE index.
    tolerates a schema ahead of its code, otherwise at promotion. If no DB, drop this step. -->
 5. Resolve conflicts yourself. `git checkout sNN/integration`, confirm with
    `git branch --show-current`, merge `--no-ff`, push integration. Run the full suite on
-   the integration tip once per distinct tree (`git rev-parse HEAD^{tree}`) and record
+   the integration tip once per distinct tree (`git rev-parse "HEAD^{tree}"`) and record
    it in the tree ledger; judge failures against the baseline row. Several audited
    merges may share one run; a red run is bisected by merge. Update the `STATUS.md`
    header. `{{TRUNK}}` does not move in this phase.
 6. Long-running jobs a track delivered: verify the sample chunk end-to-end, then start the
    full run detached and record it in the STATE index jobs table with its expected
-   duration and deadline.
+   duration and deadline. In an arc, record it in your `STATUS.md` header instead; the
+   arc checkpoint copies it into the STATE index.
 
 ## Phase 4 — Close
+
+**In an arc (SPRINT.md has `Arc:`):** cut from and merge into `aNN/integration`, never
+`{{TRUNK}}`; no promotion, no next-sprint draft. Write only your own sprint folder: the
+arc checkpoint does the STATE index, backlog, branch, and archive steps.
 
 1. **Promote `sNN/integration` into `{{TRUNK}}` — on the operator's go, never before.**
    Set `STATUS.md` to `closing`. `git fetch origin`. If `origin/{{TRUNK}}` moved since the
@@ -118,14 +127,15 @@ to the STATE index.
      as new rows.
    - Remove this sprint's track worktrees: `git -C <worktree> status` first —
      uncommitted work stops cleanup for that tree — then `git worktree prune`.
-   - Delete the PREVIOUS sprint's merged `sNN/*` branches (its tracks AND its
-     integration branch), local and remote: verify with `git branch --merged {{TRUNK}}`
-     locally and against `origin/{{TRUNK}}` before `git push origin --delete <branch>`; a
-     branch with an open PR is not a deletion candidate. This sprint's branches survive
+   - The previous sprint is the previous closed sprint in this sprint's own lineage
+     (the sprint this one was drafted from). Delete only its merged `sNN/*` branches
+     (its tracks AND its integration branch), local and remote: verify with
+     `git branch --merged {{TRUNK}}` locally and against `origin/{{TRUNK}}` before
+     `git push origin --delete <branch>`; a branch with an open PR is not a deletion
+     candidate. This sprint's branches survive
      one more sprint as recovery points, locally and on origin.
-   - Archive the previous sprint's folder into `sprints/archive/` once its `STATUS.md`
-     says `done`.
-4. **Never touch** another sprint's folder or branches, another developer's branches,
+   - Archive the previous sprint's `done` folder into `sprints/archive/`.
+4. **Never touch** any other sprint's folder or branches, another developer's branches,
    an unmerged branch, a live `STATUS.md`, or the registry. List each as a finding in
    `CLOSE.md` and the close report: "run /sprint clean to resolve N items".
 5. Draft the NEXT sprint's folder from what actually happened (ROADMAP is the skeleton;

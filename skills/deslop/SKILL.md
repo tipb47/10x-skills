@@ -30,7 +30,7 @@ session was just doing. Then route:
 ## When to fire without being invoked
 
 Fire at two bookends only. Follow-up tweaks to a styled surface invoke nothing:
-STYLE.md applies passively, and you read it and honor it.
+STYLE.md applies passively: you read its core and honor it.
 
 - **Start of a new surface or redesign** with no STYLE.md covering it → run the
   frontend build discipline first. Slop prevented is cheaper than slop removed.
@@ -46,8 +46,9 @@ Lean core here; depth lives in `references/` and is pulled ONLY when doing that
 work. Never preload the library.
 
 **Phase 0 — Discover.** Check for `STYLE.md` at the project root (and `docs/`).
-Exists → read it, honor its tokens, skip answered questions, extend rather than
-restart. Missing → lock three things before any pixel: WHAT the artifact is
+Exists → read its core; grep `## Reference` when needed. Honor its tokens, skip
+answered questions, extend rather than restart. No core/reference split → propose the
+split to the user; never rewrite it unasked. Missing → lock three things before any pixel: WHAT the artifact is
 (`references/artifact-types.md`), WHO it serves and the single primary action, and
 3–5 committed brand adjectives. Run the questions as a `/pry` interview (where
 installed): recommended answer first, batch independent, infer-then-confirm — only
@@ -83,8 +84,9 @@ never clone.
 
 **Phase 3 — STYLE.md.** The durable output: one `STYLE.md` at the project root —
 discovery context, aesthetic commitment, signature move, tokens, craft decisions.
-It holds a short core plus a reference part. Schema: `references/style-md.md`. STYLE.md wins over drifted CSS or
-components; later sessions read it instead of re-running discovery. (In sprint
+It holds a short core plus a reference part. Schema: `references/style-md.md`.
+STYLE.md wins over drifted CSS or components; later sessions read it instead of
+re-running discovery. (In sprint
 projects it sits beside `ops/DESIGN.md`: STYLE.md is visual design, ops/DESIGN.md is
 architecture.)
 
@@ -110,7 +112,8 @@ Intensity — stated explicitly, defaulted by scope when unstated:
 | deep | dimension scouts + a rendered-page scout (screenshots/browser where available: layout defects, build correctness) + one strong-tier synthesis judge for verdicts | whole app or site, pre-launch, "unslop everything" |
 
 Auto-fire on completion scales the same way: size the intensity to how much UI the
-session just touched. Scouts run on the fast tier by default; judgment never goes to light (§ Model tiers).
+session just touched. Scouts run on the fast tier by default; judgment never goes to
+light (§ Model tiers).
 
 Each scout audits against `references/slop-checklist.md` plus the STYLE.md contract
 when one exists (render vs commitment, promise by promise — the divergence check in
