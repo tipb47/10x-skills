@@ -62,7 +62,8 @@ deploys to them, at an operator gate, from the arc tree after merging. -->
 
 1. {{GATE — shared-environment deploys, approvals, external signups.}}
 2. **Arc close:** operator says go → merge `origin/{{TRUNK}}` into `aNN/integration` if
-   the trunk moved, re-verify, then ONE `--no-ff` merge into `{{TRUNK}}` and ONE push.
+   the trunk moved, and run the full suite only if that changed the tree. Then ONE
+   `--no-ff` merge into `{{TRUNK}}` and ONE push.
    Expected: exactly one pipeline run, {{TRUNK_PUSH_EFFECT}}.
 
 ## Status
