@@ -29,7 +29,8 @@ tested") — never upgrade it to done.
   touched git, run `git status` and `git log --oneline -5`. If it started background
   tasks or agents, check their real state.
 - **Other sessions:** the harness's session store, where readable. On Claude Code,
-  read the newest entries in `~/.claude/projects/<project>/*.jsonl`. Read the last
+  read the newest entries in `~/.claude/projects/<project>/*.jsonl`. On Codex CLI, read
+  `~/.codex/sessions/`. Elsewhere, use the harness's equivalent. Read the last
   user goals and the last results only. Do not read whole transcripts.
 - **Sprint projects:** each active sprint's `STATUS.md`.
 - **Always:** `git log` and `git status` in each project, to confirm what landed.

@@ -22,10 +22,11 @@ Faster sprints, fewer tokens, clean state.
 - UI tracks get the `STYLE.md` core in the brief. The director runs one fresh-eyes deslop audit per UI unit of work.
 - Close runs a scoped auto-clean of only what the sprint owns. Everything else goes to a findings list.
 - Guidelines and scars hold short rules, not incident stories.
-- `/sprint clean` gains a ledger split and a prune pass for guidelines and scars.
+- `/sprint clean` gains an index split and a prune pass for guidelines and scars.
 - The backlog is one row per item. Shipped rows are deleted.
 - `SCARS.md` gets a baseline-once rule, root-anchored ignores for harness folders, and a rule that worktree tracks cannot write the shared ops folder.
 - `/sprint status` reads the `STATUS.md` headers.
+- Review fixes: the verification budget uses portable timeouts, a retrying slot queue, and a quoted tree ref. Skill descriptions and docs match the 3.0 behavior.
 
 ### Intake skills
 
