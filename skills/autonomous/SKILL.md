@@ -73,8 +73,11 @@ isolation, audits, merge order. On top of it:
   stop hammering it. Preserve state, write the root-cause hypothesis with evidence,
   continue all independent work.
 - **Budget overrun = stuck.** Record each stage's start time and check it at every
-  poll. A stage that runs past its wall-clock budget is stuck, even with no failure. Apply the attempt-box: stop it, preserve state, record why
-  it overran, and move to independent work. Log each fired deadline as it fires.
+  poll. A stage that runs past its wall-clock budget is stuck, even with no failure.
+  Apply the attempt-box: stop it, preserve state, record why it overran, and move to
+  independent work. Log each fired deadline as it fires.
+- **No questions at night.** Unattended, the machine-profile proposal cannot ask the
+  user: queue it on the morning checklist instead.
 - **Concerning encounter → quarantine:** about to do something potentially damaging —
   irreversible data ops, a shared-store migration, anything brushing the envelope's
   edge or your own genuine unease — take NO action on that item. Freeze it, preserve
@@ -85,8 +88,8 @@ isolation, audits, merge order. On top of it:
   item with exact commands, and structure remaining work to degrade gracefully around
   it (ship tested module + documented gap, not a stalled run).
 - **Log as you go:** every autonomous decision gets a one-line why, in chat — and in
-  the sprint's `STATUS.md` too when running a sprint. Sprint runs keep all sprint bookkeeping current
-  so a crash loses narrative, not state.
+  the sprint's `STATUS.md` too when running a sprint. Sprint runs keep all sprint
+  bookkeeping current so a crash loses narrative, not state.
 
 ## Wake-up report
 
@@ -111,7 +114,7 @@ Verification proves the work. Re-running it on unchanged code proves nothing new
   as often as it needs. The full suite runs on the integration branch, once per
   distinct tree, by the director.
 - **Tree ledger.** After each full run, record the result next to
-  `git rev-parse HEAD^{tree}`: in the sprint's `STATUS.md`, or in chat for a plan. A
+  `git rev-parse "HEAD^{tree}"`: in the sprint's `STATUS.md`, or in chat for a plan. A
   tree already recorded green is verified. A `--no-ff` merge that leaves the tree
   unchanged needs no rerun, and neither does a promotion over an unmoved trunk. A
   changed tree always reruns.
@@ -120,19 +123,21 @@ Verification proves the work. Re-running it on unchanged code proves nothing new
 - **Audit by spot-check.** At audit, re-run the track's targeted gates plus 2–3 checks
   you choose. The full suite runs at the integration merge.
 - **Deadlines.** Every background job and poll loop carries an expected duration and
-  a hard deadline. Put the deadline in the job's manifest or wrap the command in
-  `timeout`. When a deadline passes or a watch window expires, check git and process
+  a hard deadline. Put the deadline in the job's manifest or wrap the command in a
+  timeout (`timeout` on Linux, `gtimeout` on macOS; elsewhere record the deadline and
+  poll). When a deadline passes or a watch window expires, check git and process
   state yourself. Never wait on a notification that may not come.
 - **Machine profile (opt-in).** If `~/.config/10x-skills/machine.json` exists, cap
   heavy commands at its `heavy_slots` across every session on the machine. Heavy
   commands are full suites, builds, browser e2e runs, and local chain validators.
   To take a slot:
-  1. Create a marker directory under `slot_dir` holding the pid, the command, the
+  1. Prune markers whose pid is dead or whose deadline has passed.
+  2. Create a marker directory under `slot_dir` holding the pid, the command, the
      start time, and the deadline. Directory creation is atomic on every OS.
-  2. Count the live markers. If there are more than `heavy_slots`, remove yours and
-     wait.
-  3. Remove your marker when the command finishes.
-  4. Prune markers whose pid is dead or whose deadline has passed.
+  3. Count the live markers. If there are more than `heavy_slots`, remove yours, wait
+     a minute, and retry from step 1. Stop waiting at the command's own deadline and
+     report it.
+  4. Remove your marker when the command finishes.
 
   Use whatever commands this OS provides. With no profile, skip all of this. Propose a
   profile only on evidence of resource pressure: a heavy command killed by a signal

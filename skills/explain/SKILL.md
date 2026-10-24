@@ -1,6 +1,6 @@
 ---
 name: explain
-description: Plain-language explainer for non-specialists — builds a concept, commit, diff, file, or Claude's last answer up from basics. Use for /explain [target], or when the user asks to explain this simply, in layman's terms, or like they're new to this.
+description: Plain-language explainer for non-specialists — builds a concept, commit, diff, file, or the agent's last answer up from basics. Use for /explain [target], or when the user asks to explain this simply, in layman's terms, or like they're new to this.
 argument-hint: [target] [simpler | deeper] — target is inferred if omitted
 ---
 

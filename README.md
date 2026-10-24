@@ -15,7 +15,7 @@ They work on any agent harness that loads `SKILL.md` skills — see
 | [Deslop](#deslop--deslop) | `/deslop` | Slop removal and prevention: strategy-first design, tokens, fresh-eyes subagent audits |
 | [Autonomous](#autonomous--autonomous) | `/autonomous` | Negotiated unattended execution of an approved plan — go to bed, wake to a report |
 | [Optimize](#optimize--optimize) | `/optimize` | Turn recurring manual workflows into hands-off tooling: CLIs, MCPs, generated skills |
-| [Where Am I](#where-am-i--whereami) | `/whereami` | In-chat situation report for the current session |
+| [Where Am I](#where-am-i--whereami) | `/whereami` | Plain-language status for this session or recent sessions |
 | [Explain](#explain--explain) | `/explain` | Plain-language explanation of an answer, a diff, a file, or a concept |
 | [Handoff](#handoff--handoff) | `/handoff` | One copyable message that transfers the session to a fresh agent |
 | [Isolate](#isolate--isolate) | `/isolate` | Move this session into its own worktree so it can share a repo with other agents |
@@ -153,7 +153,7 @@ Work is divided into **sprints** — bounded milestones. Each sprint is run end-
 ONE fresh agent session, the **director**. The director never writes feature code. It
 analyzes, gates, spawns **track** subagents (each isolated on its own git branch /
 worktree), audits their diffs against a design contract, verifies their claims against
-real state, merges in a defined order, and closes by updating a living state ledger and
+real state, merges in a defined order, and closes by updating a thin STATE index and
 drafting the next sprint from what actually happened.
 
 Humans appear only at **operator gates** — explicit pauses for deployments, account
@@ -161,13 +161,13 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
 
 > One engine, many instances. The skill is the reusable engine. Each project you run it
 > on gets its own self-contained `ops/` folder (design contract, guidelines, roadmap,
-> backlog, sprint files, state ledger). **The project's local `ops/` docs are always
+> backlog, sprint files, STATE index). **The project's local `ops/` docs are always
 > authoritative** — where they disagree with the engine, the local docs win.
 
 ### Why use it
 
 - **Context hygiene.** A fresh director per sprint means no context rot across a long
-  build. The ledger (`STATE.md`), not the chat history, is the source of truth.
+  build. The STATE index (`STATE.md`) and each sprint's `STATUS.md`, not the chat history, are the source of truth.
 - **Parallelism without collisions.** Independent tracks run as separate subagents in
   separate git worktrees, each on its own branch. The director merges `--no-ff` in a
   planned order, and close-out sweeps the worktrees and lagged branches away.
@@ -195,7 +195,7 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
   ops folder get **adopt mode**: gaps filled, nothing overwritten. Registers the project
   in `~/.config/10x-skills/sprint/projects.json`.
 - **`/sprint direct`** — become the director for the current sprint, in a **fresh
-  session**. Boot the ledger → analyze the sprint against reality → clarify → plan →
+  session**. Boot the STATE index → analyze the sprint against reality → clarify → plan →
   spawn tracks → audit → merge → close.
 - **`/sprint arc`** — run an arc: a set of sprints, some parallel, that delivers one
   large outcome. The first run interviews you and drafts `ARC.md` with the sprint
@@ -206,11 +206,11 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
   sprint, current sprint and phase, what's next, top backlog items, health flags, and a
   recommended course of action. Outside a project: a compact cross-project dashboard.
   Read-only.
-- **`/sprint clean`** — reconcile the instance with reality. Scans for ledger drift,
+- **`/sprint clean`** — reconcile the instance with reality. Scans for STATE index drift,
   backlog drift, unarchived sprints, leftover worktrees and stale track branches, and
   dead registry entries — then interviews you through each finding (recommended
-  disposition first) and executes only what you approve. Closed sprints move to
-  `sprints/archive/`.
+  disposition first) and executes only what you approve. Close archives its own lineage's
+  previous sprint to `sprints/archive/`; `/sprint clean` handles the rest.
 
 ### The `ops/` instance layout
 
@@ -228,7 +228,7 @@ signups, and approvals — never as mid-flight interruptions of a running agent.
 │   └── arc-NN/
 │       └── ARC.md          ← arc brief + ledger: goal, sprint graph, surfaces, gates, status
 └── sprints/
-    ├── archive/            ← closed sprint folders, moved here by /sprint clean
+    ├── archive/            ← closed sprint folders, moved here by close (its own lineage) or /sprint clean
     └── sprint-NN/
         ├── SPRINT.md       ← sprint brief: goal, gates, tracks, merge order, close checklist
         ├── TRACK-*.md      ← self-contained prompt per track subagent
@@ -278,7 +278,7 @@ project can raise or lower the defaults in its `SPRINT_GUIDELINES.md`.
 State lives in files, not chat:
 
 - `~/.config/10x-skills/sprint/projects.json` — the cross-project registry (per-user, never committed).
-- `<project>/ops/STATE.md` — the living ledger the director reads first and updates last.
+- `<project>/ops/STATE.md` — the thin STATE index the director reads first: facts, decisions, jobs, and one-line history. Live state is in each sprint's `STATUS.md`; the narrative is in its `CLOSE.md`.
 
 ### Concepts in one screen
 
@@ -342,8 +342,8 @@ proactively on material ambiguity, not just on invocation.
   it in and keeps going. Only an explicit stop ("stop", "enough", "just build it")
   ends the interview early.
 - **It proposes, too.** An always-on ideas pass offers low-hanging fruit, UX
-  improvements, and features you may be missing, each as a yes / no / later question
-  with a recommendation. For bug work, the ideas pass turns to edge cases.
+  improvements, and features you may be missing, each as a yes / no question
+  with a recommendation. Ideas that are only later-grade are parked. For bug work, the ideas pass turns to edge cases.
 
 Once understanding is locked, pry hands off by context: continue the task, or route
 through `/build` to plan, sprint, or arc. Pry itself never builds.
@@ -366,14 +366,15 @@ craft layer, persist everything in a root `STYLE.md` — with a lean core and a 
 reference library loaded strictly on demand. The **code path** is a minimal
 checklist for comment noise, doc slop, dead abstractions, and naming tells.
 
-It fires proactively when UI work begins (design before pixels) and when it
-completes. The audit rule is absolute: **sweeps run in fresh-context subagents that
+It fires proactively at two bookends: when a new UI surface or redesign starts
+(design before pixels), and once when the unit of UI work completes. The audit rule is absolute: **sweeps run in fresh-context subagents that
 report back** — the session that built the UI never audits it, because its own
 context rubber-stamps its choices. `/deslop audit <target> [quick|standard|deep]`
 scales from one scout to a dimension fan-out with rendered-page checks; findings
 come back scored and worst-first, fixes applied on approval or `--fix`. `/plan`
-executions and `/sprint` tracks that touch UI cite the deslop discipline, with
-inline fallbacks when it isn't installed.
+executions that touch UI cite the deslop discipline, with inline fallbacks when it
+isn't installed. `/sprint` UI tracks get `STYLE.md` core excerpts in the brief, and the
+director runs one deslop audit; tracks load no UI skill.
 
 ## Autonomous — `/autonomous`
 
@@ -405,7 +406,7 @@ optimize candidates at close when a run paid a repeated manual tax.
 
 ## Where Am I — `/whereami`
 
-An in-chat situation report for the current session: what is **done** (and how it was
+An in-chat situation report for this session or recent sessions across projects: what is **done** (and how it was
 verified), what is **in progress**, what comes **next**, and what is **blocked**. Ends
 with the single most useful next action. Read-only; writes nothing.
 

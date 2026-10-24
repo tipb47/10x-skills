@@ -41,7 +41,7 @@
     },
     {
       "name": "build",
-      "description": "Router for new functionality: analyzes and pries once, classifies the work as plan (one session), sprint (multi-session), or arc (parallel sprints), confirms the scale with you, then hands off to /plan or /sprint with the locked decisions so the engine never re-interviews you. Fires proactively when you describe something to build.",
+      "description": "Router for new functionality: analyzes and pries once, classifies the work as plan (one session), sprint (multi-session), or arc (parallel sprints), confirms the scale with you, then hands off to /plan or /sprint with the locked decisions so the engine never re-interviews you. A Discover stage settles what to build and writes BLUEPRINT.md for larger work. Fires proactively when you describe something to build.",
       "version": "3.0.0",
       "author": {
         "name": "tipb47",
@@ -65,7 +65,7 @@
     },
     {
       "name": "sprint-director",
-      "description": "Sprint-directed multi-agent development methodology. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a living state ledger. Humans appear only at explicit operator gates. Arc mode (/sprint arc) runs parallel sprints under a checkpoint-driven arc director. Scars split into a curated core and a private per-user file.",
+      "description": "Sprint-directed multi-agent development methodology. A fresh director session per sprint spawns isolated track subagents on their own branches, audits their diffs against a design contract, merges in order, and keeps a thin STATE index with a live STATUS.md and a closing CLOSE.md per sprint. Humans appear only at explicit operator gates. Arc mode (/sprint arc) runs parallel sprints under a checkpoint-driven arc director. Scars split into a curated core and a private per-user file.",
       "version": "3.0.0",
       "author": {
         "name": "tipb47",
@@ -92,7 +92,7 @@
     },
     {
       "name": "analyze",
-      "description": "Depth-scaled, read-only investigation of a feature, bug, flow, or component. Fans out parallel explore scouts with per-subagent model selection to keep the main context clean.",
+      "description": "Depth-scaled, read-only investigation of a feature, bug, flow, component, approach, or paper. Infers its sources (code, web, literature) from the task. Fans out parallel explore scouts with per-subagent model selection to keep the main context clean.",
       "version": "3.0.0",
       "author": {
         "name": "tipb47",
@@ -138,7 +138,7 @@
     },
     {
       "name": "pry",
-      "description": "Zero-assumption interrogation, inspired by the classic /grill-me prompt (https://www.aihero.dev/skills-grill-me): recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Fires proactively on material ambiguity, explores the codebase instead of asking about facts, leads every question with a recommended answer, keeps going through interjections, runs an always-on ideas pass (each idea a yes/no/later question), and hands off to execution or /build once understanding is locked. Also the interview-methodology reference the other 10x-skills cite.",
+      "description": "Zero-assumption interrogation, inspired by the classic /grill-me prompt (https://www.aihero.dev/skills-grill-me): recursive q&a rounds that pry a task, plan, or idea open until nothing is up in the air. Fires proactively on material ambiguity, explores the codebase instead of asking about facts, leads every question with a recommended answer, keeps going through interjections, runs an always-on ideas pass (pitches only ideas worth doing now, each a yes/no question), and hands off to execution or /build once understanding is locked. Also the interview-methodology reference the other 10x-skills cite.",
       "version": "3.0.0",
       "author": {
         "name": "tipb47",
@@ -162,7 +162,7 @@
     },
     {
       "name": "deslop",
-      "description": "Remove and prevent AI slop. Frontend path (inspired by samber's frontend-design-deslop, MIT): strategy-first design, OKLCH tokens, a craft layer, a durable STYLE.md, and slop audits that always run in fresh-context subagents — the session that built the UI never audits it. Fires when UI work begins and completes, or explicitly via /deslop audit <target> [quick|standard|deep]. Minimal code path for comment noise, doc slop, and dead abstractions.",
+      "description": "Remove and prevent AI slop. Frontend path (inspired by samber's frontend-design-deslop, MIT): strategy-first design, OKLCH tokens, a craft layer, a durable STYLE.md, and slop audits that always run in fresh-context subagents — the session that built the UI never audits it. Fires at two bookends: a new UI surface or redesign, and one audit at completion; or explicitly via /deslop audit <target> [quick|standard|deep]. Minimal code path for comment noise, doc slop, and dead abstractions.",
       "version": "3.0.0",
       "author": {
         "name": "tipb47",
@@ -234,7 +234,7 @@
     },
     {
       "name": "whereami",
-      "description": "In-chat situation report for the current session: what is done, what is in progress, what comes next.",
+      "description": "Plain-language status for this session or recent sessions across projects: what is done, what is in progress, what comes next.",
       "version": "3.0.0",
       "author": {
         "name": "tipb47",

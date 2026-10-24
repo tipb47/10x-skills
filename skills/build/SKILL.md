@@ -72,7 +72,7 @@ later session starts from it.
 | Scale | Fits when | Handoff |
 |---|---|---|
 | **plan** | The work finishes in one session, single- or multi-track. | `/plan` with the locked decisions; plan skips Phase 2. |
-| **sprint** | The work needs multiple sessions or a durable ledger, and its sprints run sequentially. | No ops instance → `/sprint init`, its interview reusing the locked decisions. Ops instance exists → draft the next sprint(s) into it. |
+| **sprint** | The work needs multiple sessions or a durable STATE index, and its sprints run sequentially. | No ops instance → `/sprint init`, its interview reusing the locked decisions. Ops instance exists → draft the next sprint(s) into it. |
 | **arc** | The work needs 2+ sprints AND at least two can run in parallel on separable surfaces. | `/sprint arc` drafting. |
 
 - **Pick the smallest scale that fits.** A one-session task is a plan, even when it has

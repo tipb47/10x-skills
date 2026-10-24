@@ -175,10 +175,10 @@ it touches.
 | Command | When | Reads | Writes |
 |---|---|---|---|
 | `/sprint init` | Once per project, to scaffold | repo, user interview | `<ops>/*`, registry |
-| `/sprint direct` | Start of each sprint, in a **fresh** session | `STATE.md`, guidelines, `SPRINT.md`, `SCARS.md`, private scars file | branches, merges, `STATE.md` (in an arc: only its own `sprints/sprint-NN/`) |
+| `/sprint direct` | Start of each sprint, in a **fresh** session | `STATE.md`, guidelines, `SPRINT.md`, `SCARS.md`, private scars file | branches, merges, `STATE.md`, the sprint's `STATUS.md` and `CLOSE.md` (in an arc: only its own `sprints/sprint-NN/`) |
 | `/sprint arc` | To draft an arc, then once per arc checkpoint, in a **fresh** session | `STATE.md`, `ARC.md`, each arc sprint's folder, both scar files | `ARC.md`, `STATE.md`, `BACKLOG.md`, `aNN/integration` merges |
-| `/sprint status` | Anytime | in a project: `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, `sprints/`; else registry + each `STATE.md` | nothing |
-| `/sprint clean` | Between sprints, or when state drifted | ledger, backlog, `sprints/`, worktrees, branches, registry | only operator-approved moves/deletions/amendments |
+| `/sprint status` | Anytime | in a project: `STATE.md`, `BACKLOG.md`, `ROADMAP.md`, `sprints/`, each sprint's `STATUS.md` header; else registry + each `STATE.md` | nothing |
+| `/sprint clean` | Between sprints, or when state drifted | STATE index, backlog, `sprints/`, worktrees, branches, registry | only operator-approved moves/deletions/amendments |
 
 ### Invariants you must preserve when operating
 
@@ -191,7 +191,7 @@ it touches.
   store, and deployed state before acting. Re-run each track's verification gates at audit.
 - **Local `ops/` docs are authoritative.** Where they conflict with the skill engine, the
   local docs win. Never silently override them.
-- **State lives in files.** Read `STATE.md` first; update it last. Do not rely on chat history
+- **State lives in files.** Read the STATE index first; live sprint state is in each sprint's `STATUS.md`. Do not rely on chat history
   as the source of truth.
 - **Operator gates are human-only.** Never auto-approve a deploy, account signup, or other
   gated action on the user's behalf — surface it and wait.
