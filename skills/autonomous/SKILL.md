@@ -43,12 +43,16 @@ reference for the intensity; without it, this discipline stands on its own. Cove
 4. **Harness check** — confirm the session's permission mode will not stall the run
    with approval prompts. List what would prompt; have the operator fix the mode
    BEFORE leaving. A run that stalls at its first push helps no one.
-5. **Recap** stop semantics and stuck policy (below) so the operator knows what a
+5. **Stage budgets** — a wall-clock budget for each stage of the plan (each track,
+   merge, and verification loop), plus the run's total. Base each budget on the
+   stage's size and known command durations. Print them in the contract summary.
+6. **Recap** stop semantics and stuck policy (below) so the operator knows what a
    PARTIAL morning looks like.
 
 **Clearance is yours to declare, not the operator's to assume.** When — and only
 when — every item above is closed, print the contract summary (envelope, verification
-contract, floor, what queues for morning) and end with the explicit line:
+contract, floor, stage budgets, what queues for morning) and end with the explicit
+line:
 
 > **You're clear to leave.**
 
@@ -61,12 +65,16 @@ isolation, audits, merge order. On top of it:
 
 - **Loop to green:** build → verify → e2e → fix → repeat until the verification
   contract passes end-to-end, driven through the actual deliverable. Verify, never
-  trust — a passing claim is re-checked against real state.
+  trust — a passing claim is re-checked against real state. Verification follows
+  § Verification budget: every wait and background job carries a deadline.
 - **Never fake green.** Weakening a test, gate, or assertion to pass is floor-breaking.
   Honest red beats dishonest green in every wake-up report.
 - **Stuck policy (attempt-box):** ~3 distinct failed strategies on the same defect →
   stop hammering it. Preserve state, write the root-cause hypothesis with evidence,
   continue all independent work.
+- **Budget overrun = stuck.** Record each stage's start time and check it at every
+  poll. A stage that runs past its wall-clock budget is stuck, even with no failure. Apply the attempt-box: stop it, preserve state, record why
+  it overran, and move to independent work. Log each fired deadline as it fires.
 - **Concerning encounter → quarantine:** about to do something potentially damaging —
   irreversible data ops, a shared-store migration, anything brushing the envelope's
   edge or your own genuine unease — take NO action on that item. Freeze it, preserve
@@ -77,7 +85,7 @@ isolation, audits, merge order. On top of it:
   item with exact commands, and structure remaining work to degrade gracefully around
   it (ship tested module + documented gap, not a stalled run).
 - **Log as you go:** every autonomous decision gets a one-line why, in chat — and in
-  STATE.md too when running a sprint. Sprint runs keep all sprint bookkeeping current
+  the sprint's `STATUS.md` too when running a sprint. Sprint runs keep all sprint bookkeeping current
   so a crash loses narrative, not state.
 
 ## Wake-up report
@@ -89,7 +97,9 @@ End every run — DONE or PARTIAL — with:
 3. **Decisions made** autonomously, each with its why.
 4. **Quarantined concerns** — evidence and a recommendation each.
 5. **Stuck items** — strategies tried, current hypothesis, suggested next probe.
-6. **Morning checklist** — queued gates and reviews, exact commands, in order.
+6. **Deadlines fired** — every stage budget and job deadline that fired: what, when,
+   and the state it left. Write "none" if none fired.
+7. **Morning checklist** — queued gates and reviews, exact commands, in order.
 
 Where the harness supports notifications, send one on completion or halt.
 
