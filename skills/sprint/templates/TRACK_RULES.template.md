@@ -61,6 +61,9 @@ emphasis and no banner headers in comments.
 - GOOD: `// Single-org scoping comes from the request context; a client-supplied org arg
   here would bypass tenant gating.`
 
+A deliberate decision that looks like a bug is a constraint. Keep it, stated
+behaviorally: `// Intentionally serves the stale value; upstream TTL is 45s.`
+
 ## Report
 
 Your report is your **final message**. Never write it to a file outside your worktree.

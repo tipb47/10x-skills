@@ -14,8 +14,9 @@ gate.
 cross-sprint seams are dense or contract decisions land at arc checkpoints. Frontier only
 when the arc director itself must solve a hard problem. -->
 
-**Ledger rule:** the arc director is the only writer of this file, `STATE.md`, and
-`BACKLOG.md`. Sprint directors write only their own `sprints/sprint-NN/` folder.
+**Writer rule:** the arc director is the only writer of this file, the STATE index
+(`STATE.md`), and `BACKLOG.md`. Sprint directors write only their own
+`sprints/sprint-NN/` folder: its `STATUS.md` and `CLOSE.md`.
 
 ## Non-goals
 
@@ -72,6 +73,15 @@ waiting / unblocked / in flight / done / merged. -->
 | Sprint | Status | `sNN/integration` | Notes |
 |---|---|---|---|
 | sNN | {{STATUS}} | {{pushed / merged into aNN/integration}} | {{deploy needs, blockers}} |
+
+## Tree ledger
+
+One row per full-suite run on `aNN/integration`, per § Verification budget. A tree
+already recorded green, here or in a sprint's `STATUS.md`, is verified.
+
+| Tree (`git rev-parse HEAD^{tree}`) | `aNN/integration` @ commit | Full suite | Failures vs baseline | Date |
+|---|---|---|---|---|
+| | | | | |
 
 ## Arc checkpoint log
 
