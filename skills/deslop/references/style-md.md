@@ -1,6 +1,6 @@
 # STYLE.md output
 
-Everything this skill produces lives in a single `STYLE.md` at the project root. It is the durable source of truth for the design system: the discovery context, the committed aesthetic, the typography and color systems, the tokens, the spacing/radius/shadow rules, component conventions, and the slop-audit result. Code (token-core.css, the Tailwind or shadcn adapter, components) is generated from STYLE.md, not the other way around.
+Everything this skill produces lives in a single `STYLE.md` at the project root. It is the durable source of truth for the design system: the discovery context, the committed aesthetic, the typography and color systems, the tokens, the spacing/radius/shadow rules, and component conventions. Audit results do not live here. Code (token-core.css, the Tailwind or shadcn adapter, components) is generated from STYLE.md, not the other way around.
 
 ## Why a file
 
@@ -13,12 +13,19 @@ Everything this skill produces lives in a single `STYLE.md` at the project root.
 1. On any UI task, first check for `STYLE.md` at the project root (and common locations like `docs/`).
 2. If it exists: read it, honor its tokens, skip questions it already answers, and extend it. Do not re-originate a theme.
 3. If it does not exist: run discovery, Phase 1, and Phase 2, then write STYLE.md before or alongside building components.
-4. After the self-audit, append the audit result and any fixes to STYLE.md and bump the changelog.
+4. After the self-audit, put the audit result in the audit report and the commit message. Never append it to STYLE.md. Edit STYLE.md only to change a design decision, and log that change in one Changelog line.
 5. Keep `token-core.css` and the chosen adapter in sync with the Tokens section; if they drift, STYLE.md wins.
+
+## Core and reference
+
+STYLE.md has two parts. Keep it small.
+
+- **Core** (about 1-2 pages, at the top): Context summary, Aesthetic, Typography, Color, Spacing/radius/shadow, Tokens, and the bans (what this project refuses). Agents read the core on every UI task.
+- **Reference** (below a `## Reference` heading): Layout, Components and states, Motion, Iconography, Imagery, Dark mode, Accessibility, Cards and surfaces, Changelog. Agents grep it when a task needs it. They do not read it whole.
 
 ## Template
 
-Write STYLE.md using this structure. Fill every section; use OKLCH with a hex fallback for color. Keep it dense and specific, no vague guidance, no em dashes.
+Write STYLE.md using this structure. Fill every section except where the project has no such surface; use OKLCH with a hex fallback for color. Keep it dense and specific, no vague guidance, no em dashes.
 
 ```markdown
 # STYLE.md - [Project name]
@@ -72,6 +79,18 @@ Write STYLE.md using this structure. Fill every section; use OKLCH with a hex fa
 - Radius: [<= 2 values, e.g. 2px and pill]
 - Shadow approach: [defined edge OR soft elevation, not both] -> [the rule]
 
+## Tokens (source of truth)
+
+\`\`\`css :root { --font-display: ...; --font-body: ...; --font-mono: ...; /_ scale, spacing, radius, color in OKLCH _/ } @media (prefers-color-scheme: dark) { :root { /_ overrides _/ } } \`\`\`
+
+- Adapter: [plain CSS | Tailwind v4 @theme | shadcn semantic tokens] (see adapters.md)
+
+## Bans
+
+- [What this project refuses: the category defaults, fonts, colors, and patterns it will not use]
+
+## Reference
+
 ## Layout and composition
 
 - Grid: [12-col | modular | bento | editorial] | gutters/margins: [...]
@@ -118,20 +137,9 @@ Write STYLE.md using this structure. Fill every section; use OKLCH with a hex fa
 - Keyboard: [fully operable] | Targets: [>=24px, 44 preferred]
 - Color independence: [yes] | Reduced motion: [yes] | Notes: [...]
 
-## Tokens (source of truth)
-
-\`\`\`css :root { --font-display: ...; --font-body: ...; --font-mono: ...; /_ scale, spacing, radius, color in OKLCH _/ } @media (prefers-color-scheme: dark) { :root { /_ overrides _/ } } \`\`\`
-
-- Adapter: [plain CSS | Tailwind v4 @theme | shadcn semantic tokens] (see adapters.md)
-
 ## Cards and surfaces
 
 - Cards/surfaces: [border XOR shadow, radius, padding] | nesting: [avoid cards-in-cards]
-
-## Slop audit
-
-- Date: [date] | Result: [pass | fixed N tells]
-- Notes: [tells caught and corrected; craft-layer and accessibility gate result]
 
 ## Changelog
 
